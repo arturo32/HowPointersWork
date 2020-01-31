@@ -9,7 +9,7 @@
   	<header>
   		<h1>Aprenda como ponteiros funcionam!</h1>
   	</header>
-  	<textarea type="text" id="textbox" autofocus oninput="hi()" > </textarea> 
+  	<textarea type="text" id="textbox" placeholder="Digite aqui seu código em C!" oninput="findPointers()" autofocus ></textarea> 
 
   	<p id="output"></p>
 
@@ -17,10 +17,14 @@
 
 
   <script type="text/javascript">
-  	function hi(){
+  	function findPointers(){
+      //Gets the text typed by the user
   		var text = document.getElementById("textbox").value;
+
+      //Finds the 
   		var output = document.getElementById("output");
-      //Verifies, using regex, if a varible have zero or more spaces after it and that is followed by a "*"
+
+      //Checks, using regex, if a varible type name have zero or more spaces after it and that is followed by a "*"
       var pointers = /(int|float|double|char|short)\s*\*/g;
 
   		output.innerHTML = text.match(pointers);
