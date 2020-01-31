@@ -19,6 +19,12 @@ body{
 }
 
 #textbox{
-	width: 500px;
+	width: 42%;
 	height: 300px;
+    float: left;
+    padding: 20px;
+    margin-right: 50px;
+}
+p{
+    
 }

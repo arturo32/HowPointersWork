@@ -21,11 +21,11 @@
       //Gets the text typed by the user
   		var text = document.getElementById("textbox").value;
 
-      //Finds the 
+      //Finds the output in the HTML body
   		var output = document.getElementById("output");
 
-      //Checks, using regex, if a varible type name have zero or more spaces after it and that is followed by a "*"
-      var pointers = /(int|float|double|char|short)\s*\*/g;
+      //Checks, using regex, if a varible is a pointer. Can recognize, for exemple, "double*  ptr = &new ;" with all its spaces
+      var pointers = /(int|float|double|char|short)\s*\*\s*\w*\s*(\=\s*(\w*|\&)\w*\s*\;|\;)/gi;
 
   		output.innerHTML = text.match(pointers);
   	}
