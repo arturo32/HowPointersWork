@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link rel="stylesheet" type="text/css" href="ponteiros.css">
+    <title>*Ponteiros</title>
+  </head>
+  <body>
+  	<header>
+  		<h1>Aprenda como ponteiros funcionam!</h1>
+  	</header>
+  	<textarea type="text" id="textbox" autofocus oninput="hi()" > </textarea> 
+
+  	<p id="output"></p>
+
+  </body> 
+
+
+  <script type="text/javascript">
+  	function hi(){
+  		var text = document.getElementById("textbox").value;
+  		var output = document.getElementById("output");
+  		output.innerHTML = text;
+  	}
+  </script>
+
+</html>

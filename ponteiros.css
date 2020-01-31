@@ -1,0 +1,24 @@
+body{
+    font-family: "Times New Roman", Times, serif;
+    font-size: 18px;
+    padding: 5%;
+    padding-top: 1%;
+}
+
+header h1{
+    color: #43796b;
+    font-family: lulo-clean-w01-one-bold, sans-serif;
+    letter-spacing: 0.1em;
+    text-align: center;
+} 
+body{
+    font-family: "Times New Roman", Times, serif;
+    font-size: 18px;
+    padding: 5%;
+    padding-top: 1%;
+}
+
+#textbox{
+	width: 500px;
+	height: 300px;
+}
