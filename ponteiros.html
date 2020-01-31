@@ -25,7 +25,7 @@
   		var output = document.getElementById("output");
 
       //Checks, using regex, if a varible is a pointer. Can recognize, for exemple, "double*  ptr = &new ;" with all its spaces
-      var pointers = /(int|float|double|char|short)\s*\*\s*\w*\s*(\=\s*(\w*|\&)\w*\s*\;|\;)/gi;
+      var pointers = /(int|float|double|char|short)\s*\*\s*\w+\s*(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
 
   		output.innerHTML = text.match(pointers);
   	}
