@@ -18,6 +18,17 @@ body{
     padding-top: 1%;
 }
 
+table{
+    margin: 2.5%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+table td{
+    border: 1px solid black;
+    text-align: center;
+    width: 23%;
+}
+
 #textbox{
 	width: 42%;
 	height: 300px;
