@@ -1,7 +1,9 @@
-<!DOCTYPE html>
+<!DOCTYPE  html>
 <html>
 
   <head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="ponteiros.css">
     <title>*Ponteiros</title>
   </head>
@@ -9,10 +11,17 @@
   	<header>
   		<h1>Aprenda como ponteiros funcionam!</h1>
   	</header>
-  	<textarea type="text" id="textbox" placeholder="Digite aqui seu código em C!" oninput="findPointers()" autofocus ></textarea> 
-
-  	<div id="output"></div>
-
+  	<textarea type="text" id="textbox" placeholder="Digite aqui seu código em C!" oninput="findPointers()" autofocus ></textarea>
+    
+    <div id = "outputPtr"></div>
+    
+    <div id = "outputBlock">
+      <p>output</p>
+      <div id = "outputC"></div>
+    </div> 
+    <button id = "button">Compilar e executar</button>
+  	
+    
   </body> 
 
   <script type="text/javascript" src="ponteiros.js"></script>
