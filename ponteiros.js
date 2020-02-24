@@ -59,44 +59,61 @@ function findPointers(){
  the code typed by the user. This is made by using the jQuery library that can easily 
  comunicate with the API through HTTP requests.*/
  
-//I will comment them with more detail in the future
 $(document).ready( function(){
-  $("#button").click(function(){
-  	var strings = document.getElementById("textbox").value;
-    $.post("http://api.paiza.io/runners/create",
-    {
-      source_code: `${strings}`,
-      language: "c",
-      api_key: "guest"
-    },
-   		function(data) {
-    		console.log(data);
-			getMethod(data);	
-		}, "text"); 
+
+	/*In the moment the user clicks the "Compilar e Executar" button the function below
+	 is activated. It sends a POST request to the Paiza serve with the code and inputs that 
+	 the user has written. After the POST request succeeds, it takes its response and sends 
+	 to the getMethod function.*/
+	$("#button").click(function(){
+  		var inputText = document.getElementById("inputC").value;
+	  	var strings = document.getElementById("textbox").value;
+	    $.post("http://api.paiza.io/runners/create",
+	    {
+	    	source_code: `${strings}`,
+	    	language: "c",
+	    	input: `${inputText}`,
+	    	api_key: "guest"
+	    },
+	   		function(data) {
+				getMethod(data);	
+			}, "text"); 
 	});
 });
 
-function getMethod(dd){
-	var newstring = new Object();
-	var id_data = /"[^(id):].*?"/i;
-	newstring.id = dd.match(id_data).toString().replace(/"/g, "");
-	newstring.api_key = "guest";
-    $.get("http://api.paiza.io/runners/get_details", newstring, function(datas){
-      var status = /"status": ".*?"/;
+/*This functions sends a GET request to the Paiza server to get the output of the user code. 
+It carries the ID information, passed by the response of the POST request.*/
+function getMethod(d){
 
-      if(datas.match(status).toString() == "\"status\": \"running\""){
-      	console.log("novamente");
-      	setTimeout(function(){getMethod(dd)}, 100);
-      	return;
-      }
+	/*From the data that was passed by the POST request it's selected only the ID 
+	information. This is made by a regular expression that matches whatever is inside
+	quototion marks after the "id:" word. Then the quotation marks are "replaced" by
+	empty strings.*/
+	var getData = new Object();
+	var idRegex = /"[^(id):].*?"/i;
+	getData.id = d.match(idRegex).toString().replace(/"/g, "");
+	getData.api_key = "guest";
+    $.get("http://api.paiza.io/runners/get_details", getData, function(data){
 
-      console.log(datas);
-      var stdout = /"stdout": ".*?"/;
+    	/*To check if the code has finished compiling, it's searched in the response data,
+    	using regular expressions, if the status parameter is still marked as "running".
+    	If so, then the getMethod function is called again after 100 miliseconds.*/
+		var status = /"status": ".*?"/i;
+		if(data.match(status).toString() == "\"status\": \"running\""){
+			console.log("again");
+			setTimeout(function(){getMethod(d)}, 100);
+			return;
+		}
 
-      var outputC = datas.match(stdout).toString().replace(/"stdout":/, "").replace(/"/g, "");
-      document.getElementById("outputC").innerHTML = outputC.replace(/\\n/g, "\n");
-    }, "text");
-  }
+		/*If the satatus is marked as completed, then it's searched in the reponse data the
+		stdout parameter, that contains the output of the user code. Since everything is
+		converted in a string, the \n commands will not be read as line breaks in the outputC
+		div element. So they are replaced by \n commands.*/
+		var stdout = /"stdout": ".*?"/;
+		var outputC = data.match(stdout).toString().replace(/"stdout":/, "").replace(/"/g, "").replace(/\\n/g, "\n");
+		document.getElementById("outputC").innerHTML = outputC;
+    }, "text");  
+}
 
 
 
