@@ -14,31 +14,79 @@ function findPointers(){
 	var pointersArray = text.match(pointers);
 	var pointersNames = new Array(pointersArray.length);
 	var pointersTypes = new Array(pointersArray.length);
-
-	for (let i = 0; i < pointersArray.length; i++) {
+	var pointersVars = new Array(pointersArray.length);
+	var arrlength = pointersArray.length;
+	for (let i = 0; i < arrlength; i++) {
 		let type = /(int|float|double|char|short)\s*\*\s*/gi;
 		let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
 
 		//Removes the variable type name and everything after the variable's name
-		pointersNames[i] = pointersArray[i].replace(type, "").replace(afterName, "");
+		pointersNames[i] = pointersArray[i].toString().replace(type, "").replace(afterName, "");
 
 		//Matches the variable type name, convert the array to a String and then removes the * symbol
 		pointersTypes[i] = pointersArray[i].match(type).toString().replace(/\*/g, "");
+
+		//Matches the variable name that the pointer is pointing to. Removes the ; and = & symbols
+		pointersVars[i] = pointersArray[i].match(afterName).toString().replace(/;/, "").replace(/\=\s*&/, "");
+		
+		/*If the pointer wasn't inicialized when it was declared, a search is made to see
+		if it was inicialized somewhere else in the code.*/
+		if(!pointersVars[i]){
+			
+			//While the pointer isn't inicialized, the value that he is pointing to is "lixo" (garbage)
+			pointersVars[i] = "lixo";
+
+			//Gets the index of the next substring with the same name as the pointer's name
+			let indexOfVar = text.indexOf(pointersNames[i], text.indexOf(pointersNames[i])+1);
+
+			/*If there is another name of the pointer in the code, a search is made to find
+			the variable name that it is pointing to.*/
+			if(indexOfVar > 0){
+				let varText = "";
+				let j = indexOfVar;
+				let found = true;
+				while(text[j] != '=' || text[j] == ' '){
+					j++;
+					if(j > text.length){
+						notFound = false; 
+						break;
+					}
+				}
+				j++;
+				while(text[j] != ';'){
+					varText += text[j];
+					j++;
+					if(j > text.length){
+						found = false;
+						break;
+					} 
+				}
+				if(found){
+					pointersVars[i] = varText.replace("&", "");
+				}
+			}
+			
+		}
 	}
 
-	//Creates a table element and each one of its rows with two collumns each: the "pointers types" and the pointers names
+	/*Creates a table element and each one of its rows with three collumns each: the
+	"pointers types", the pointers names and the variable names that the pointers
+	point to*/
 	var table = document.createElement("table");
-	var arrlength = pointersArray.length;
 	for (let i = 0; i < arrlength; i++){
 		let newnodeType = document.createTextNode(pointersTypes[i]);
 		let newnodeName = document.createTextNode(pointersNames[i]);
+		let newnodeVar = document.createTextNode(pointersVars[i]);
 		let newtr = document.createElement("tr");
 		let newtd = document.createElement("td");
 		let newtd2 = document.createElement("td");
+		let newtd3 = document.createElement("td");
 		newtd.appendChild(newnodeType);
 		newtd2.appendChild(newnodeName);
+		newtd3.appendChild(newnodeVar);
 		newtr.appendChild(newtd);
 		newtr.appendChild(newtd2);
+		newtr.appendChild(newtd3);
 		table.appendChild(newtr);
 	}
 

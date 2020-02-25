@@ -3,10 +3,11 @@ body{
     font-size: 18px;
     padding: 5%;
     padding-top: 1%;
+    background-color: #0e0d15;
 }
 
 header h1{
-    color: #43796b;
+    color: #eaeaea;
     font-family: lulo-clean-w01-one-bold, sans-serif;
     letter-spacing: 0.1em;
     text-align: center;
@@ -19,8 +20,10 @@ body{
 }
 
 table{
+    color: #eaeaea;
     margin: 2.5%;
     margin-top: 25px;
+    border-color: #eaeaea;
     border-collapse: collapse;
     table-layout: fixed;
     display: inherit;
@@ -29,18 +32,22 @@ table{
 }
 table td{
     border: 1px solid black;
+    border-color: #eaeaea;
     text-align: center;
     width: 23%;
 }
 
 #textbox{
+    border: 0px;
+    border-radius: 20px;
+    background-color: #17141d;
+    color: #eaeaea;
 	width: 42%;
 	height: 300px;
     padding: 20px;
     margin-right: 50px;
     margin-top: 25px;
     resize: none;
-    box-shadow: 10px 10px 5px 5px #FFF;
 }
 #outputPtr{
     display: inline-block;
@@ -56,6 +63,7 @@ table td{
 }
 
 #inputBlock{
+    color: #eaeaea;
     margin-bottom: 20px;
 }
 
@@ -69,28 +77,31 @@ table td{
 }
 
 #inputC{
-    border: 1px solid black;
-    border-color: #9fa0a0;
+    color: #eaeaea;
+    border: 0px;
+    border-radius: 20px;
     padding-top: 6px;
-    padding-left: 6px;
-    padding-right: 5px;
+    padding-left: 10px;
+    padding-right: 13px;
     white-space: pre-line;
     height: 80px;
     width: 100%;
     font-family: Lucida Sans Typewriter, Lucida Console, monaco, Bitstream Vera Sans Mono, monospace;
-    font-size: 14px; 
+    font-size: 12px; 
     font-style: normal; 
     font-variant: normal; 
     font-weight: 400; 
     line-height: 20px;
-    background-color: #fcfcfc;
+    background-color: #17141d;
     overflow: scroll;
     overflow-x: hidden;
     resize: none;
     box-sizing: border-box;
+
 }
 
 #outputBlock p{
+    color: #eaeaea;
     vertical-align: top;
     margin: 0px;
     margin-bottom: 5px;
@@ -100,21 +111,22 @@ table td{
 }
 
 #outputC{
-    border: 1px solid black;
-    border-color: #9fa0a0;
+    color: #eaeaea;
+    border: 0px;
+    border-radius: 20px;
     padding-top: 6px;
-    padding-left: 6px;
-    padding-right: 5px;
+    padding-left: 10px;
+    padding-right: 13px;
     white-space: pre-line;
     height: 150px;
     width: 100%;
     font-family: Lucida Sans Typewriter, Lucida Console, monaco, Bitstream Vera Sans Mono, monospace;
-    font-size: 14px; 
+    font-size: 12px; 
     font-style: normal; 
     font-variant: normal; 
     font-weight: 400; 
     line-height: 20px;
-    background-color: #fcfcfc;
+    background-color: #17141d;
     overflow: scroll;
     overflow-x: hidden;
     box-sizing: border-box;
@@ -124,6 +136,22 @@ table td{
 
 #button{
     display: block;
+    border: 2px #eaeaea solid;
+    background-color: #0e0d15;
+    color: #eaeaea;
+    border-radius: 20px;
+    height: 30px;
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 5px;
+    transition: transform 150ms;
 }
+
+#button:hover{
+    box-shadow: 3px 3px 1px 1px #090810;
+    transform: translate(-3px, -3px);
+}
+
 
 
