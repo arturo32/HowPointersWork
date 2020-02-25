@@ -34,14 +34,22 @@ table td{
     width: 23%;
 }
 
+#Text{
+    display: inline-block;
+    width: 42%;
+    box-sizing: border-box;
+    margin-right: 50px;
+    margin-top: 25px;
+    margin-right: 50px;
+    margin-top: 25px;
+}
+
 #textbox{
     border: 0px;
     border-radius: 20px;
-	width: 42%;
+    width: 100%;
 	height: 300px;
     padding: 20px;
-    margin-right: 50px;
-    margin-top: 25px;
     resize: none;
     background-color: #f9f9f9;
 }
@@ -137,6 +145,7 @@ table td{
     cursor: pointer;
     margin-top: 5px;
     transition: transform 150ms;
+    float: right;
 }
 
 #button:hover{
