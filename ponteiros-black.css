@@ -145,12 +145,15 @@ table td{
     font-weight: 600;
     cursor: pointer;
     margin-top: 5px;
+<<<<<<< HEAD
     transition: transform 150ms;
 }
 
 #button:hover{
     box-shadow: 3px 3px 1px 1px #090810;
     transform: translate(-3px, -3px);
+=======
+>>>>>>> dc9b641b4dd58a35562970d1492f8d30cd7eafea
 }
 
 
