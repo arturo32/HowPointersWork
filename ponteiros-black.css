@@ -1,0 +1,151 @@
+body{
+    font-family: "Times New Roman", Times, serif;
+    font-size: 18px;
+    padding: 5%;
+    padding-top: 1%;
+    background-color: #0e0d15;
+}
+
+header h1{
+    color: #eaeaea;
+    font-family: lulo-clean-w01-one-bold, sans-serif;
+    letter-spacing: 0.1em;
+    text-align: center;
+} 
+body{
+    font-family: "Times New Roman", Times, serif;
+    font-size: 18px;
+    padding: 5%;
+    padding-top: 1%;
+}
+
+table{
+    color: #eaeaea;
+    margin: 2.5%;
+    margin-top: 25px;
+    border-color: #eaeaea;
+    border-collapse: collapse;
+    table-layout: fixed;
+    display: inherit;
+    width:200px;
+    display: block;
+}
+table td{
+    border: 1px solid black;
+    border-color: #eaeaea;
+    text-align: center;
+    width: 23%;
+}
+
+#textbox{
+    border: 0px;
+    border-radius: 20px;
+    background-color: #17141d;
+    color: #eaeaea;
+	width: 42%;
+	height: 300px;
+    padding: 20px;
+    margin-right: 50px;
+    margin-top: 25px;
+    resize: none;
+}
+#outputPtr{
+    display: inline-block;
+    vertical-align: top;
+}
+
+#Blocks{
+    vertical-align: top;
+    float: right;
+    display: inline;
+    width: 20%;
+    height: 30%;
+}
+
+#inputBlock{
+    color: #eaeaea;
+    margin-bottom: 20px;
+}
+
+#inputBlock p{
+    vertical-align: top;
+    margin: 0px;
+    margin-bottom: 5px;
+    text-align: center;
+    font-family: Lucida Sans Typewriter,Lucida Console,monaco,Bitstream Vera Sans Mono,monospace;
+    font-weight: 400;
+}
+
+#inputC{
+    color: #eaeaea;
+    border: 0px;
+    border-radius: 20px;
+    padding-top: 6px;
+    padding-left: 10px;
+    padding-right: 13px;
+    white-space: pre-line;
+    height: 80px;
+    width: 100%;
+    font-family: Lucida Sans Typewriter, Lucida Console, monaco, Bitstream Vera Sans Mono, monospace;
+    font-size: 12px; 
+    font-style: normal; 
+    font-variant: normal; 
+    font-weight: 400; 
+    line-height: 20px;
+    background-color: #17141d;
+    overflow: scroll;
+    overflow-x: hidden;
+    resize: none;
+    box-sizing: border-box;
+
+}
+
+#outputBlock p{
+    color: #eaeaea;
+    vertical-align: top;
+    margin: 0px;
+    margin-bottom: 5px;
+    text-align: center;
+    font-family: Lucida Sans Typewriter,Lucida Console,monaco,Bitstream Vera Sans Mono,monospace;
+    font-weight: 400;
+}
+
+#outputC{
+    color: #eaeaea;
+    border: 0px;
+    border-radius: 20px;
+    padding-top: 6px;
+    padding-left: 10px;
+    padding-right: 13px;
+    white-space: pre-line;
+    height: 150px;
+    width: 100%;
+    font-family: Lucida Sans Typewriter, Lucida Console, monaco, Bitstream Vera Sans Mono, monospace;
+    font-size: 12px; 
+    font-style: normal; 
+    font-variant: normal; 
+    font-weight: 400; 
+    line-height: 20px;
+    background-color: #17141d;
+    overflow: scroll;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    word-break: break-all;
+    text-align: left;
+}
+
+#button{
+    display: block;
+    border: 2px #eaeaea solid;
+    background-color: #0e0d15;
+    color: #eaeaea;
+    border-radius: 20px;
+    height: 30px;
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+
+
