@@ -116,7 +116,7 @@ $(document).ready( function(){
 	$("#button").click(function(){
   		var inputText = document.getElementById("inputC").value;
 	  	var strings = document.getElementById("textbox").value;
-	    $.post("http://api.paiza.io/runners/create",
+	    $.post("https://api.paiza.io/runners/create",
 	    {
 	    	source_code: `${strings}`,
 	    	language: "c",
@@ -141,7 +141,7 @@ function getMethod(d){
 	var idRegex = /"[^(id):].*?"/i;
 	getData.id = d.match(idRegex).toString().replace(/"/g, "");
 	getData.api_key = "guest";
-    $.get("http://api.paiza.io/runners/get_details", getData, function(data){
+    $.get("https://api.paiza.io/runners/get_details", getData, function(data){
 
     	/*To check if the code has finished compiling, it's searched in the response data,
     	using regular expressions, if the status parameter is still marked as "running".
