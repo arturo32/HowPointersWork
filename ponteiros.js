@@ -6,16 +6,35 @@ function findPointers(){
 	text = document.getElementById("textbox").value;
 
 	//Finds the outputPtr in the HTML body
-	var outputPtr = document.getElementById("outputPtr");
+	let outputPtr = document.getElementById("outputPtr");
+
+	
+
+	////////////////TAKE CARE OF NORMAL VARIABLES BEFORE THE NEXT IF
+	var variables = /(int|float|double|char|short)\s*\s*\w+\s*(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
+
 
 	//Checks, using regex, if a varible is a pointer. Can recognize, for example, "double*  ptr = &new ;" with all its spaces
 	var pointers = /(int|float|double|char|short)\s*\*\s*\w+\s*(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
 
-	var pointersArray = text.match(pointers);
-	var pointersNames = new Array(pointersArray.length);
-	var pointersTypes = new Array(pointersArray.length);
-	var pointersVars = new Array(pointersArray.length);
-	var arrlength = pointersArray.length;
+	let pointersArray = text.match(pointers);
+
+	//If there is no pointers
+	if(pointersArray == null){
+
+		//Checks if outputPtr has a table with the old pointers (if it has, the table is removed)
+		if(outputPtr.hasChildNodes()){
+			outputPtr.removeChild(outputPtr.firstChild);
+		}
+
+		//Get out of the function to avoid pass through poitless pointers processes
+		return;
+	} 
+
+	let pointersNames = new Array(pointersArray.length);
+	let pointersTypes = new Array(pointersArray.length);
+	let pointersVars = new Array(pointersArray.length);
+	let arrlength = pointersArray.length;
 	for (let i = 0; i < arrlength; i++) {
 		let type = /(int|float|double|char|short)\s*\*\s*/gi;
 		let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
@@ -72,7 +91,7 @@ function findPointers(){
 	/*Creates a table element and each one of its rows with three collumns each: the
 	"pointers types", the pointers names and the variable names that the pointers
 	point to*/
-	var table = document.createElement("table");
+	let table = document.createElement("table");
 	for (let i = 0; i < arrlength; i++){
 		let newnodeType = document.createTextNode(pointersTypes[i]);
 		let newnodeName = document.createTextNode(pointersNames[i]);
