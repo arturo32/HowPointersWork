@@ -139,14 +139,9 @@ function findPointers(){
 		let variablesNames = getNames(variablesArray);
 		let variablesTypes = getTypes(variablesArray);
 		let variablesContents = getContents(variablesArray);
-		searchesLaterContents(variablesContents, variablesNames, text);
-		for (let i = 0; i < variablesNames.length; ++i){
-			console.log(variablesNames[i]);
-			console.log(variablesTypes[i]);
-			console.log(variablesContents[i]);
-		}
-
 		let varLength = variablesArray.length;
+		searchesLaterContents(variablesContents, variablesNames, text);
+
 		for (let i = 0; i < varLength; i++){
 			let newnodeType = document.createTextNode(variablesTypes[i]);
 			let newnodeName = document.createTextNode(variablesNames[i]);
@@ -208,6 +203,12 @@ function findPointers(){
 } 
 
 
+
+
+
+
+
+
 /*The following lines are made to comunicate with the Paiza API, that compiles and executes
  the code typed by the user. This is made by using the jQuery library that can easily 
  comunicate with the API through HTTP requests.*/
@@ -222,12 +223,13 @@ $(document).ready( function(){
   		var inputText = document.getElementById("inputC").value;
 	  	var strings = document.getElementById("textbox").value;
 	    $.post("https://api.paiza.io/runners/create",
-	    {
-	    	source_code: `${strings}`,
-	    	language: "c",
-	    	input: `${inputText}`,
-	    	api_key: "guest"
-	    },
+	    	{
+		    	source_code: `${strings}`,
+		    	language: "c",
+		    	input: `${inputText}`,
+		    	api_key: "guest"
+	    	},
+
 	   		function(data) {
 				getMethod(data);	
 			}, "text"); 
@@ -258,13 +260,46 @@ function getMethod(d){
 			return;
 		}
 
-		/*If the satatus is marked as completed, then it's searched in the reponse data the
+		/*If the status is marked as completed, then it's searched in the reponse data the
 		stdout parameter, that contains the output of the user code. Since everything is
 		converted in a string, the \n commands will not be read as line breaks in the outputC
-		div element. So they are replaced by \n commands.*/
-		var stdout = /"stdout": ".*?"/;
-		var outputC = data.match(stdout).toString().replace(/"stdout":/, "").replace(/"/g, "").replace(/\\n/g, "\n");
-		document.getElementById("outputC").innerHTML = outputC;
+		div element. So they are replaced by \n commands. It may be the case that there is no
+		stdout data due to errors in compilation or execution. So, before anything, errors 
+		menssages are searched and, if found, sent to the user*/
+
+		//"build_stderr" is the parameter of errors in compilation
+		let build_stderr = /"build_stderr": ".*?"/;
+		let compilationError = data.match(build_stderr).toString().replace(/"build_stderr": /, "").replace(/"/g, "").replace(/\\n/g, "\n");
+		
+		/*The "result" parameter tells if something went wrong on execution. It can have the 
+		value "sucess" when everything went fine, "failure" when somenthing went wrong on
+		execution or null when something went wrong before execution, like a compilation
+		error*/
+		let result =  /"result": (?:"\w+"|null)/;
+		let executionError = data.match(result).toString().replace(/"result": /, "").replace(/"/g, "").replace(/\\n/g, "\n");
+
+		//If there is a menssage of compilation error then it is sent to the outputC element
+		if(compilationError != ""){
+			document.getElementById("outputC").innerHTML = "ERRO DE COMPILAÇÃO:\n" + compilationError;
+		}
+		
+		/*If an execution error ocurred, then it is searched, in the response, the "exit_code"
+		parameter. Its value represents the kind of error that happened and it is sent to
+		the outputC element*/
+		else if(executionError == "failure"){
+			let exit_code = /"exit_code": [0-9]*/;
+			executionError = data.match(exit_code).toString().replace(/"/g, "").replace(/\\n/g, "\n");
+			document.getElementById("outputC").innerHTML = "ERRO DE EXECUÇÃO:\n" + executionError;
+		}
+
+		/*If none of the errors ocurred, it is sent the value of the "stdout" parameter that
+		contains the output of the code*/
+		else{
+			let stdout = /"stdout": ".*?"/;
+			let outputC = data.match(stdout).toString().replace(/"stdout":/, "").replace(/"/g, "").replace(/\\n/g, "\n");
+			document.getElementById("outputC").innerHTML = outputC;
+		}
+
     }, "text");  
 }
 
