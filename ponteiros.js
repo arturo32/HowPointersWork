@@ -1,4 +1,102 @@
 
+//Function that separetes the name of a varible from its type and content
+function getNames(varArray){
+	
+	let type = /(int|float|double|char|short)\s*\**\s*/gi;
+	let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
+	let names = new Array(varArray.length);
+	for (let i = 0; i < varArray.length; ++i){
+
+		//Removes the variable type name and everything after the variable's name
+		names[i] = varArray[i].toString().replace(type, "").replace(afterName, "");		
+	}		
+
+	return names;
+}	
+
+/*Function that returns an array with the variables types separeted from
+ the variables themselves of the varArray*/ 
+function getTypes(varArray){
+
+	let type = /(int|float|double|char|short)\s*\**\s*/gi;
+	let types = new Array(varArray.length);
+	for(let i = 0; i < varArray.length; ++i){
+		
+		//Matches the variable type name, convert the array to a String 
+		types[i] = varArray[i].match(type).toString();
+	}
+
+	return types;
+}	
+
+
+/*Function that returns an array with the contents separeted from
+ the variables of varArray*/ 
+function getContents(varArray){
+
+	let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
+	let contents= new Array(varArray.length);
+	for(let i = 0; i < varArray.length; ++i){
+		
+		//Matches the variable name that the pointer is pointing to. Removes the ; and = & symbols
+		contents[i] = varArray[i].match(afterName).toString().replace(/;/, "").replace(/\=\s*&/, "");
+	}
+
+	return contents;
+}
+
+
+///////////////////NEEDS CHANGE IN COMMENTS
+function searchesLaterContents(contents, names, text){
+	for (let i = 0; i < names.length; i++) {
+			/*If the pointer wasn't inicialized when it was declared, a search is made to see
+			if it was inicialized somewhere else in the code.*/
+			if(!contents[i]){
+				
+				//While the pointer isn't inicialized, the value that he is pointing to is "lixo" (garbage)
+				contents[i] = "lixo";
+
+				//Gets the index of the next substring with the same name as the pointer's name
+				let indexOfVar = text.indexOf(names[i], text.indexOf(names[i])+1);
+
+				/*If there is another name of the pointer in the code, a search is made to find
+				the variable name that it is pointing to.*/
+				if(indexOfVar > 0){
+					let varText = "";
+					let j = indexOfVar;
+					let found = true;
+					while(text[j] != '=' || text[j] == ' '){
+						j++;
+						if(j > text.length){
+							notFound = false; 
+							break;
+						}
+					}
+					j++;
+					while(text[j] != ';'){
+						varText += text[j];
+						j++;
+						if(j > text.length){
+							found = false;
+							break;
+						} 
+					}
+					if(found){
+						contents[i] = varText.replace("&", "");
+					}
+				}
+				
+			}
+		}
+}
+
+
+
+
+
+
+
+
 //Function that detects the pointers in the textbox and makes a table with them
 function findPointers(){
 
@@ -9,9 +107,9 @@ function findPointers(){
 	let outputPtr = document.getElementById("outputPtr");
 
 	
-
-	////////////////TAKE CARE OF NORMAL VARIABLES BEFORE THE NEXT IF
+	//Searches, using regex, for varibles that are not pointers
 	var variables = /(int|float|double|char|short)\s*\s*\w+\s*(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
+	let variablesArray = text.match(variables);
 
 
 	//Checks, using regex, if a varible is a pointer. Can recognize, for example, "double*  ptr = &new ;" with all its spaces
@@ -19,8 +117,10 @@ function findPointers(){
 
 	let pointersArray = text.match(pointers);
 
-	//If there is no pointers
-	if(pointersArray == null){
+
+
+	//If there is no pointers and no normal variables
+	if(pointersArray == null && variablesArray == null){
 
 		//Checks if outputPtr has a table with the old pointers (if it has, the table is removed)
 		if(outputPtr.hasChildNodes()){
@@ -31,83 +131,69 @@ function findPointers(){
 		return;
 	} 
 
-	let pointersNames = new Array(pointersArray.length);
-	let pointersTypes = new Array(pointersArray.length);
-	let pointersVars = new Array(pointersArray.length);
-	let arrlength = pointersArray.length;
-	for (let i = 0; i < arrlength; i++) {
-		let type = /(int|float|double|char|short)\s*\*\s*/gi;
-		let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
+	//Creates table element to show the normal variables and pointers
+	let table = document.createElement("table");
 
-		//Removes the variable type name and everything after the variable's name
-		pointersNames[i] = pointersArray[i].toString().replace(type, "").replace(afterName, "");
-
-		//Matches the variable type name, convert the array to a String and then removes the * symbol
-		pointersTypes[i] = pointersArray[i].match(type).toString().replace(/\*/g, "");
-
-		//Matches the variable name that the pointer is pointing to. Removes the ; and = & symbols
-		pointersVars[i] = pointersArray[i].match(afterName).toString().replace(/;/, "").replace(/\=\s*&/, "");
+	if(variablesArray != null){
 		
-		/*If the pointer wasn't inicialized when it was declared, a search is made to see
-		if it was inicialized somewhere else in the code.*/
-		if(!pointersVars[i]){
-			
-			//While the pointer isn't inicialized, the value that he is pointing to is "lixo" (garbage)
-			pointersVars[i] = "lixo";
+		let variablesNames = getNames(variablesArray);
+		let variablesTypes = getTypes(variablesArray);
+		let variablesContents = getContents(variablesArray);
+		searchesLaterContents(variablesContents, variablesNames, text);
+		for (let i = 0; i < variablesNames.length; ++i){
+			console.log(variablesNames[i]);
+			console.log(variablesTypes[i]);
+			console.log(variablesContents[i]);
+		}
 
-			//Gets the index of the next substring with the same name as the pointer's name
-			let indexOfVar = text.indexOf(pointersNames[i], text.indexOf(pointersNames[i])+1);
-
-			/*If there is another name of the pointer in the code, a search is made to find
-			the variable name that it is pointing to.*/
-			if(indexOfVar > 0){
-				let varText = "";
-				let j = indexOfVar;
-				let found = true;
-				while(text[j] != '=' || text[j] == ' '){
-					j++;
-					if(j > text.length){
-						notFound = false; 
-						break;
-					}
-				}
-				j++;
-				while(text[j] != ';'){
-					varText += text[j];
-					j++;
-					if(j > text.length){
-						found = false;
-						break;
-					} 
-				}
-				if(found){
-					pointersVars[i] = varText.replace("&", "");
-				}
-			}
-			
+		let varLength = variablesArray.length;
+		for (let i = 0; i < varLength; i++){
+			let newnodeType = document.createTextNode(variablesTypes[i]);
+			let newnodeName = document.createTextNode(variablesNames[i]);
+			let newnodeContent = document.createTextNode(variablesContents[i]);
+			let newtr = document.createElement("tr");
+			let newtd = document.createElement("td");
+			let newtd2 = document.createElement("td");
+			let newtd3 = document.createElement("td");
+			newtd.appendChild(newnodeType);
+			newtd2.appendChild(newnodeName);
+			newtd3.appendChild(newnodeContent);
+			newtr.appendChild(newtd);
+			newtr.appendChild(newtd2);
+			newtr.appendChild(newtd3);
+			table.appendChild(newtr);
 		}
 	}
 
-	/*Creates a table element and each one of its rows with three collumns each: the
-	"pointers types", the pointers names and the variable names that the pointers
-	point to*/
-	let table = document.createElement("table");
-	for (let i = 0; i < arrlength; i++){
-		let newnodeType = document.createTextNode(pointersTypes[i]);
-		let newnodeName = document.createTextNode(pointersNames[i]);
-		let newnodeVar = document.createTextNode(pointersVars[i]);
-		let newtr = document.createElement("tr");
-		let newtd = document.createElement("td");
-		let newtd2 = document.createElement("td");
-		let newtd3 = document.createElement("td");
-		newtd.appendChild(newnodeType);
-		newtd2.appendChild(newnodeName);
-		newtd3.appendChild(newnodeVar);
-		newtr.appendChild(newtd);
-		newtr.appendChild(newtd2);
-		newtr.appendChild(newtd3);
-		table.appendChild(newtr);
+	//If there is pointers in the code
+	if(pointersArray != null){
+
+		let pointersNames =  getNames(pointersArray);
+		let pointersTypes =  getTypes(pointersArray); 
+		let pointersVars = getContents(pointersArray);
+		let ptrLength = pointersArray.length;
+		searchesLaterContents(pointersVars, pointersNames, text);
+
+		/*Creates rows for the table with three collumns each: the "pointers types",
+		 the pointers names and the variable names that the pointers point to*/
+		for (let i = 0; i < ptrLength; i++){
+			let newnodeType = document.createTextNode(pointersTypes[i]);
+			let newnodeName = document.createTextNode(pointersNames[i]);
+			let newnodeVar = document.createTextNode(pointersVars[i]);
+			let newtr = document.createElement("tr");
+			let newtd = document.createElement("td");
+			let newtd2 = document.createElement("td");
+			let newtd3 = document.createElement("td");
+			newtd.appendChild(newnodeType);
+			newtd2.appendChild(newnodeName);
+			newtd3.appendChild(newnodeVar);
+			newtr.appendChild(newtd);
+			newtr.appendChild(newtd2);
+			newtr.appendChild(newtd3);
+			table.appendChild(newtr);
+		}
 	}
+
 
 	/*If one or more pointers were alredy detected in the last call of this function,
 	 "outputPtr" will alredy have a "child", i.e., it will have a table "inside" it and
