@@ -39,7 +39,7 @@ function getContents(varArray){
 	for(let i = 0; i < varArray.length; ++i){
 		
 		//Matches the variable name that the pointer is pointing to. Removes the ; and = & symbols
-		contents[i] = varArray[i].match(afterName).toString().replace(/;/, "").replace(/\=\s*&/, "");
+		contents[i] = varArray[i].match(afterName).toString().replace(/;/, "").replace(/\=\s*&*/, "");
 	}
 
 	return contents;
@@ -87,6 +87,41 @@ function searchesLaterContents(contents, names, text){
 				}
 				
 			}
+		}
+}
+
+
+/*This functions takes 3 arrays (a, b, c) of length Arrlength and append
+their elements in a table*/
+function appendToTable(a, b, c, Arrlength, table){
+	
+	for (let i = 0; i < Arrlength; i++){
+
+			//Creating text nodes to append them in tables data (td)
+			let newnodeType = document.createTextNode(a[i]);
+			let newnodeName = document.createTextNode(b[i]);
+			let newnodeContent = document.createTextNode(c[i]);
+
+			//Creating a table row to append the tables data in it 
+			let newtr = document.createElement("tr");
+
+			//Creating the tables data
+			let newtd = document.createElement("td");
+			let newtd2 = document.createElement("td");
+			let newtd3 = document.createElement("td");
+
+			//Appending the text nodes in the tables data
+			newtd.appendChild(newnodeType);
+			newtd2.appendChild(newnodeName);
+			newtd3.appendChild(newnodeContent);
+
+			//Appending the tables data in the table row
+			newtr.appendChild(newtd);
+			newtr.appendChild(newtd2);
+			newtr.appendChild(newtd3);
+
+			//Appending the new table row in the table
+			table.appendChild(newtr);
 		}
 }
 
@@ -142,22 +177,7 @@ function findPointers(){
 		let varLength = variablesArray.length;
 		searchesLaterContents(variablesContents, variablesNames, text);
 
-		for (let i = 0; i < varLength; i++){
-			let newnodeType = document.createTextNode(variablesTypes[i]);
-			let newnodeName = document.createTextNode(variablesNames[i]);
-			let newnodeContent = document.createTextNode(variablesContents[i]);
-			let newtr = document.createElement("tr");
-			let newtd = document.createElement("td");
-			let newtd2 = document.createElement("td");
-			let newtd3 = document.createElement("td");
-			newtd.appendChild(newnodeType);
-			newtd2.appendChild(newnodeName);
-			newtd3.appendChild(newnodeContent);
-			newtr.appendChild(newtd);
-			newtr.appendChild(newtd2);
-			newtr.appendChild(newtd3);
-			table.appendChild(newtr);
-		}
+		appendToTable(variablesTypes, variablesNames, variablesContents, varLength, table);
 	}
 
 	//If there is pointers in the code
@@ -169,24 +189,7 @@ function findPointers(){
 		let ptrLength = pointersArray.length;
 		searchesLaterContents(pointersVars, pointersNames, text);
 
-		/*Creates rows for the table with three collumns each: the "pointers types",
-		 the pointers names and the variable names that the pointers point to*/
-		for (let i = 0; i < ptrLength; i++){
-			let newnodeType = document.createTextNode(pointersTypes[i]);
-			let newnodeName = document.createTextNode(pointersNames[i]);
-			let newnodeVar = document.createTextNode(pointersVars[i]);
-			let newtr = document.createElement("tr");
-			let newtd = document.createElement("td");
-			let newtd2 = document.createElement("td");
-			let newtd3 = document.createElement("td");
-			newtd.appendChild(newnodeType);
-			newtd2.appendChild(newnodeName);
-			newtd3.appendChild(newnodeVar);
-			newtr.appendChild(newtd);
-			newtr.appendChild(newtd2);
-			newtr.appendChild(newtd3);
-			table.appendChild(newtr);
-		}
+		appendToTable(pointersTypes, pointersNames, pointersVars, ptrLength, table);
 	}
 
 
@@ -265,7 +268,7 @@ function getMethod(d){
 		converted in a string, the \n commands will not be read as line breaks in the outputC
 		div element. So they are replaced by \n commands. It may be the case that there is no
 		stdout data due to errors in compilation or execution. So, before anything, errors 
-		menssages are searched and, if found, sent to the user*/
+		messages are searched and, if found, sent to the user*/
 
 		//"build_stderr" is the parameter of errors in compilation
 		let build_stderr = /"build_stderr": ".*?"/;
@@ -278,7 +281,7 @@ function getMethod(d){
 		let result =  /"result": (?:"\w+"|null)/;
 		let executionError = data.match(result).toString().replace(/"result": /, "").replace(/"/g, "").replace(/\\n/g, "\n");
 
-		//If there is a menssage of compilation error then it is sent to the outputC element
+		//If there is a message of compilation error then it is sent to the outputC element
 		if(compilationError != ""){
 			document.getElementById("outputC").innerHTML = "ERRO DE COMPILAÇÃO:\n" + compilationError;
 		}
