@@ -1,5 +1,5 @@
 
-//Function that separetes the name of a varible from its type and content
+//Function that separates the name of a variable from its type and content
 function getNames(varArray){
 	
 	let type = /(int|float|double|char|short)\s*\**\s*/gi;
@@ -8,13 +8,13 @@ function getNames(varArray){
 	for (let i = 0; i < varArray.length; ++i){
 
 		//Removes the variable type name and everything after the variable's name
-		names[i] = varArray[i].toString().replace(type, "").replace(afterName, "");		
+		names[i] = varArray[i].toString().replace(type, "").replace(afterName, "").replace(" ", "");		
 	}		
 
 	return names;
 }	
 
-/*Function that returns an array with the variables types separeted from
+/*Function that returns an array with the variables types separated from
  the variables themselves of the varArray*/ 
 function getTypes(varArray){
 
@@ -30,7 +30,7 @@ function getTypes(varArray){
 }	
 
 
-/*Function that returns an array with the contents separeted from
+/*Function that returns an array with the contents separated from
  the variables of varArray*/ 
 function getContents(varArray){
 
@@ -39,37 +39,89 @@ function getContents(varArray){
 	for(let i = 0; i < varArray.length; ++i){
 		
 		//Matches the variable name that the pointer is pointing to. Removes the ; and = & symbols
-		contents[i] = varArray[i].match(afterName).toString().replace(/;/, "").replace(/\=\s*&*/, "");
+		contents[i] = varArray[i].match(afterName).toString().replace(/\s*;/, "").replace(/\=\s*&*/, "");
 	}
 
 	return contents;
 }
 
 
-///////////////////NEEDS CHANGE IN COMMENTS
+/*This function looks for variables that were declared but not initialized at the same time 
+and searches for other occurrences of their names to see if they were initialized afterwards.
+If that is the case, the new value is assigned to its content*/
 function searchesLaterContents(contents, names, text){
+
+	//Look for every variable declared
 	for (let i = 0; i < names.length; i++) {
-			/*If the pointer wasn't inicialized when it was declared, a search is made to see
-			if it was inicialized somewhere else in the code.*/
+
+			/*If the variable wasn't initialized when it was declared, a search is made to see
+			if it was initialized somewhere else in the code.*/
 			if(!contents[i]){
 				
-				//While the pointer isn't inicialized, the value that he is pointing to is "lixo" (garbage)
+				//While the variable isn't initialized, the value that he is pointing to is "lixo" (garbage)
 				contents[i] = "lixo";
 
-				//Gets the index of the next substring with the same name as the pointer's name
-				let indexOfVar = text.indexOf(names[i], text.indexOf(names[i])+1);
+				//Searching for other occurrence of the name of variable in the code
+				
+				/*startIndex is the index to begin the search for the other occurrence. It starts
+				just after the index of the first declaration*/
+				let startIndex = text.indexOf(names[i])+1;
+				let indexOfVar = 1;
+				let keep = true;
+
+				/*While keep is true and there is other occurrence of the name in the code 
+				(indexOf return a nonnegative number)*/
+				while(keep && indexOfVar >= 0){
+
+					//Gets the index of the next substring with the same name as the pointer's name
+					indexOfVar = text.indexOf(names[i], startIndex);
+					
+					/*Checks if the occurrence is a whole word (doesn't have letter characters 
+					before the beginning or after the end)*/
+
+					/*If before the beginning of the name there is not a space, a new line character
+					or a semicolon then the occurrence found isn't a whole word and the loop is 
+					restarted with a new startIndex, after this occurrence*/
+					if(text[indexOfVar-1] != " " && text[indexOfVar-1] != "\n" && text[indexOfVar-1] != ";"){
+						startIndex += indexOfVar;
+						continue;
+					}
+
+					/*subs stores the substring that goes from the indexOfVar until the end of the
+					name (ended with a space or = sign)*/
+					let subs = text[indexOfVar];
+					let counter = indexOfVar + 1;
+					
+					/*While the character in text[counter] is not a space or equal sign, i.e., is not
+					the end of the word, or is not the end of the text, keep adding character to the
+					subs string*/
+					while( (text[counter] != " " || text[counter] != "=") && k < text.length){
+						subs += text[counter];
+						counter++;
+					}
+
+					/*If subs isn't equal to the names[i], i.e., doesn't end in the same way of 
+					names[i] or have a different character in the meddle, then the loop is 
+					restarted with a new startIndex. Else, the loop ends.*/
+					if(subs != names[i]){
+						startIndex += indexOfVar;
+					}
+					else{
+						keep = false;
+					}
+				}
+				
 
 				/*If there is another name of the pointer in the code, a search is made to find
 				the variable name that it is pointing to.*/
-				if(indexOfVar > 0){
+				if(indexOfVar >= 0){
 					let varText = "";
 					let j = indexOfVar;
 					let found = true;
 					while(text[j] != '=' || text[j] == ' '){
 						j++;
 						if(j > text.length){
-							notFound = false; 
-							break;
+							return;
 						}
 					}
 					j++;
@@ -81,6 +133,9 @@ function searchesLaterContents(contents, names, text){
 							break;
 						} 
 					}
+
+					/*In the end, if the variable indeed receives a new value, its content is
+					modified to this value*/
 					if(found){
 						contents[i] = varText.replace("&", "");
 					}
@@ -142,12 +197,12 @@ function findPointers(){
 	let outputPtr = document.getElementById("outputPtr");
 
 	
-	//Searches, using regex, for varibles that are not pointers
+	//Searches, using regex, for variables that are not pointers
 	var variables = /(int|float|double|char|short)\s*\s*\w+\s*(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
 	let variablesArray = text.match(variables);
 
 
-	//Checks, using regex, if a varible is a pointer. Can recognize, for example, "double*  ptr = &new ;" with all its spaces
+	//Checks, using regex, if a variable is a pointer. Can recognize, for example, "double*  ptr = &new ;" with all its spaces
 	var pointers = /(int|float|double|char|short)\s*\*\s*\w+\s*(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
 
 	let pointersArray = text.match(pointers);
@@ -162,7 +217,7 @@ function findPointers(){
 			outputPtr.removeChild(outputPtr.firstChild);
 		}
 
-		//Get out of the function to avoid pass through poitless pointers processes
+		//Get out of the function to avoid pass through pointless pointers processes
 		return;
 	} 
 
@@ -171,9 +226,9 @@ function findPointers(){
 
 	if(variablesArray != null){
 		
-		let variablesNames = getNames(variablesArray);
-		let variablesTypes = getTypes(variablesArray);
-		let variablesContents = getContents(variablesArray);
+		var variablesNames = getNames(variablesArray);
+		var variablesTypes = getTypes(variablesArray);
+		var variablesContents = getContents(variablesArray);
 		let varLength = variablesArray.length;
 		searchesLaterContents(variablesContents, variablesNames, text);
 
@@ -183,18 +238,30 @@ function findPointers(){
 	//If there is pointers in the code
 	if(pointersArray != null){
 
-		let pointersNames =  getNames(pointersArray);
-		let pointersTypes =  getTypes(pointersArray); 
-		let pointersVars = getContents(pointersArray);
+		var pointersNames =  getNames(pointersArray);
+		var pointersTypes =  getTypes(pointersArray); 
+		var pointersVars = getContents(pointersArray);
 		let ptrLength = pointersArray.length;
+		var pointerDereference = new Array(ptrLength).fill("lixo");
+		
 		searchesLaterContents(pointersVars, pointersNames, text);
 
+		//Puts the content of a variable in the "dereferenced pointer" that points to this variable
+		for (let i = 0; i < ptrLength; ++i){
+			let indexOfVar = variablesNames.indexOf(pointersVars[i]);
+			if (indexOfVar >= 0){
+				pointerDereference[i] = variablesContents[indexOfVar];
+			}
+		}
+
 		appendToTable(pointersTypes, pointersNames, pointersVars, ptrLength, table);
+
+
 	}
 
 
-	/*If one or more pointers were alredy detected in the last call of this function,
-	 "outputPtr" will alredy have a "child", i.e., it will have a table "inside" it and
+	/*If one or more pointers were already detected in the last call of this function,
+	 "outputPtr" will already have a "child", i.e., it will have a table "inside" it and
 	 we just have to replace it with the new updated table. Otherwise, we append the new 
 	 table to the outputPtr div element.*/ 
 	if(outputPtr.hasChildNodes()){
@@ -212,9 +279,9 @@ function findPointers(){
 
 
 
-/*The following lines are made to comunicate with the Paiza API, that compiles and executes
+/*The following lines are made to communicate with the Paiza API, that compiles and executes
  the code typed by the user. This is made by using the jQuery library that can easily 
- comunicate with the API through HTTP requests.*/
+ communicate with the API through HTTP requests.*/
  
 $(document).ready( function(){
 
@@ -245,7 +312,7 @@ function getMethod(d){
 
 	/*From the data that was passed by the POST request it's selected only the ID 
 	information. This is made by a regular expression that matches whatever is inside
-	quototion marks after the "id:" word. Then the quotation marks are "replaced" by
+	quotation marks after the "id:" word. Then the quotation marks are "replaced" by
 	empty strings.*/
 	var getData = new Object();
 	var idRegex = /"[^(id):].*?"/i;
@@ -255,7 +322,7 @@ function getMethod(d){
 
     	/*To check if the code has finished compiling, it's searched in the response data,
     	using regular expressions, if the status parameter is still marked as "running".
-    	If so, then the getMethod function is called again after 100 miliseconds.*/
+    	If so, then the getMethod function is called again after 100 milliseconds.*/
 		var status = /"status": ".*?"/i;
 		if(data.match(status).toString() == "\"status\": \"running\""){
 			console.log("again");
@@ -263,7 +330,7 @@ function getMethod(d){
 			return;
 		}
 
-		/*If the status is marked as completed, then it's searched in the reponse data the
+		/*If the status is marked as completed, then it's searched in the response data the
 		stdout parameter, that contains the output of the user code. Since everything is
 		converted in a string, the \n commands will not be read as line breaks in the outputC
 		div element. So they are replaced by \n commands. It may be the case that there is no
@@ -275,7 +342,7 @@ function getMethod(d){
 		let compilationError = data.match(build_stderr).toString().replace(/"build_stderr": /, "").replace(/"/g, "").replace(/\\n/g, "\n");
 		
 		/*The "result" parameter tells if something went wrong on execution. It can have the 
-		value "sucess" when everything went fine, "failure" when somenthing went wrong on
+		value "success" when everything went fine, "failure" when something went wrong on
 		execution or null when something went wrong before execution, like a compilation
 		error*/
 		let result =  /"result": (?:"\w+"|null)/;
@@ -286,7 +353,7 @@ function getMethod(d){
 			document.getElementById("outputC").innerHTML = "ERRO DE COMPILAÇÃO:\n" + compilationError;
 		}
 		
-		/*If an execution error ocurred, then it is searched, in the response, the "exit_code"
+		/*If an execution error occurred, then it is searched, in the response, the "exit_code"
 		parameter. Its value represents the kind of error that happened and it is sent to
 		the outputC element*/
 		else if(executionError == "failure"){
@@ -295,7 +362,7 @@ function getMethod(d){
 			document.getElementById("outputC").innerHTML = "ERRO DE EXECUÇÃO:\n" + executionError;
 		}
 
-		/*If none of the errors ocurred, it is sent the value of the "stdout" parameter that
+		/*If none of the errors occurred, it is sent the value of the "stdout" parameter that
 		contains the output of the code*/
 		else{
 			let stdout = /"stdout": ".*?"/;
@@ -308,7 +375,7 @@ function getMethod(d){
 
 
 
-//This code block was entirely copied from the internet just to make tabs work in the textbox
+//This code block was entirely copied from the Internet just to make tabs work in the textbox
   $("textarea").keydown(function(e) {
     if(e.keyCode === 9) { // tab was pressed
         // get caret position/selection
