@@ -14,9 +14,7 @@ Notice that the "content" of pointers are the names of the variables that they a
 The site, as a bonus, also have an online compiler with an input and output boxes that works through an API provided by https://paiza.io/en. In their site they say that the API service is not guaranteed at all but it seems that I am allowed to use it for non-commercial purposes (their <a href="https://paiza.jp/guide/kiyaku">terms of service</a> are only in Japanese). I really should seek another API from another site. If you know one, please, let me know. 
 
 ## How it works
-[soon]
+Regular expression. Lots of it. More details soon.
 
 ## What will be done
-Right now I am working on linking the variable, that the pointer points to, to the pointer itself. Because the code can only see the words that came after a pointer initialization but don't connect the pointer to the elements in the variables names list (or to another pointer in the pointers names list).
-
-Next will be the design of the representation of memory.
+I have to make pointer dereferencing works, to know when to change the content of variables. Besides that I can only think in designing the representation of memory and apply it with CSS/JavaScript.
