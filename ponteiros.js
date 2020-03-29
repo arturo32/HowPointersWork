@@ -260,11 +260,14 @@ function findPointers(){
 		
 		searchesLaterContents(pointersVars, pointersNames, text);
 
-		//Puts the content of a variable in the "dereferenced pointer" that points to this variable
-		for (let i = 0; i < ptrLength; ++i){
-			let indexOfVar = variablesNames.indexOf(pointersVars[i]);
-			if (indexOfVar >= 0){
-				pointerDereference[i] = variablesContents[indexOfVar];
+		//Checks if there is at least one normal variable in the code
+		if(variablesNames != null){
+			//Puts the content of a variable in the "dereferenced pointer" that points to this variable
+			for (let i = 0; i < ptrLength; ++i){
+				let indexOfVar = variablesNames.indexOf(pointersVars[i]);
+				if (indexOfVar >= 0){
+					pointerDereference[i] = variablesContents[indexOfVar];
+				}
 			}
 		}
 
@@ -285,6 +288,8 @@ function findPointers(){
 		outputPtr.appendChild(table);
 	}
 } 
+
+
 
 
 
