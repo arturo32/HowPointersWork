@@ -71,19 +71,24 @@ function searchesLaterContents(contents, names, text){
 
 				/*While keep is true and there is other occurrence of the name in the code 
 				(indexOf return a nonnegative number)*/
-				while(keep && indexOfVar >= 0){
+				while(keep){
 
-					//Gets the index of the next substring with the same name as the pointer's name
+					//Gets the index of the next substring with the same name as the variable's name
 					indexOfVar = text.indexOf(names[i], startIndex);
+
+					//If no name was found, then the loop ends
+					if(indexOfVar < 0){
+						break;
+					}
 					
 					/*Checks if the occurrence is a whole word (doesn't have letter characters 
 					before the beginning or after the end)*/
 
 					/*If before the beginning of the name there is not a space, a new line character
-					or a semicolon then the occurrence found isn't a whole word and the loop is 
-					restarted with a new startIndex, after this occurrence*/
-					if(text[indexOfVar-1] != " " && text[indexOfVar-1] != "\n" && text[indexOfVar-1] != ";"){
-						startIndex += indexOfVar;
+					or a semicolon, then the occurrence found isn't a whole word and the 
+					loop is	restarted with a new startIndex, after this occurrence*/
+					if(text[indexOfVar-1].match(/[\s\n;]/) == null){
+						startIndex = indexOfVar+1;
 						continue;
 					}
 
@@ -95,7 +100,7 @@ function searchesLaterContents(contents, names, text){
 					/*While the character in text[counter] is not a space or equal sign, i.e., is not
 					the end of the word, or is not the end of the text, keep adding character to the
 					subs string*/
-					while( (text[counter] != " " || text[counter] != "=") && k < text.length){
+					while(text[counter] != " " && text[counter] != "=" && counter < text.length){
 						subs += text[counter];
 						counter++;
 					}
@@ -104,7 +109,7 @@ function searchesLaterContents(contents, names, text){
 					names[i] or have a different character in the meddle, then the loop is 
 					restarted with a new startIndex. Else, the loop ends.*/
 					if(subs != names[i]){
-						startIndex += indexOfVar;
+						startIndex = indexOfVar+1;
 					}
 					else{
 						keep = false;
@@ -118,17 +123,26 @@ function searchesLaterContents(contents, names, text){
 					let varText = "";
 					let j = indexOfVar;
 					let found = true;
-					while(text[j] != '=' || text[j] == ' '){
+					while(text[j] != '=' &&  j < text.length){
 						j++;
-						if(j > text.length){
-							return;
-						}
 					}
-					j++;
+
+					/*j is incremented. If the end of the text is reached, the for loop continue
+					for the next iteration*/
+					if(++j >= text.length){
+						continue;
+					}
+
+					/*WARNING: This allows strange errors while the user is typing. Ex.:
+					int x;
+					x = ...
+					int y = 5;
+					If the user is typing in the "..." location the code below would 
+					take everything until it finds a semicolon, i.e., "int y = 5"*/
 					while(text[j] != ';'){
 						varText += text[j];
 						j++;
-						if(j > text.length){
+						if(j >= text.length){
 							found = false;
 							break;
 						} 
@@ -137,7 +151,7 @@ function searchesLaterContents(contents, names, text){
 					/*In the end, if the variable indeed receives a new value, its content is
 					modified to this value*/
 					if(found){
-						contents[i] = varText.replace("&", "");
+						contents[i] = varText.replace(/\s*&*/, "");
 					}
 				}
 				
@@ -271,7 +285,6 @@ function findPointers(){
 		outputPtr.appendChild(table);
 	}
 } 
-
 
 
 
