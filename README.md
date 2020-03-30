@@ -7,7 +7,7 @@ To be a site that shows how pointers work through a representation of the comput
 ## What has been done
 The site can currently recognize, through ReGex in JavaScript, normal variables and pointers, instantly, as the user types in a text box, and show their types, names and "contents" in a HTML table element, as shown bellow:
 
-![image 1](https://github.com/arturo32/arturo32.github.io/blob/master/exemple.png)
+![image 1](https://github.com/arturo32/arturo32.github.io/blob/master/images/example_1.png)
 
 Notice that the "content" of pointers are the names of the variables that they are pointing to, instead of their actual content: addresses of variables. That's okay for now, it's just to see if I can recognize what comes after a declaration. Also, declarations and initializations can be done separately and the code will also recognize and link them.
 
@@ -20,7 +20,8 @@ Each time the user types enter, semicolon or pastes something in the text box, a
 ### Compiler API
 All the API documentation is <a href = "http://api.paiza.io/docs/swagger/#!/runners/" >here</a>. As it is not very friendly with first time users of API's (like me!), I will explain with details how I work with it. <br/>
 The moment that the user clicks the button "Compilar e executar" a POST request is sent, using JQuery, to https://api.paiza.io/runners/create, with three important attributes in its body: the "source_code" with all the code made by the user, the "language", in this case, C (the API can support 31 programming languages), and the input text that the user may or may not have typed in the input box. From the response of this request is collected an ID for the API know who I am in the next request. <br/>
-The next step is to send a GET request to the same link, with a change at the end (is /get_details instead of /create). This GET request is sent with the ID presented earlier. The first thing to do with the response is to check the "status" parameter, as it will tell if the compilation have finished in the API server. If is not the case, the function calls itself after 100 milliseconds, until the "status" parameter shows that they have completed the compilation. The second thing to check is the errors parameters! There are two: "build_stderr" (indicates errors in compilation) and "result" (indicates errors in execution). The first comes with its own message error but the second just indicates "failure", so in this case the "exit_code" must be checked to know what kind of error have happened (with a number code). If any of this errors happens, the message is showed in the output box of the site. If none of them happen, then the content of the "stdout" parameter is showed in the output box.
+The next step is to send a GET request to the same link, with a change at the end (is /get_details instead of /create). This GET request is sent with the ID presented earlier. The first thing to do with the response is to check the "status" parameter, as it will tell if the compilation have finished in the API server. If is not the case, the function calls itself after 100 milliseconds, until the "status" parameter shows that they have completed the compilation. 
+The second thing to check is the errors parameters! There are two: "build_stderr" (indicates errors in compilation) and "result" (indicates errors in execution). The first comes with its own message error but the second just indicates "failure", so in this case the "exit_code" must be checked to know what kind of error have happened (with a number code). If any of this errors happens, the message is showed in the output box of the site. If none of them happen, then the content of the "stdout" parameter is showed in the output box.
 
 
 ## What will be done
