@@ -1,5 +1,5 @@
 # PointersInC
-A site that help students understand how pointers work.
+A site that help students understand how pointers work. Available at <a href = "https://arturo32.github.io">arturo32.github.io</a>.
 
 ## Objective
 To be a site that shows how pointers work through a representation of the computer memory. This memory would show the names, addresses and contents of the variables and change as the user creates new variables in their code, instantly. The pointers also would have arrows coming out of them and pointing to the variables that they point to.
