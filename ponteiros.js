@@ -293,9 +293,8 @@ function findPointers(){
 
 
 
-
-
-
+//Variable to set interval of a compiling message
+var compiling;
 
 /*The following lines are made to communicate with the Paiza API, that compiles and executes
  the code typed by the user. This is made by using the jQuery library that can easily 
@@ -308,6 +307,14 @@ $(document).ready( function(){
 	 the user has written. After the POST request succeeds, it takes its response and sends 
 	 to the getMethod function.*/
 	$("#button").click(function(){
+
+		//Shows the user, in the outputC box, that the code is compiling
+		document.getElementById("outputC").innerHTML = "Compilando...";
+		compiling = setInterval(function(){
+			document.getElementById("outputC").innerHTML += ".";
+		 	}, 1000);
+
+
   		var inputText = document.getElementById("inputC").value;
 	  	var strings = document.getElementById("textbox").value;
 	    $.post("https://api.paiza.io/runners/create",
@@ -324,6 +331,8 @@ $(document).ready( function(){
 	});
 });
 
+
+
 /*This functions sends a GET request to the Paiza server to get the output of the user code. 
 It carries the ID information, passed by the response of the POST request.*/
 function getMethod(api_id){
@@ -336,12 +345,16 @@ function getMethod(api_id){
     	/*To check if the code has finished compiling, it's checked if the status parameter
     	is still marked as "running". If so, then the getMethod function is called again
     	after 100 milliseconds.*/
-		console.log(data.status);
 		if(data.status == "running"){
 			console.log("again");
 			setTimeout(function(){getMethod(api_id)}, 100);
+
+			//Don't allow the earlier calls continue after this point
 			return;
 		}
+
+		//Clearing interval that shows the user the code is compiling
+		clearInterval(compiling);
 
 		/*If the status is marked as completed, then is used the stdout parameter, that contains
 		the output of the user code. It may be the case that there is no stdout data due to errors
