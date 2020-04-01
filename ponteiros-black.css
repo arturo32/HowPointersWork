@@ -152,13 +152,14 @@ table td{
     font-weight: 600;
     cursor: pointer;
     margin-top: 15px;
-    transition: transform 150ms;
+    transition: all 150ms;
+    transition-timing-function: ease-out;
     float: right;
 }
 
 #button:hover{
-    box-shadow: 3px 3px 1px 1px #090810;
     transform: translate(-3px, -3px);
+    box-shadow: 0px 0px 1px 1px #090810, 3px 3px 1px 1px #090810;
 }
 
 
