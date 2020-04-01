@@ -2,7 +2,7 @@
 //Function that separates the name of a variable from its type and content
 function getNames(varArray){
 	
-	let type = /(int|float|double|char|short)\s*\**\s*/gi;
+	let type = /(int|float|double|char|short)*\s*\**\s*/gi;
 	let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
 	let names = new Array(varArray.length);
 	for (let i = 0; i < varArray.length; ++i){
@@ -156,7 +156,26 @@ function searchesLaterContents(contents, names, text){
 				}
 				
 			}
+
 		}
+}
+
+
+function findDereferencing(contents, names, text){
+	let dereferences =  /\;\n*\s*\*\s*\w+\s*\=\s*\w+\s*\;/gi;
+	if(text.match(dereferences) == null) return;
+	let defArray = getNames(text.match(dereferences));
+	let arrLength = defArray.length;
+	let defPtrNamesArray = [];
+	for(let i = 0; i < arrLength; ++i){
+		if(names.indexOf(defArray[i]) >= 0){
+			defPtrNamesArray.push(defArray[i]);
+		}
+	}
+	console.log(defPtrNamesArray);
+	console.log(names);
+	return defPtrNamesArray;
+
 }
 
 
@@ -270,6 +289,15 @@ function findPointers(){
 				}
 			}
 		}
+		///////////////////////////
+		var objArray = [{oi: 2}, {oi: 5}];
+		var objCpy = objArray[0];
+		objCpy.oi = 8;
+		console.log("obj.oi:" + objArray[0].oi);
+		//////////////////////////
+
+
+		var newarr = findDereferencing(variablesContents, pointersNames, text);
 
 		appendToTable(pointersTypes, pointersNames, pointersVars, ptrLength, table);
 
