@@ -1,31 +1,61 @@
+//Class to construct a regular variable object
+class RegularVariable{
+	constructor(){
+		this.type = null;
+		this.name = null;
+
+		//Its value
+		this.content = null;
+	}
+}
+
+//Class to construct a regular variable object
+	class Pointer{
+		constructor(){
+			this.type = null;
+			this.name = null;
+
+			//To receive afterwards a reference to the variable that it's pointing to
+			this.content = new RegularVariable(); 
+		}
+	}
+
+
+
 //Function that separates the name of a variable from its type and content
-function getNames(varArray, regVars){
+function getNames(varArray, varObjs){
 	let type = /(int|float|double|char|short)*\s*\**\s*/gi;
 	let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
 	for (let i = 0; i < varArray.length; ++i){
 
 		//Removes the variable type name and everything after the variable's name
-		regVars[i].name = varArray[i].toString().replace(type, "").replace(afterName, "").replace(" ", "");		
+		varObjs[i].name = varArray[i].toString().replace(type, "").replace(afterName, "").replace(" ", "");		
 	}		
 }
 
 
 /*Function that returns an array with the variables types separated from
  the variables themselves of the varArray*/ 
-function getTypes(varArray, regVars){
+function getTypes(varArray, varObjs){
 	let type = /(int|float|double|char|short)\s*\**\s*/gi;
 	for(let i = 0; i < varArray.length; ++i){
 		
 		//Matches the variable type name, convert the array to a String 
-		regVars[i].type = varArray[i].match(type).toString();
+		varObjs[i].type = varArray[i].match(type).toString();
 	}
 }	
 
 
-/*Function that returns an array with the contents separated from
- the variables of varArray*/ 
-function getContents(varArray, regVars, text){
+
+/*Function that separates the contents from the elements of varArray
+and put them in the content properties of the objects in varObjs*/ 
+function getContents(varArray, varObjs, text){
 	let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
+	
+	/*If the element of varObjs is of the Pointer type then the content
+	acessor will be "content.name". Else, it will be just "content" */
+	let content = (varObjs[0].constructor == Pointer)? "content.name" : "content"; 
+
 	for(let i = 0; i < varArray.length; ++i){
 
 		//Matches the variable name that the pointer is pointing to. Removes the ; and = & symbols
@@ -36,10 +66,10 @@ function getContents(varArray, regVars, text){
 		initialized later or if it was never initialized, i.e., it contains
 		only "lixo" (garbage)*/
 		if(contentFound == ""){
-			regVars[i].content = searchesLaterContent(regVars[i], text); 
+			varObjs[i][content] = searchesLaterContent(varObjs[i], text); 
 		}
 		else{	
-			regVars[i].content = contentFound;
+			varObjs[i][content]= contentFound;
 		}
 	}
 
@@ -50,6 +80,11 @@ function getContents(varArray, regVars, text){
 and searches for other occurrences of their names to see if they were initialized afterwards.
 If that is the case, the new value is assigned to its content*/
 function searchesLaterContent(varObj, text){
+
+	/*If varObj is of the Pointer type then the content	acessor will
+	be "content.name". Else, it will be just "content" */
+	let content = (varObj.constructor == Pointer)? "content.name" : "content"; 
+
 	
 	/*startIndex is the index to begin the search for the other occurrence. It starts
 	just after the index of the first declaration*/
@@ -142,7 +177,7 @@ function searchesLaterContent(varObj, text){
 }
 
 
-function findDereferencing(contents, names, text){
+function findDereferencing(regVars, pointers, text){
 	let dereferences =  /\;\n*\s*\*\s*\w+\s*\=\s*\w+\s*\;/gi;
 	if(text.match(dereferences) == null) return;
 	let defArray = getNames(text.match(dereferences));
@@ -161,14 +196,18 @@ function findDereferencing(contents, names, text){
 
 /*This functions takes the array of variables and append their elements
 attributes in a table*/
-function appendToTable(regVars, arrLength, table){
+function appendToTable(varObjs, arrLength, table){
+
+	/*If the element of varObjs is of the Pointer type then the content
+	acessor will be "content.name". Else, it will be just "content" */
+	let content = (varObjs[0].constructor == Pointer)? "content.name" : "content";
 	
 	for(let i = 0; i < arrLength; ++i){
 
 			//Creating text nodes to append them in tables data (td)
-			let newnodeType = document.createTextNode(regVars[i].type);
-			let newnodeName = document.createTextNode(regVars[i].name);
-			let newnodeContent = document.createTextNode(regVars[i].content);
+			let newnodeType = document.createTextNode(varObjs[i].type);
+			let newnodeName = document.createTextNode(varObjs[i].name);
+			let newnodeContent = document.createTextNode(varObjs[i][content]);
 
 			//Creating a table row to append the tables data in it 
 			let newtr = document.createElement("tr");
@@ -238,18 +277,6 @@ function findPointers(){
 
 
 
-
-	//Class to construct a regular variable object
-	class RegularVariable{
-		constructor(){
-			this.type = null;
-			this.name = null;
-
-			//Its value
-			this.content = null;
-		}
-	}
-
 	//If at least one regular variable was found 
 	if(variablesArray != null){
 
@@ -276,17 +303,6 @@ function findPointers(){
 
 
 
-	//Class to construct a regular variable object
-	class Pointer{
-		constructor(){
-			this.type = null;
-			this.name = null;
-
-			//Name of variable that it's pointing to
-			this.content = null; 
-		}
-	}
-
 	//If at least one pointer was found
 	if(pointersArray != null){
 		
@@ -301,7 +317,7 @@ function findPointers(){
 		}
 
 		/////////////////////////////
-		var newarr = findDereferencing(variablesContents, pointersNames, text);
+		//var newarr = findDereferencing(variablesContents, pointersNames, text);
 		//////////////////////////////
 
 		//Setting all the attributes of the objects in pointers
