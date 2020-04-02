@@ -5,7 +5,7 @@ class RegularVariable{
 		this.name = null;
 
 		//Its value
-		this.content = null;
+		this.content = "lixo";
 	}
 }
 
@@ -25,7 +25,7 @@ class RegularVariable{
 //Function that separates the name of a variable from its type and content
 function getNames(varArray, varObjs){
 	let type = /(int|float|double|char|short)*\s*\**\s*/gi;
-	let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
+	let afterName = /(\=\s*(\w+|\&\w+)\w*\s*;|;)/gi;
 	for (let i = 0; i < varArray.length; ++i){
 
 		//Removes the variable type name and everything after the variable's name
@@ -49,27 +49,32 @@ function getTypes(varArray, varObjs){
 
 /*Function that separates the contents from the elements of varArray
 and put them in the content properties of the objects in varObjs*/ 
-function getContents(varArray, varObjs, text){
-	let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
-	
-	/*If the element of varObjs is of the Pointer type then the content
-	acessor will be "content.name". Else, it will be just "content" */
-	let content = (varObjs[0].constructor == Pointer)? "content.name" : "content"; 
+function getContents(varArray, varObjs, text, regVars=null){
+	let afterName = /(\=\s*(\w+|\&\w+)\s*;|;)/gi;
 
 	for(let i = 0; i < varArray.length; ++i){
 
-		//Matches the variable name that the pointer is pointing to. Removes the ; and = & symbols
-		let contentFound = varArray[i].match(afterName).toString().replace(/\s*;/, "").replace(/\=\s*&*/, "");
+		/*Matches the variable name that the pointer is pointing to. Removes everything
+		that is not a character, number, underline or dollar sign*/
+		let contentFound = varArray[i].match(afterName).toString().replace(/[^\w\$]/g, "");
+		
 		
 		/*If the variable wasn't initialized in the moment it was declared,
 		the function searchesLaterContent is called to find out it was 
 		initialized later or if it was never initialized, i.e., it contains
 		only "lixo" (garbage)*/
-		if(contentFound == ""){
-			varObjs[i][content] = searchesLaterContent(varObjs[i], text); 
+		if(contentFound == "" ){
+			varObjs[i].content = searchesLaterContent(varObjs[i], text); 
 		}
+
 		else{	
-			varObjs[i][content]= contentFound;
+			if(varObjs[0].constructor == Pointer){
+				varObjs[i].content = regVars.find(x => x.name == contentFound);
+				//varObjs[i].content = regVars.filter(x => x.name == contentFound)[0];
+			}
+			else{
+				varObjs[i].content = contentFound;
+			}
 		}
 	}
 
@@ -178,19 +183,23 @@ function searchesLaterContent(varObj, text){
 
 
 function findDereferencing(regVars, pointers, text){
-	let dereferences =  /\;\n*\s*\*\s*\w+\s*\=\s*\w+\s*\;/gi;
-	if(text.match(dereferences) == null) return;
-	let defArray = getNames(text.match(dereferences));
-	let arrLength = defArray.length;
-	let defPtrNamesArray = [];
-	for(let i = 0; i < arrLength; ++i){
-		if(names.indexOf(defArray[i]) >= 0){
-			defPtrNamesArray.push(defArray[i]);
-		}
+	let dereferencesRegex =  /\n*\s*\*\s*\w+\s*\=\s*\w+\s*;/gi;
+	let dereferences = text.match(dereferencesRegex);
+	if(dereferences == null) return;
+	console.log("dereferences:", dereferences);
+	
+	let defArray = new Array(dereferences.length);
+	
+	for(let i = 0; i < dereferences.length; ++i){
+		defArray[i] = {name:null, content:null};
 	}
-	console.log(defPtrNamesArray);
-	console.log(names);
-	return defPtrNamesArray;
+
+	getNames(dereferences, defArray);
+	getContents(dereferences, defArray, text);
+	
+	//Updates the contents of the variables pointed by the pointers that were dereferenced
+	defArray.forEach(def => pointers.find(ptr => ptr.name == def.name).content.content = def.content);
+	
 }
 
 
@@ -198,16 +207,17 @@ function findDereferencing(regVars, pointers, text){
 attributes in a table*/
 function appendToTable(varObjs, arrLength, table){
 
-	/*If the element of varObjs is of the Pointer type then the content
-	acessor will be "content.name". Else, it will be just "content" */
-	let content = (varObjs[0].constructor == Pointer)? "content.name" : "content";
-	
 	for(let i = 0; i < arrLength; ++i){
+
+			/*If the element of varObjs is of the Pointer type then the content
+			acessor will be "content.name". Else, it will be just "content" */
+			let content = (varObjs[0].constructor == Pointer)?
+			varObjs[i].content.name : varObjs[i].content;
 
 			//Creating text nodes to append them in tables data (td)
 			let newnodeType = document.createTextNode(varObjs[i].type);
 			let newnodeName = document.createTextNode(varObjs[i].name);
-			let newnodeContent = document.createTextNode(varObjs[i][content]);
+			let newnodeContent = document.createTextNode(content);
 
 			//Creating a table row to append the tables data in it 
 			let newtr = document.createElement("tr");
@@ -281,7 +291,7 @@ function findPointers(){
 	if(variablesArray != null){
 
 		//varLength is the number of regular variables found
-		let varLength = variablesArray.length;
+		var varLength = variablesArray.length;
 		
 		//Creating an array to store regularVariable's objects
 		var regVars = new Array(varLength);
@@ -296,8 +306,6 @@ function findPointers(){
 		getTypes(variablesArray, regVars);
 		getContents(variablesArray, regVars, text);
 
-		//Appending all the elements and its attributes of regVars in the table
-		appendToTable(regVars, varLength, table);
 		
 	}
 
@@ -306,7 +314,7 @@ function findPointers(){
 	//If at least one pointer was found
 	if(pointersArray != null){
 		
-		let ptrLength = pointersArray.length;
+		var ptrLength = pointersArray.length;
 
 		//Creating an array to store regularVariable's objects
 		var pointers = new Array(ptrLength);
@@ -316,19 +324,28 @@ function findPointers(){
 			pointers[i] = new Pointer();
 		}
 
-		/////////////////////////////
-		//var newarr = findDereferencing(variablesContents, pointersNames, text);
-		//////////////////////////////
-
 		//Setting all the attributes of the objects in pointers
 		getNames(pointersArray, pointers);
 		getTypes(pointersArray, pointers);
-		getContents(pointersArray, pointers, text);
+		getContents(pointersArray, pointers, text, regVars);
+		console.log("pointers: ", pointers);
+
+		findDereferencing(regVars, pointers, text);
+
+	}
+
+	if(regVars != null){
+		//Appending all the elements and its attributes of regVars in the table
+		appendToTable(regVars, varLength, table);
+	}
+
+	if(pointers != null){
 
 		//Appending all the elements and its attributes of pointers in the table
 		appendToTable(pointers, ptrLength, table);
 
 	}
+
 
 
 	/*If one or more pointers were already detected in the last call of this function,
