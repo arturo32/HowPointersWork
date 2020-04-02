@@ -13,7 +13,6 @@ function getNames(varArray, regVars){
 /*Function that returns an array with the variables types separated from
  the variables themselves of the varArray*/ 
 function getTypes(varArray, regVars){
-
 	let type = /(int|float|double|char|short)\s*\**\s*/gi;
 	for(let i = 0; i < varArray.length; ++i){
 		
@@ -26,14 +25,16 @@ function getTypes(varArray, regVars){
 /*Function that returns an array with the contents separated from
  the variables of varArray*/ 
 function getContents(varArray, regVars, text){
-
 	let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
 	for(let i = 0; i < varArray.length; ++i){
 
 		//Matches the variable name that the pointer is pointing to. Removes the ; and = & symbols
 		let contentFound = varArray[i].match(afterName).toString().replace(/\s*;/, "").replace(/\=\s*&*/, "");
 		
-		//If the 
+		/*If the variable wasn't initialized in the moment it was declared,
+		the function searchesLaterContent is called to find out it was 
+		initialized later or if it was never initialized, i.e., it contains
+		only "lixo" (garbage)*/
 		if(contentFound == ""){
 			regVars[i].content = searchesLaterContent(regVars[i], text); 
 		}
@@ -182,7 +183,8 @@ function appendToTable(regVars, arrLength, table){
 
 
 
-//Function that detects the pointers in the textbox and makes a table with them
+/*Function that detects the pointers and regular variables in the textbox
+and makes a table with them*/
 function findPointers(){
 
 	//Gets the text typed by the user
@@ -191,23 +193,21 @@ function findPointers(){
 	//Finds the outputPtr in the HTML body
 	let outputPtr = document.getElementById("outputPtr");
 
-	
-	//Searches, using regex, for variables that are not pointers
+	//Searches, using ReGex, for variables that are not pointers
 	var variables = /(int|float|double|char|short)\s*\s*\w+\s*(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
 	let variablesArray = text.match(variables);
 
 
-	//Checks, using regex, if a variable is a pointer. Can recognize, for example, "double*  ptr = &new ;" with all its spaces
+	/*Checks, using ReGex, if a variable is a pointer. Can recognize, for example,
+	"double*  ptr = &new ;" with all its spaces*/
 	var pointers = /(int|float|double|char|short)\s*\*\s*\w+\s*(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
-
 	let pointersArray = text.match(pointers);
 
-
-
-	//If there is no pointers and no normal variables
+	//If there is no pointers and no regular variables
 	if(pointersArray == null && variablesArray == null){
 
-		//Checks if outputPtr has a table with the old pointers (if it has, the table is removed)
+		/*Checks if outputPtr has a table with the old variables
+		(if it has, the table is removed)*/
 		if(outputPtr.hasChildNodes()){
 			outputPtr.removeChild(outputPtr.firstChild);
 		}
@@ -216,7 +216,7 @@ function findPointers(){
 		return;
 	} 
 
-	//Creates table element to show the normal variables and pointers
+	//Creates table element to show the regular variables and pointers
 	let table = document.createElement("table");
 
 
@@ -227,11 +227,16 @@ function findPointers(){
 		constructor(){
 			this.type = null;
 			this.name = null;
+
+			//Its value
 			this.content = null;
 		}
 	}
 
+	//If at least one regular variable was found 
 	if(variablesArray != null){
+
+		//varLength is the number of regular variables found
 		let varLength = variablesArray.length;
 		
 		//Creating an array to store regularVariable's objects
@@ -242,26 +247,30 @@ function findPointers(){
 			regVars[i] = new RegularVariable();
 		}
 
+		//Setting all the attributes of the objects in regVars
 		getNames(variablesArray, regVars);
 		getTypes(variablesArray, regVars);
 		getContents(variablesArray, regVars, text);
+
+		//Appending all the elements and its attributes of regVars in the table
 		appendToTable(regVars, varLength, table);
 		
 	}
 
 
 
-
+	//Class to construct a regular variable object
 	class Pointer{
 		constructor(){
 			this.type = null;
 			this.name = null;
+
 			//Name of variable that it's pointing to
 			this.content = null; 
 		}
 	}
 
-	//If there is pointers in the code
+	//If at least one pointer was found
 	if(pointersArray != null){
 		
 		let ptrLength = pointersArray.length;
@@ -274,24 +283,13 @@ function findPointers(){
 			pointers[i] = new Pointer();
 		}
 
+		//Setting all the attributes of the objects in pointers
 		getNames(pointersArray, pointers);
 		getTypes(pointersArray, pointers);
 		getContents(pointersArray, pointers, text);
+
+		//Appending all the elements and its attributes of pointers in the table
 		appendToTable(pointers, ptrLength, table);
-
-
-
-		// //Checks if there is at least one normal variable in the code
-		// if( regVars.forEach(x => {if(x.name != null) return true;}) ){
-		// 	//Puts the content of a variable in the "dereferenced pointer" that points to this variable
-		// 	for (let i = 0; i < ptrLength; ++i){
-		// 		let indexOfVar = variablesNames.indexOf(pointersVars[i]);
-		// 		if (indexOfVar >= 0){
-		// 			pointerDereference[i] = variablesContents[indexOfVar];
-		// 		}
-		// 	}
-		// }
-
 
 	}
 
