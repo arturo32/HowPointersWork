@@ -15,7 +15,7 @@ The site, as a bonus, also have an online compiler with an input and output boxe
 
 ## How it works
 Regular expressions. Lots of them. <br/>
-Each time the user types enter, semicolon or pastes something in the text box, a function is called (in the HMTL code) to search for pointers and regular variables using RegEx. If found, more functions, with more RegEx, are called to separate the type, name and content of the variables and put them in "synchronized arrays", i.e., a single index can be used to find all the attributes of a single variable. After all that, the arrays are send to a function that manipulates the DOM to put the their elements in a HTML table element. In the end, this table is added as a child of the empty div "outputPtr".
+Each time the user types enter, semicolon or pastes something in the text box, a function is called (in the HMTL code) to search for pointers and regular variables using RegEx. If found, more functions, with more RegEx, are called to separate the type, name and content of the variables and put them into arrays of objects, with each object having these same three attributes. After all that, the arrays are send to a function that manipulates the DOM to put the their elements in a HTML table element. In the end, this table is added as a child of the empty div "outputPtr".
 
 ### Compiler API
 All the API documentation is <a href = "http://api.paiza.io/docs/swagger/#!/runners/" >here</a>. As it is not very friendly with first time users of APIs (like me!), I will explain with details how I work with it. <br/>

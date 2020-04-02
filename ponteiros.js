@@ -1,163 +1,144 @@
-
 //Function that separates the name of a variable from its type and content
-function getNames(varArray){
-	
+function getNames(varArray, regVars){
 	let type = /(int|float|double|char|short)*\s*\**\s*/gi;
 	let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
-	let names = new Array(varArray.length);
 	for (let i = 0; i < varArray.length; ++i){
 
 		//Removes the variable type name and everything after the variable's name
-		names[i] = varArray[i].toString().replace(type, "").replace(afterName, "").replace(" ", "");		
+		regVars[i].name = varArray[i].toString().replace(type, "").replace(afterName, "").replace(" ", "");		
 	}		
+}
 
-	return names;
-}	
 
 /*Function that returns an array with the variables types separated from
  the variables themselves of the varArray*/ 
-function getTypes(varArray){
-
+function getTypes(varArray, regVars){
 	let type = /(int|float|double|char|short)\s*\**\s*/gi;
-	let types = new Array(varArray.length);
 	for(let i = 0; i < varArray.length; ++i){
 		
 		//Matches the variable type name, convert the array to a String 
-		types[i] = varArray[i].match(type).toString();
+		regVars[i].type = varArray[i].match(type).toString();
 	}
-
-	return types;
 }	
 
 
 /*Function that returns an array with the contents separated from
  the variables of varArray*/ 
-function getContents(varArray){
-
+function getContents(varArray, regVars, text){
 	let afterName = /(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
-	let contents= new Array(varArray.length);
 	for(let i = 0; i < varArray.length; ++i){
-		
+
 		//Matches the variable name that the pointer is pointing to. Removes the ; and = & symbols
-		contents[i] = varArray[i].match(afterName).toString().replace(/\s*;/, "").replace(/\=\s*&*/, "");
+		let contentFound = varArray[i].match(afterName).toString().replace(/\s*;/, "").replace(/\=\s*&*/, "");
+		
+		/*If the variable wasn't initialized in the moment it was declared,
+		the function searchesLaterContent is called to find out it was 
+		initialized later or if it was never initialized, i.e., it contains
+		only "lixo" (garbage)*/
+		if(contentFound == ""){
+			regVars[i].content = searchesLaterContent(regVars[i], text); 
+		}
+		else{	
+			regVars[i].content = contentFound;
+		}
 	}
 
-	return contents;
 }
 
 
 /*This function looks for variables that were declared but not initialized at the same time 
 and searches for other occurrences of their names to see if they were initialized afterwards.
 If that is the case, the new value is assigned to its content*/
-function searchesLaterContents(contents, names, text){
+function searchesLaterContent(varObj, text){
+	
+	/*startIndex is the index to begin the search for the other occurrence. It starts
+	just after the index of the first declaration*/
+	let startIndex = text.indexOf(varObj.name)+1;
+	let indexOfVar = 1;
+	let keep = true;
 
-	//Look for every variable declared
-	for (let i = 0; i < names.length; i++) {
+	/*While keep is true and there is other occurrence of the name in the code 
+	(indexOf return a nonnegative number)*/
+	while(keep){
 
-			/*If the variable wasn't initialized when it was declared, a search is made to see
-			if it was initialized somewhere else in the code.*/
-			if(!contents[i]){
-				
-				//While the variable isn't initialized, the value that he is pointing to is "lixo" (garbage)
-				contents[i] = "lixo";
+		//Gets the index of the next substring with the same name as the variable's name
+		indexOfVar = text.indexOf(varObj.name, startIndex);
 
-				//Searching for other occurrence of the name of variable in the code
-				
-				/*startIndex is the index to begin the search for the other occurrence. It starts
-				just after the index of the first declaration*/
-				let startIndex = text.indexOf(names[i])+1;
-				let indexOfVar = 1;
-				let keep = true;
-
-				/*While keep is true and there is other occurrence of the name in the code 
-				(indexOf return a nonnegative number)*/
-				while(keep){
-
-					//Gets the index of the next substring with the same name as the variable's name
-					indexOfVar = text.indexOf(names[i], startIndex);
-
-					//If no name was found, then the loop ends
-					if(indexOfVar < 0){
-						break;
-					}
-					
-					/*Checks if the occurrence is a whole word (doesn't have letter characters 
-					before the beginning or after the end)*/
-
-					/*If before the beginning of the name there is not a space, a new line character
-					or a semicolon, then the occurrence found isn't a whole word and the 
-					loop is	restarted with a new startIndex, after this occurrence*/
-					if(text[indexOfVar-1].match(/[\s\n;]/) == null){
-						startIndex = indexOfVar+1;
-						continue;
-					}
-
-					/*subs stores the substring that goes from the indexOfVar until the end of the
-					name (ended with a space or = sign)*/
-					let subs = text[indexOfVar];
-					let counter = indexOfVar + 1;
-					
-					/*While the character in text[counter] is not a space or equal sign, i.e., is not
-					the end of the word, or is not the end of the text, keep adding character to the
-					subs string*/
-					while(text[counter] != " " && text[counter] != "=" && counter < text.length){
-						subs += text[counter];
-						counter++;
-					}
-
-					/*If subs isn't equal to the names[i], i.e., doesn't end in the same way of 
-					names[i] or have a different character in the meddle, then the loop is 
-					restarted with a new startIndex. Else, the loop ends.*/
-					if(subs != names[i]){
-						startIndex = indexOfVar+1;
-					}
-					else{
-						keep = false;
-					}
-				}
-				
-
-				/*If there is another name of the pointer in the code, a search is made to find
-				the variable name that it is pointing to.*/
-				if(indexOfVar >= 0){
-					let varText = "";
-					let j = indexOfVar;
-					let found = true;
-					while(text[j] != '=' &&  j < text.length){
-						j++;
-					}
-
-					/*j is incremented. If the end of the text is reached, the for loop continue
-					for the next iteration*/
-					if(++j >= text.length){
-						continue;
-					}
-
-					/*WARNING: This allows strange errors while the user is typing. Ex.:
-					int x;
-					x = ...
-					int y = 5;
-					If the user is typing in the "..." location the code below would 
-					take everything until it finds a semicolon, i.e., "int y = 5"*/
-					while(text[j] != ';'){
-						varText += text[j];
-						j++;
-						if(j >= text.length){
-							found = false;
-							break;
-						} 
-					}
-
-					/*In the end, if the variable indeed receives a new value, its content is
-					modified to this value*/
-					if(found){
-						contents[i] = varText.replace(/\s*&*/, "");
-					}
-				}
-				
-			}
-
+		//If no name was found, then "lixo" (garbage) is returned
+		if(indexOfVar < 0){
+			return "lixo";
 		}
+		
+		/*Checks if the occurrence is a whole word (doesn't have letter characters 
+		before the beginning or after the end)*/
+
+		/*If before the beginning of the name there is not a space, a new line character
+		or a semicolon, then the occurrence found isn't a whole word and the 
+		loop is	restarted with a new startIndex, after this occurrence*/
+		if(text[indexOfVar-1].match(/[\s\n;]/) == null){
+			startIndex = indexOfVar+1;
+			continue;
+		}
+
+		/*subs stores the substring that goes from the indexOfVar until the end of the
+		name (ended with a space or = sign)*/
+		let subs = text[indexOfVar];
+		let counter = indexOfVar + 1;
+		
+		/*While the character in text[counter] is not a space or equal sign, i.e., is not
+		the end of the word, or is not the end of the text, keep adding character to the
+		subs string*/
+		while(text[counter] != " " && text[counter] != "=" && counter < text.length){
+			subs += text[counter];
+			counter++;
+		}
+
+		/*If subs isn't equal to the variable's name, i.e., doesn't end in the same way of 
+		varObj.name or have a different character in the meddle, then the loop is 
+		restarted with a new startIndex. Else, the loop ends.*/
+		if(subs != varObj.name){
+			startIndex = indexOfVar+1;
+		}
+		else{
+			keep = false;
+		}
+	}
+	
+
+	/*If there is another name of the pointer in the code, a search is made to find
+	the variable name that it is pointing to.*/
+	if(indexOfVar >= 0){
+		let varText = "";
+		let j = indexOfVar;
+		let found = true;
+		while(text[j] != '=' &&  j < text.length){
+			j++;
+		}
+
+		/*j is incremented. If the end of the text is reached, the for loop continue
+		for the next iteration*/
+		if(++j >= text.length){
+			return "lixo";
+		}
+
+		//While the ";" is not reached, keep adding characters to varText
+		while(text[j] != ';'){
+			varText += text[j];
+			j++;
+			if(j >= text.length){
+				found = false;
+				break;
+			} 
+		}
+
+		/*In the end, if the variable indeed receives a new value, its content is
+		modified to this value*/
+		if(found){
+			return varText.replace(/\s*&*/, "");
+		}
+	}
+
+	return "lixo";	
 }
 
 
@@ -175,20 +156,19 @@ function findDereferencing(contents, names, text){
 	console.log(defPtrNamesArray);
 	console.log(names);
 	return defPtrNamesArray;
-
 }
 
 
-/*This functions takes 3 arrays (a, b, c) of length Arrlength and append
-their elements in a table*/
-function appendToTable(a, b, c, Arrlength, table){
+/*This functions takes the array of variables and append their elements
+attributes in a table*/
+function appendToTable(regVars, arrLength, table){
 	
-	for (let i = 0; i < Arrlength; i++){
+	for(let i = 0; i < arrLength; ++i){
 
 			//Creating text nodes to append them in tables data (td)
-			let newnodeType = document.createTextNode(a[i]);
-			let newnodeName = document.createTextNode(b[i]);
-			let newnodeContent = document.createTextNode(c[i]);
+			let newnodeType = document.createTextNode(regVars[i].type);
+			let newnodeName = document.createTextNode(regVars[i].name);
+			let newnodeContent = document.createTextNode(regVars[i].content);
 
 			//Creating a table row to append the tables data in it 
 			let newtr = document.createElement("tr");
@@ -220,7 +200,8 @@ function appendToTable(a, b, c, Arrlength, table){
 
 
 
-//Function that detects the pointers in the textbox and makes a table with them
+/*Function that detects the pointers and regular variables in the textbox
+and makes a table with them*/
 function findPointers(){
 
 	//Gets the text typed by the user
@@ -229,23 +210,21 @@ function findPointers(){
 	//Finds the outputPtr in the HTML body
 	let outputPtr = document.getElementById("outputPtr");
 
-	
-	//Searches, using regex, for variables that are not pointers
+	//Searches, using ReGex, for variables that are not pointers
 	var variables = /(int|float|double|char|short)\s*\s*\w+\s*(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
 	let variablesArray = text.match(variables);
 
 
-	//Checks, using regex, if a variable is a pointer. Can recognize, for example, "double*  ptr = &new ;" with all its spaces
+	/*Checks, using ReGex, if a variable is a pointer. Can recognize, for example,
+	"double*  ptr = &new ;" with all its spaces*/
 	var pointers = /(int|float|double|char|short)\s*\*\s*\w+\s*(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
-
 	let pointersArray = text.match(pointers);
 
-
-
-	//If there is no pointers and no normal variables
+	//If there is no pointers and no regular variables
 	if(pointersArray == null && variablesArray == null){
 
-		//Checks if outputPtr has a table with the old pointers (if it has, the table is removed)
+		/*Checks if outputPtr has a table with the old variables
+		(if it has, the table is removed)*/
 		if(outputPtr.hasChildNodes()){
 			outputPtr.removeChild(outputPtr.firstChild);
 		}
@@ -254,53 +233,84 @@ function findPointers(){
 		return;
 	} 
 
-	//Creates table element to show the normal variables and pointers
+	//Creates table element to show the regular variables and pointers
 	let table = document.createElement("table");
 
-	if(variablesArray != null){
-		
-		var variablesNames = getNames(variablesArray);
-		var variablesTypes = getTypes(variablesArray);
-		var variablesContents = getContents(variablesArray);
-		let varLength = variablesArray.length;
-		searchesLaterContents(variablesContents, variablesNames, text);
 
-		appendToTable(variablesTypes, variablesNames, variablesContents, varLength, table);
+
+
+	//Class to construct a regular variable object
+	class RegularVariable{
+		constructor(){
+			this.type = null;
+			this.name = null;
+
+			//Its value
+			this.content = null;
+		}
 	}
 
-	//If there is pointers in the code
-	if(pointersArray != null){
+	//If at least one regular variable was found 
+	if(variablesArray != null){
 
-		var pointersNames =  getNames(pointersArray);
-		var pointersTypes =  getTypes(pointersArray); 
-		var pointersVars = getContents(pointersArray);
-		let ptrLength = pointersArray.length;
-		var pointerDereference = new Array(ptrLength).fill("lixo");
+		//varLength is the number of regular variables found
+		let varLength = variablesArray.length;
 		
-		searchesLaterContents(pointersVars, pointersNames, text);
+		//Creating an array to store regularVariable's objects
+		var regVars = new Array(varLength);
 
-		//Checks if there is at least one normal variable in the code
-		if(variablesNames != null){
-			//Puts the content of a variable in the "dereferenced pointer" that points to this variable
-			for (let i = 0; i < ptrLength; ++i){
-				let indexOfVar = variablesNames.indexOf(pointersVars[i]);
-				if (indexOfVar >= 0){
-					pointerDereference[i] = variablesContents[indexOfVar];
-				}
-			}
+		//Transforming each element of regVars into a regularVariable's object
+		for(let i = 0; i < varLength; ++i){
+			regVars[i] = new RegularVariable();
 		}
-		///////////////////////////
-		var objArray = [{oi: 2}, {oi: 5}];
-		var objCpy = objArray[0];
-		objCpy.oi = 8;
-		console.log("obj.oi:" + objArray[0].oi);
-		//////////////////////////
+
+		//Setting all the attributes of the objects in regVars
+		getNames(variablesArray, regVars);
+		getTypes(variablesArray, regVars);
+		getContents(variablesArray, regVars, text);
+
+		//Appending all the elements and its attributes of regVars in the table
+		appendToTable(regVars, varLength, table);
+		
+	}
 
 
+
+	//Class to construct a regular variable object
+	class Pointer{
+		constructor(){
+			this.type = null;
+			this.name = null;
+
+			//Name of variable that it's pointing to
+			this.content = null; 
+		}
+	}
+
+	//If at least one pointer was found
+	if(pointersArray != null){
+		
+		let ptrLength = pointersArray.length;
+
+		//Creating an array to store regularVariable's objects
+		var pointers = new Array(ptrLength);
+
+		//Transforming each element of regVars into a regularVariable's object
+		for(let i = 0; i < ptrLength; ++i){
+			pointers[i] = new Pointer();
+		}
+
+		/////////////////////////////
 		var newarr = findDereferencing(variablesContents, pointersNames, text);
+		//////////////////////////////
 
-		appendToTable(pointersTypes, pointersNames, pointersVars, ptrLength, table);
+		//Setting all the attributes of the objects in pointers
+		getNames(pointersArray, pointers);
+		getTypes(pointersArray, pointers);
+		getContents(pointersArray, pointers, text);
 
+		//Appending all the elements and its attributes of pointers in the table
+		appendToTable(pointers, ptrLength, table);
 
 	}
 
