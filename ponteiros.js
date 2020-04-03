@@ -2,7 +2,7 @@
 class RegularVariable{
 	constructor(){
 		this.type = null;
-		this.name = null;
+		this.name = "lixo";
 
 		//Its value
 		this.content = "lixo";
@@ -58,24 +58,39 @@ function getContents(varArray, varObjs, text, regVars=null){
 		that is not a character, number, underline or dollar sign*/
 		let contentFound = varArray[i].match(afterName).toString().replace(/[^\w\$]/g, "");
 		
-		
-		/*If the variable wasn't initialized in the moment it was declared,
-		the function searchesLaterContent is called to find out it was 
-		initialized later or if it was never initialized, i.e., it contains
-		only "lixo" (garbage)*/
-		if(contentFound == "" ){
-			varObjs[i].content = searchesLaterContent(varObjs[i], text); 
+		//If the elements of varObjs are pointer objects
+		if(varObjs[0].constructor == Pointer){
+
+			/*If the variable wasn't initialized in the moment it was declared,
+			the function searchesLaterContent is called to find out it was 
+			initialized later*/
+			if(contentFound == "" ){
+				contentFound = searchesLaterContent(varObjs[i], text);
+			}
+
+			//If the pointer was initialized at any moment in the code
+			if(contentFound != "lixo"){
+				
+				/*A regular variable object with the same name of contentFound
+				is searched in the reVars array*/
+				let ptrContent = regVars.find(x => x.name == contentFound);
+				
+				/*If found, the content of varObjs[i] receive a reference to
+				such object*/
+				if(ptrContent) varObjs[i].content = ptrContent;
+			}
 		}
 
-		else{	
-			if(varObjs[0].constructor == Pointer){
-				var ptrContent = regVars.find(x => x.name == contentFound);
-				varObjs[i].content = ptrContent ? ptrContent : "lixo";
-			}
-			else{
-				varObjs[i].content = contentFound;
-			}
+		//If the elements of varObjs are regular variable objects
+		else{
+
+			/*If contentFound is not empty then the content of the variable
+			receives the contentFound. Else, it receives what searchesLaterContent
+			returns ("lixo", i.e. garbage, or the last value assigned to it in the
+			code*/
+			varObjs[i].content = contentFound ? contentFound : searchesLaterContent(varObjs[i], text);
 		}
+		
 	}
 
 }
@@ -83,97 +98,42 @@ function getContents(varArray, varObjs, text, regVars=null){
 
 /*This function looks for variables that were declared but not initialized at the same time 
 and searches for other occurrences of their names to see if they were initialized afterwards.
-If that is the case, the new value is assigned to its content*/
+If that is the case, the new value is returned*/
 function searchesLaterContent(varObj, text){
-	
-	/*startIndex is the index to begin the search for the other occurrence. It starts
-	just after the index of the first declaration*/
-	let startIndex = text.indexOf(varObj.name)+1;
-	let indexOfVar = 1;
-	let keep = true;
 
-	/*While keep is true and there is other occurrence of the name in the code 
-	(indexOf return a nonnegative number)*/
-	while(keep){
+	//RegEx in a string format for looking for assignments of variables
+	let assignment = "(\\s*\\=\\s*(\\w+|\\&\\w+)\\s*;)";
 
-		//Gets the index of the next substring with the same name as the variable's name
-		indexOfVar = text.indexOf(varObj.name, startIndex);
+	/*Match all lines that have the (whole) name of varObj and ends with
+	an assignment. The result is an iterator*/
+	let contentsIterator = text.matchAll(new RegExp("\\b" + varObj.name + "\\b" + assignment, 'g'));
 
-		//If no name was found, then "lixo" (garbage) is returned
-		if(indexOfVar < 0){
-			return "lixo";
-		}
-		
-		/*Checks if the occurrence is a whole word (doesn't have letter characters 
-		before the beginning or after the end)*/
+	//If no match was found
+	if(contentObj.done) return "lixo";
 
-		/*If before the beginning of the name there is not a space, a new line character
-		or a semicolon, then the occurrence found isn't a whole word and the 
-		loop is	restarted with a new startIndex, after this occurrence*/
-		if(text[indexOfVar-1].match(/[\s\n;]/) == null){
-			startIndex = indexOfVar+1;
-			continue;
-		}
+	/*Getting the first item matched. It is an object with an attribute
+	("value") that is an array with its first element being the entire
+	match of the line and the other being the capturing groups of the
+	assignment RegEx*/
+	let contentObj = contentsIterator.next();
 
-		/*subs stores the substring that goes from the indexOfVar until the end of the
-		name (ended with a space or = sign)*/
-		let subs = text[indexOfVar];
-		let counter = indexOfVar + 1;
-		
-		/*While the character in text[counter] is not a space or equal sign, i.e., is not
-		the end of the word, or is not the end of the text, keep adding character to the
-		subs string*/
-		while(text[counter] != " " && text[counter] != "=" && counter < text.length){
-			subs += text[counter];
-			counter++;
-		}
+	//The final content that will be returned
+	let laterContent; 
 
-		/*If subs isn't equal to the variable's name, i.e., doesn't end in the same way of 
-		varObj.name or have a different character in the meddle, then the loop is 
-		restarted with a new startIndex. Else, the loop ends.*/
-		if(subs != varObj.name){
-			startIndex = indexOfVar+1;
-		}
-		else{
-			keep = false;
-		}
-	}
-	
+	//While there are still elements to iterate with the iterator
+	while(!contentObj.done){
 
-	/*If there is another name of the pointer in the code, a search is made to find
-	the variable name that it is pointing to.*/
-	if(indexOfVar >= 0){
-		let varText = "";
-		let j = indexOfVar;
-		let found = true;
-		while(text[j] != '=' &&  j < text.length){
-			j++;
-		}
+		/*Getting the third element of the matched array
+		(the capturing group that matches only the content)*/
+		laterContent = contentObj.value[2];
 
-		/*j is incremented. If the end of the text is reached, the for loop continue
-		for the next iteration*/
-		if(++j >= text.length){
-			return "lixo";
-		}
-
-		//While the ";" is not reached, keep adding characters to varText
-		while(text[j] != ';'){
-			varText += text[j];
-			j++;
-			if(j >= text.length){
-				found = false;
-				break;
-			} 
-		}
-
-		/*In the end, if the variable indeed receives a new value, its content is
-		modified to this value*/
-		if(found){
-			return varText.replace(/\s*&*/, "");
-		}
+		//Going for the next item
+		contentObj = contentsIterator.next();
 	}
 
-	return "lixo";	
+	//Returning the value found without spaces or the "address of" operator
+	return laterContent.replace(/\s*&*/, "");
+
 }
 
 /*Finds dereferenced pointers that are receiving a value and updates
@@ -199,7 +159,6 @@ function findDereferencing(pointers, text){
 	is assigned to the variable pointed by this pointer*/
 	for(const def of dereferences){
 		pointers.find(ptr => ptr.name == def[1]).content.content = def[2];
-		console.log(def);
 	}
 }
 
@@ -325,12 +284,12 @@ function findPointers(){
 			pointers[i] = new Pointer();
 		}
 
-		//Setting all the attributes of the objects in pointers
+		//Setting the attributes of the objects in pointers
 		getNames(pointersArray, pointers);
 		getTypes(pointersArray, pointers);
 		
 		//If there is a lest one regular variable in the code
-		if(regVars!= null){
+		if(regVars != null){
 			getContents(pointersArray, pointers, text, regVars);
 		}
 
@@ -387,9 +346,11 @@ $(document).ready( function(){
 
 		//Shows the user, in the outputC box, that the code is compiling
 		document.getElementById("outputC").innerHTML = "Compilando...";
+
+		//Adding a dot in the ouputC every second
 		compiling = setInterval(function(){
 			document.getElementById("outputC").innerHTML += ".";
-		 	}, 1000);
+	 	}, 1000);
 
 
   		var inputText = document.getElementById("inputC").value;
