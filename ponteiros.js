@@ -69,8 +69,8 @@ function getContents(varArray, varObjs, text, regVars=null){
 
 		else{	
 			if(varObjs[0].constructor == Pointer){
-				varObjs[i].content = regVars.find(x => x.name == contentFound);
-				//varObjs[i].content = regVars.filter(x => x.name == contentFound)[0];
+				var ptrContent = regVars.find(x => x.name == contentFound);
+				varObjs[i].content = ptrContent ? ptrContent : "lixo";
 			}
 			else{
 				varObjs[i].content = contentFound;
@@ -85,11 +85,6 @@ function getContents(varArray, varObjs, text, regVars=null){
 and searches for other occurrences of their names to see if they were initialized afterwards.
 If that is the case, the new value is assigned to its content*/
 function searchesLaterContent(varObj, text){
-
-	/*If varObj is of the Pointer type then the content	acessor will
-	be "content.name". Else, it will be just "content" */
-	let content = (varObj.constructor == Pointer)? "content.name" : "content"; 
-
 	
 	/*startIndex is the index to begin the search for the other occurrence. It starts
 	just after the index of the first declaration*/
@@ -181,25 +176,31 @@ function searchesLaterContent(varObj, text){
 	return "lixo";	
 }
 
+/*Finds dereferenced pointers that are receiving a value and updates
+the value of the variable that the pointer is pointing to*/
+function findDereferencing(pointers, text){
 
-function findDereferencing(regVars, pointers, text){
-	let dereferencesRegex =  /\n*\s*\*\s*\w+\s*\=\s*\w+\s*;/gi;
-	let dereferences = text.match(dereferencesRegex);
+	/*There are two capturing groups in this RegEx: the first one
+	is the name of the pointer and the second one is the value 
+	assigned to the dereferenced pointer*/
+	let dereferencesRegex =  /\n*\s*\*\s*(\w+)\s*\=\s*(\w+)\s*;/gi;
+
+	/*matchAll returns an iterator that can be seen as an array of
+	arrays. Each outer array is a match of the RegEx in an array format:
+	the element 0 is the full match, the element 1 is the first capturing
+	group and the element 2 is the second capturing group*/
+	let dereferences = text.matchAll(dereferencesRegex);
+
+	//If no dereferenced pointer was found, the function ends
 	if(dereferences == null) return;
-	console.log("dereferences:", dereferences);
-	
-	let defArray = new Array(dereferences.length);
-	
-	for(let i = 0; i < dereferences.length; ++i){
-		defArray[i] = {name:null, content:null};
-	}
 
-	getNames(dereferences, defArray);
-	getContents(dereferences, defArray, text);
-	
-	//Updates the contents of the variables pointed by the pointers that were dereferenced
-	defArray.forEach(def => pointers.find(ptr => ptr.name == def.name).content.content = def.content);
-	
+	/*For each match of deferences iterator it's found a corresponding 
+	pointer name and then the value assigned to the pointer dereferenced
+	is assigned to the variable pointed by this pointer*/
+	for(const def of dereferences){
+		pointers.find(ptr => ptr.name == def[1]).content.content = def[2];
+		console.log(def);
+	}
 }
 
 
@@ -327,13 +328,19 @@ function findPointers(){
 		//Setting all the attributes of the objects in pointers
 		getNames(pointersArray, pointers);
 		getTypes(pointersArray, pointers);
-		getContents(pointersArray, pointers, text, regVars);
-		console.log("pointers: ", pointers);
+		
+		//If there is a lest one regular variable in the code
+		if(regVars!= null){
+			getContents(pointersArray, pointers, text, regVars);
+		}
 
-		findDereferencing(regVars, pointers, text);
+		/*Updates the regular variables contents if there are pointers
+		dereferenced that are being assigned a value*/
+		findDereferencing(pointers, text);
 
 	}
 
+	//Appending regular variables and pointers to the table (if they exist)
 	if(regVars != null){
 		//Appending all the elements and its attributes of regVars in the table
 		appendToTable(regVars, varLength, table);
@@ -345,7 +352,6 @@ function findPointers(){
 		appendToTable(pointers, ptrLength, table);
 
 	}
-
 
 
 	/*If one or more pointers were already detected in the last call of this function,
