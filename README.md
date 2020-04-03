@@ -9,13 +9,15 @@ The site can currently recognize, through ReGex in JavaScript, normal variables 
 
 ![image 1](https://github.com/arturo32/arturo32.github.io/blob/master/images/example_1.png)
 
-Notice that the "content" of pointers are the names of the variables that they are pointing to, instead of their actual content: addresses of variables. That's okay for now, it's just to see if I can recognize what comes after a declaration. Also, declarations and initializations can be done separately and the code will also recognize and link them.
+Notice that the "content" of pointers are the names of the variables that they are pointing to, instead of their actual content: addresses of variables. That's okay for now, it's just to see if I can recognize what comes after a declaration. Also, declarations and initializations can be done separately and the code will also recognize and link them. Dereferencing a pointer and assigning it a value now is recognized too.
 
 The site, as a bonus, also have an online compiler with an input and output boxes that works through an API provided by https://paiza.io/en. In their site they say that the API service is not guaranteed at all but it seems that I am allowed to use it for non-commercial purposes (their <a href="https://paiza.jp/guide/kiyaku">terms of service</a> are only in Japanese). I really should seek another API from another site. If you know one, please, let me know. 
 
 ## How it works
 Regular expressions. Lots of them. <br/>
-Each time the user types enter, semicolon or pastes something in the text box, a function is called (in the HMTL code) to search for pointers and regular variables using RegEx. If found, more functions, with more RegEx, are called to separate the type, name and content of the variables and put them into arrays of objects, with each object having these same three attributes. After all that, the arrays are send to a function that manipulates the DOM to put the their elements in a HTML table element. In the end, this table is added as a child of the empty div "outputPtr".
+Each time the user types enter, semicolon or pastes something in the text box, a function is called (in the HMTL code) to search for pointers and regular variables using RegEx. If found, more functions, with more RegEx, are called to separate the type, name and content of the variables and put them into two arrays of objects: one of regular variables and other of pointers. <br/>
+Both have elements with three properties but the "content" of pointer, instead of being an integer or a string, is an object of the type regularVariable. It receives a reference of an existing variable to be able to modify it: when a pointer is dereferenced, for example, the pointer can easily access the variable that it is pointing to and change its value. <br/>
+After all that, the arrays are send to a function that manipulates the DOM to put the their elements in a HTML table element. In the end, this table is added as a child of the empty div "outputPtr".
 
 ### Compiler API
 All the API documentation is <a href = "http://api.paiza.io/docs/swagger/#!/runners/" >here</a>. As it is not very friendly with first time users of APIs (like me!), I will explain with details how I work with it. <br/>
