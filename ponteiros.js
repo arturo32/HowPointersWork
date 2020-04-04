@@ -223,7 +223,7 @@ function findPointers(){
 	that may or may not have initializations. It has three capturing groups:
 	the first one is the type, the second, the name, and the third (not the 
 	non-capturing group with ?: in the beginning), the value/content*/
-	let variablesRegEx = /(int|float|double|char|short)\s*(\w+)\s*(?:\=\s*(\w+|\&\w+)\w*\s*\;|\;)/g;
+	let variablesRegEx = /(int|float|double|char|short)\s+(\w+)\s*(?:\=\s*(\w+|\&\w+)\w*\s*\;|\;)/g;
 
 	/*setProperties, if it finds variables in the text as defined by the
 	RegEx above, returns an array filled with objects of type
@@ -270,7 +270,7 @@ function findPointers(){
 	}
 
 	//Appending regular variables and pointers to the table (if they exist)
-	if(pointers.length){
+	if(regVars.length){
 		//Appending all the elements and its attributes of regVars in the table
 		appendToTable(regVars, table);
 	}
