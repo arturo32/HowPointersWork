@@ -3,8 +3,6 @@ class RegularVariable{
 	constructor(){
 		this.type = null;
 		this.name = "lixo";
-
-		//Its value
 		this.content = "lixo";
 	}
 }
@@ -22,50 +20,18 @@ class RegularVariable{
 
 
 
-//Function that separates the name of a variable from its type and content
-function getNames(varArray, varObjs){
-	let type = /(int|float|double|char|short)*\s*\**\s*/gi;
-	let afterName = /(\=\s*(\w+|\&\w+)\w*\s*;|;)/gi;
-	for (let i = 0; i < varArray.length; ++i){
-
-		//Removes the variable type name and everything after the variable's name
-		varObjs[i].name = varArray[i].toString().replace(type, "").replace(afterName, "").replace(" ", "");		
-	}		
-}
-
-
-/*Function that returns an array with the variables types separated from
- the variables themselves of the varArray*/ 
-function getTypes(varArray, varObjs){
-	let type = /(int|float|double|char|short)\s*\**\s*/gi;
-	for(let i = 0; i < varArray.length; ++i){
-		
-		//Matches the variable type name, convert the array to a String 
-		varObjs[i].type = varArray[i].match(type).toString();
-	}
-}	
-
-
-
 /*Function that separates the contents from the elements of varArray
 and put them in the content properties of the objects in varObjs*/ 
-function getContents(varArray, varObjs, text, regVars=null){
-	let afterName = /(\=\s*(\w+|\&\w+)\s*;|;)/gi;
+function getContent(varObj, contentFound, text, regVars = null){
 
-	for(let i = 0; i < varArray.length; ++i){
-
-		/*Matches the variable name that the pointer is pointing to. Removes everything
-		that is not a character, number, underline or dollar sign*/
-		let contentFound = varArray[i].match(afterName).toString().replace(/[^\w\$]/g, "");
-		
 		//If the elements of varObjs are pointer objects
-		if(varObjs[0].constructor == Pointer){
+		if(varObj.constructor == Pointer){
 
 			/*If the variable wasn't initialized in the moment it was declared,
 			the function searchesLaterContent is called to find out it was 
 			initialized later*/
-			if(contentFound == "" ){
-				contentFound = searchesLaterContent(varObjs[i], text);
+			if(contentFound == null){
+				contentFound = searchLaterContent(varObj, text);
 			}
 
 			//If the pointer was initialized at any moment in the code
@@ -73,11 +39,11 @@ function getContents(varArray, varObjs, text, regVars=null){
 				
 				/*A regular variable object with the same name of contentFound
 				is searched in the reVars array*/
-				let ptrContent = regVars.find(x => x.name == contentFound);
+				let ptrContent = regVars.find(x => x.name == contentFound.replace(/\&*/, ""));
 				
 				/*If found, the content of varObjs[i] receive a reference to
 				such object*/
-				if(ptrContent) varObjs[i].content = ptrContent;
+				if(ptrContent) varObj.content = ptrContent;
 			}
 		}
 
@@ -88,10 +54,8 @@ function getContents(varArray, varObjs, text, regVars=null){
 			receives the contentFound. Else, it receives what searchesLaterContent
 			returns ("lixo", i.e. garbage, or the last value assigned to it in the
 			code*/
-			varObjs[i].content = contentFound ? contentFound : searchesLaterContent(varObjs[i], text);
+			varObj.content = contentFound ? contentFound : searchLaterContent(varObj, text);
 		}
-		
-	}
 
 }
 
@@ -99,23 +63,25 @@ function getContents(varArray, varObjs, text, regVars=null){
 /*This function looks for variables that were declared but not initialized at the same time 
 and searches for other occurrences of their names to see if they were initialized afterwards.
 If that is the case, the new value is returned*/
-function searchesLaterContent(varObj, text){
+function searchLaterContent(varObj, text){
 
 	//RegEx in a string format for looking for assignments of variables
 	let assignment = "(\\s*\\=\\s*(\\w+|\\&\\w+)\\s*;)";
 
 	/*Match all lines that have the (whole) name of varObj and ends with
-	an assignment. The result is an iterator*/
-	let contentsIterator = text.matchAll(new RegExp("\\b" + varObj.name + "\\b" + assignment, 'g'));
+	an assignment. Prevents getting dereferencing pointers using the
+	"[^\\*]". The result is an iterator*/
+	let contentsIterator = text.matchAll(new RegExp("[^\\*]\\b" + varObj.name + "\\b" + assignment, 'g'));
 
-	//If no match was found
-	if(contentObj.done) return "lixo";
 
 	/*Getting the first item matched. It is an object with an attribute
 	("value") that is an array with its first element being the entire
 	match of the line and the other being the capturing groups of the
 	assignment RegEx*/
 	let contentObj = contentsIterator.next();
+
+	//If no match was found
+	if(contentObj.done) return "lixo";
 
 	//The final content that will be returned
 	let laterContent; 
@@ -165,12 +131,12 @@ function findDereferencing(pointers, text){
 
 /*This functions takes the array of variables and append their elements
 attributes in a table*/
-function appendToTable(varObjs, arrLength, table){
+function appendToTable(varObjs, table){
 
-	for(let i = 0; i < arrLength; ++i){
+	for(let i = 0; i < varObjs.length; ++i){
 
 			/*If the element of varObjs is of the Pointer type then the content
-			acessor will be "content.name". Else, it will be just "content" */
+			accessor will be "content.name". Else, it will be just "content" */
 			let content = (varObjs[0].constructor == Pointer)?
 			varObjs[i].content.name : varObjs[i].content;
 
@@ -203,6 +169,40 @@ function appendToTable(varObjs, arrLength, table){
 }
 
 
+function setProperties(objConstructor, regex, text, regVars = null){
+
+	//Creating an array to store the objects
+	let varObjs = new Array();
+
+	/*Iterator that iterates over objects that contains all matches in the
+	text*/
+	let varIterator = text.matchAll(regex);
+	
+	/*Iterating over the values of the objects of the variableIterator. Each
+	value is an array that have 4 elements: the first one is the entire match
+	and the following ones are the capturing groups in the same other explained
+	in the findPointers function*/
+	for(const matchArray of varIterator){
+		
+		//Creating new object of type objContructor
+		let newObj =  new objConstructor();
+
+		//Setting its properties
+		newObj.type = matchArray[1].replace(/\s*/, "");
+		newObj.name = matchArray[2];
+
+		//getContent searches for contents beyond declarations 
+		getContent(newObj, matchArray[3], text, regVars); 
+
+		//Putting newObj as the last element of the varObjs array 
+		varObjs.push(newObj);
+	}
+
+	//Returning the array of objects
+	return varObjs;
+}
+
+
 
 
 
@@ -219,18 +219,29 @@ function findPointers(){
 	//Finds the outputPtr in the HTML body
 	let outputPtr = document.getElementById("outputPtr");
 
-	//Searches, using ReGex, for variables that are not pointers
-	var variables = /(int|float|double|char|short)\s*\s*\w+\s*(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
-	let variablesArray = text.match(variables);
+	/*RegEx that matches all possible types of regular variables declarations
+	that may or may not have initializations. It has three capturing groups:
+	the first one is the type, the second, the name, and the third (not the 
+	non-capturing group with ?: in the beginning), the value/content*/
+	let variablesRegEx = /(int|float|double|char|short)\s*(\w+)\s*(?:\=\s*(\w+|\&\w+)\w*\s*\;|\;)/g;
+
+	/*setProperties, if it finds variables in the text as defined by the
+	RegEx above, returns an array filled with objects of type
+	RegularVariable. If	none were found, it returns a null array*/
+	let regVars = setProperties(RegularVariable, variablesRegEx, text);
 
 
-	/*Checks, using ReGex, if a variable is a pointer. Can recognize, for example,
-	"double*  ptr = &new ;" with all its spaces*/
-	var pointers = /(int|float|double|char|short)\s*\*\s*\w+\s*(\=\s*(\w+|\&\w+)\w*\s*\;|\;)/gi;
-	let pointersArray = text.match(pointers);
+	//Same RegEx as variablesRegEx but with an asterisk just after the type
+	let pointersRegEx = /((?:int|float|double|char|short)\s*\*)\s*(\w+)\s*(?:\=\s*(\w+|\&\w+)\s*\;|\;)/g;
+	
+	/*setProperties, if it finds pointers in the text as defined by the
+	RegEx above, returns an array filled with objects of type
+	Pointer. If	none were found, it returns a null array*/
+	let pointers = setProperties(Pointer, pointersRegEx, text, regVars);
+
 
 	//If there is no pointers and no regular variables
-	if(pointersArray == null && variablesArray == null){
+	if(!pointers.length && !regVars.length){
 
 		/*Checks if outputPtr has a table with the old variables
 		(if it has, the table is removed)*/
@@ -246,70 +257,22 @@ function findPointers(){
 	let table = document.createElement("table");
 
 
-
-	//If at least one regular variable was found 
-	if(variablesArray != null){
-
-		//varLength is the number of regular variables found
-		var varLength = variablesArray.length;
-		
-		//Creating an array to store regularVariable's objects
-		var regVars = new Array(varLength);
-
-		//Transforming each element of regVars into a regularVariable's object
-		for(let i = 0; i < varLength; ++i){
-			regVars[i] = new RegularVariable();
-		}
-
-		//Setting all the attributes of the objects in regVars
-		getNames(variablesArray, regVars);
-		getTypes(variablesArray, regVars);
-		getContents(variablesArray, regVars, text);
-
-		
-	}
-
-
-
 	//If at least one pointer was found
-	if(pointersArray != null){
+	if(pointers.length){
 		
-		var ptrLength = pointersArray.length;
-
-		//Creating an array to store regularVariable's objects
-		var pointers = new Array(ptrLength);
-
-		//Transforming each element of regVars into a regularVariable's object
-		for(let i = 0; i < ptrLength; ++i){
-			pointers[i] = new Pointer();
-		}
-
-		//Setting the attributes of the objects in pointers
-		getNames(pointersArray, pointers);
-		getTypes(pointersArray, pointers);
-		
-		//If there is a lest one regular variable in the code
-		if(regVars != null){
-			getContents(pointersArray, pointers, text, regVars);
-		}
-
 		/*Updates the regular variables contents if there are pointers
 		dereferenced that are being assigned a value*/
 		findDereferencing(pointers, text);
 
+		//Appending all the elements and its attributes of pointers in the table
+		appendToTable(pointers, table);
+
 	}
 
 	//Appending regular variables and pointers to the table (if they exist)
-	if(regVars != null){
+	if(pointers.length){
 		//Appending all the elements and its attributes of regVars in the table
-		appendToTable(regVars, varLength, table);
-	}
-
-	if(pointers != null){
-
-		//Appending all the elements and its attributes of pointers in the table
-		appendToTable(pointers, ptrLength, table);
-
+		appendToTable(regVars, table);
 	}
 
 
@@ -329,12 +292,16 @@ function findPointers(){
 
 
 
-//Variable to set interval of a compiling message
-var compiling;
+
 
 /*The following lines are made to communicate with the Paiza API, that compiles and executes
  the code typed by the user. This is made by using the jQuery library that can easily 
  communicate with the API through HTTP requests.*/
+
+
+
+//Variable to set interval of a compiling message
+var compiling;
  
 $(document).ready( function(){
 
