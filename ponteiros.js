@@ -129,45 +129,6 @@ function findDereferencing(pointers, text){
 }
 
 
-/*This functions takes the array of variables and append their elements
-attributes in a table*/
-function appendToTable(varObjs, table){
-
-	for(let i = 0; i < varObjs.length; ++i){
-
-			/*If the element of varObjs is of the Pointer type then the content
-			accessor will be "content.name". Else, it will be just "content" */
-			let content = (varObjs[0].constructor == Pointer)?
-			varObjs[i].content.name : varObjs[i].content;
-
-			//Creating text nodes to append them in tables data (td)
-			let newnodeType = document.createTextNode(varObjs[i].type);
-			let newnodeName = document.createTextNode(varObjs[i].name);
-			let newnodeContent = document.createTextNode(content);
-
-			//Creating a table row to append the tables data in it 
-			let newtr = document.createElement("tr");
-
-			//Creating the tables data
-			let newtd = document.createElement("td");
-			let newtd2 = document.createElement("td");
-			let newtd3 = document.createElement("td");
-
-			//Appending the text nodes in the tables data
-			newtd.appendChild(newnodeType);
-			newtd2.appendChild(newnodeName);
-			newtd3.appendChild(newnodeContent);
-
-			//Appending the tables data in the table row
-			newtr.appendChild(newtd);
-			newtr.appendChild(newtd2);
-			newtr.appendChild(newtd3);
-
-			//Appending the new table row in the table
-			table.appendChild(newtr);
-		}
-}
-
 
 function setProperties(objConstructor, regex, text, regVars = null){
 
@@ -216,9 +177,6 @@ function findPointers(){
 	//Gets the text typed by the user
 	text = document.getElementById("textbox").value;
 
-	//Finds the outputPtr in the HTML body
-	let outputPtr = document.getElementById("outputPtr");
-
 	/*RegEx that matches all possible types of regular variables declarations
 	that may or may not have initializations. It has three capturing groups:
 	the first one is the type, the second, the name, and the third (not the 
@@ -240,52 +198,14 @@ function findPointers(){
 	let pointers = setProperties(Pointer, pointersRegEx, text, regVars);
 
 
-	//If there is no pointers and no regular variables
-	if(!pointers.length && !regVars.length){
-
-		/*Checks if outputPtr has a table with the old variables
-		(if it has, the table is removed)*/
-		if(outputPtr.hasChildNodes()){
-			outputPtr.removeChild(outputPtr.firstChild);
-		}
-
-		//Get out of the function to avoid pass through pointless pointers processes
-		return;
-	} 
-
-	//Creates table element to show the regular variables and pointers
-	let table = document.createElement("table");
-
-
 	//If at least one pointer was found
 	if(pointers.length){
 		
 		/*Updates the regular variables contents if there are pointers
 		dereferenced that are being assigned a value*/
 		findDereferencing(pointers, text);
-
-		//Appending all the elements and its attributes of pointers in the table
-		appendToTable(pointers, table);
-
 	}
 
-	//Appending regular variables and pointers to the table (if they exist)
-	if(regVars.length){
-		//Appending all the elements and its attributes of regVars in the table
-		appendToTable(regVars, table);
-	}
-
-
-	/*If one or more pointers were already detected in the last call of this function,
-	 "outputPtr" will already have a "child", i.e., it will have a table "inside" it and
-	 we just have to replace it with the new updated table. Otherwise, we append the new 
-	 table to the outputPtr div element.*/ 
-	if(outputPtr.hasChildNodes()){
-		outputPtr.replaceChild(table, outputPtr.firstChild);
-	}
-	else{
-		outputPtr.appendChild(table);
-	}
 } 
 
 

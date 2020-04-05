@@ -19,24 +19,6 @@ body{
     padding-top: 1%;
 }
 
-table{
-    color: #eaeaea;
-    margin: 2.5%;
-    margin-top: 25px;
-    border-color: #eaeaea;
-    border-collapse: collapse;
-    table-layout: fixed;
-    display: inherit;
-    width:200px;
-    display: block;
-}
-table td{
-    border: 1px solid black;
-    border-color: #eaeaea;
-    text-align: center;
-    width: 23%;
-}
-
 #Text{
     display: inline-block;
     width: 42%;
@@ -55,10 +37,6 @@ table td{
     padding: 20px;
     resize: none;
     box-sizing: border-box;
-}
-#outputPtr{
-    display: inline-block;
-    vertical-align: top;
 }
 
 #Blocks{
