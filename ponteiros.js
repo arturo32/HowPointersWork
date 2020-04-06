@@ -1,9 +1,17 @@
+
+let pointers;
+let regVars;
+let allVars;
+
+
+
 //Class to construct a regular variable object
 class RegularVariable{
 	constructor(){
-		this.type = null;
-		this.name = "lixo";
+		this.type = "";
+		this.name = "";
 		this.content = "lixo";
+		this.adress = null;
 	}
 }
 
@@ -22,7 +30,7 @@ class RegularVariable{
 
 /*Function that separates the contents from the elements of varArray
 and put them in the content properties of the objects in varObjs*/ 
-function getContent(varObj, contentFound, text, regVars = null){
+function getContent(varObj, contentFound, codeText, regVars = null){
 
 		//If the elements of varObjs are pointer objects
 		if(varObj.constructor == Pointer){
@@ -31,7 +39,7 @@ function getContent(varObj, contentFound, text, regVars = null){
 			the function searchesLaterContent is called to find out it was 
 			initialized later*/
 			if(contentFound == null){
-				contentFound = searchLaterContent(varObj, text);
+				contentFound = searchLaterContent(varObj, codeText);
 			}
 
 			//If the pointer was initialized at any moment in the code
@@ -54,7 +62,7 @@ function getContent(varObj, contentFound, text, regVars = null){
 			receives the contentFound. Else, it receives what searchesLaterContent
 			returns ("lixo", i.e. garbage, or the last value assigned to it in the
 			code*/
-			varObj.content = contentFound ? contentFound : searchLaterContent(varObj, text);
+			varObj.content = contentFound ? contentFound : searchLaterContent(varObj, codeText);
 		}
 
 }
@@ -63,7 +71,7 @@ function getContent(varObj, contentFound, text, regVars = null){
 /*This function looks for variables that were declared but not initialized at the same time 
 and searches for other occurrences of their names to see if they were initialized afterwards.
 If that is the case, the new value is returned*/
-function searchLaterContent(varObj, text){
+function searchLaterContent(varObj, codeText){
 
 	//RegEx in a string format for looking for assignments of variables
 	let assignment = "(\\s*\\=\\s*(\\w+|\\&\\w+)\\s*;)";
@@ -71,7 +79,7 @@ function searchLaterContent(varObj, text){
 	/*Match all lines that have the (whole) name of varObj and ends with
 	an assignment. Prevents getting dereferencing pointers using the
 	"[^\\*]". The result is an iterator*/
-	let contentsIterator = text.matchAll(new RegExp("[^\\*]\\b" + varObj.name + "\\b" + assignment, 'g'));
+	let contentsIterator = codeText.matchAll(new RegExp("[^\\*]\\b" + varObj.name + "\\b" + assignment, 'g'));
 
 
 	/*Getting the first item matched. It is an object with an attribute
@@ -104,7 +112,7 @@ function searchLaterContent(varObj, text){
 
 /*Finds dereferenced pointers that are receiving a value and updates
 the value of the variable that the pointer is pointing to*/
-function findDereferencing(pointers, text){
+function findDereferencing(pointers, codeText){
 
 	/*There are two capturing groups in this RegEx: the first one
 	is the name of the pointer and the second one is the value 
@@ -115,7 +123,7 @@ function findDereferencing(pointers, text){
 	arrays. Each outer array is a match of the RegEx in an array format:
 	the element 0 is the full match, the element 1 is the first capturing
 	group and the element 2 is the second capturing group*/
-	let dereferences = text.matchAll(dereferencesRegex);
+	let dereferences = codeText.matchAll(dereferencesRegex);
 
 	//If no dereferenced pointer was found, the function ends
 	if(dereferences == null) return;
@@ -130,14 +138,14 @@ function findDereferencing(pointers, text){
 
 
 
-function setProperties(objConstructor, regex, text, regVars = null){
+function setProperties(objConstructor, regex, codeText, regVars = null){
 
 	//Creating an array to store the objects
 	let varObjs = new Array();
 
 	/*Iterator that iterates over objects that contains all matches in the
 	text*/
-	let varIterator = text.matchAll(regex);
+	let varIterator = codeText.matchAll(regex);
 	
 	/*Iterating over the values of the objects of the variableIterator. Each
 	value is an array that have 4 elements: the first one is the entire match
@@ -153,7 +161,7 @@ function setProperties(objConstructor, regex, text, regVars = null){
 		newObj.name = matchArray[2];
 
 		//getContent searches for contents beyond declarations 
-		getContent(newObj, matchArray[3], text, regVars); 
+		getContent(newObj, matchArray[3], codeText, regVars); 
 
 		//Putting newObj as the last element of the varObjs array 
 		varObjs.push(newObj);
@@ -166,16 +174,12 @@ function setProperties(objConstructor, regex, text, regVars = null){
 
 
 
-
-
-
-
 /*Function that detects the pointers and regular variables in the textbox
 and makes a table with them*/
 function findPointers(){
 
 	//Gets the text typed by the user
-	text = document.getElementById("textbox").value;
+	codeText = document.getElementById("textbox").value;
 
 	/*RegEx that matches all possible types of regular variables declarations
 	that may or may not have initializations. It has three capturing groups:
@@ -186,7 +190,7 @@ function findPointers(){
 	/*setProperties, if it finds variables in the text as defined by the
 	RegEx above, returns an array filled with objects of type
 	RegularVariable. If	none were found, it returns a null array*/
-	let regVars = setProperties(RegularVariable, variablesRegEx, text);
+	regVars = setProperties(RegularVariable, variablesRegEx, codeText);
 
 
 	//Same RegEx as variablesRegEx but with an asterisk just after the type
@@ -195,7 +199,7 @@ function findPointers(){
 	/*setProperties, if it finds pointers in the text as defined by the
 	RegEx above, returns an array filled with objects of type
 	Pointer. If	none were found, it returns a null array*/
-	let pointers = setProperties(Pointer, pointersRegEx, text, regVars);
+	pointers = setProperties(Pointer, pointersRegEx, codeText, regVars);
 
 
 	//If at least one pointer was found
@@ -203,8 +207,31 @@ function findPointers(){
 		
 		/*Updates the regular variables contents if there are pointers
 		dereferenced that are being assigned a value*/
-		findDereferencing(pointers, text);
+		findDereferencing(pointers, codeText);
 	}
+
+	for(let x of regVars){
+		if(allVars.find(y => y.name == x.name)) continue;
+		let randIndex = Math.floor(Math.random()*11)+1;
+		while(allVars[randIndex].name != ""){
+			randIndex = Math.floor(Math.random()*11)+1;
+		}
+			x.adress = allVars[randIndex].adress;
+			allVars[randIndex] = x;
+	}
+	for(let x of pointers){
+		if(allVars.find(y => y.name == x.name)) continue;
+		let randIndex = Math.floor(Math.random()*11)+1;
+		while(allVars[randIndex].name != ""){
+			randIndex = Math.floor(Math.random()*11)+1;
+		}
+			x.adress = allVars[randIndex].adress;
+			allVars[randIndex] = x;
+	}
+	console.log(allVars);
+
+
+
 
 } 
 
@@ -224,6 +251,19 @@ function findPointers(){
 var compiling;
  
 $(document).ready( function(){
+
+	allVars = new Array();
+	while(allVars.length != 12){
+	allVars.push(new RegularVariable());
+	}
+
+	let adress = 0x7ffc559ff164;
+	for(let element of allVars){
+		element.adress = adress;
+		adress++;
+	}
+
+
 
 	/*In the moment the user clicks the "Compilar e Executar" button the function below
 	 is activated. It sends a POST request to the Paiza serve with the code and inputs that 
@@ -340,3 +380,46 @@ function getMethod(api_id){
         return false;
     }
 });
+
+
+function setup() {
+  createCanvas(350, windowHeight);
+}
+
+
+
+function draw() {
+  const WIDTH = 350;
+  const HEIGHT = 50;
+  const RADIUS = 5;
+  let i = 0;
+  if(allVars){
+    for(let element of allVars){
+      fill('#165112');
+      stroke('#eaeaea');
+      rect(WIDTH/2, i, WIDTH/2, HEIGHT , RADIUS, RADIUS, RADIUS, RADIUS);
+      noStroke();
+      fill('#eaeaea');
+      textSize(20);
+      textAlign(CENTER, CENTER);
+      if(element.constructor == Pointer){
+      	text("0x"+element.content.adress.toString(16), WIDTH-WIDTH/4, HEIGHT/2+i);
+      }
+      else{
+      	text(element.content, WIDTH-WIDTH/4, HEIGHT/2+i);
+      }
+      
+      textSize(12);
+      textAlign(LEFT, TOP);
+      text(element.name, 5+WIDTH/2, i+5);
+      textAlign(LEFT);
+      text(element.type, 5+WIDTH/2, i+HEIGHT- 15);
+      textAlign(CENTER, CENTER);
+      text("0x"+element.adress.toString(16), WIDTH/4, HEIGHT/2+i);
+      i+=50;
+    }
+  }
+  
+}
+
+ 
