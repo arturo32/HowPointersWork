@@ -1,10 +1,3 @@
-
-let pointers;
-let regVars;
-let allVars;
-
-
-
 //Class to construct a regular variable object
 class RegularVariable{
 	constructor(){
@@ -18,13 +11,15 @@ class RegularVariable{
 //Class to construct a regular variable object
 	class Pointer{
 		constructor(){
-			this.type = null;
-			this.name = null;
+			this.type = "";
+			this.name = "";
+			this.adress = null;
 
 			//To receive afterwards a reference to the variable that it's pointing to
 			this.content = new RegularVariable(); 
 		}
 	}
+
 
 
 
@@ -173,10 +168,26 @@ function setProperties(objConstructor, regex, codeText, regVars = null){
 
 
 
+let allVars;
+
+allVars = new Array();
+while(allVars.length != 13){
+allVars.push(new RegularVariable());
+}
+
+let adress = 0x7ffc559ff164;
+for(let element of allVars){
+	element.adress = adress;
+	adress++;
+}
+
+
 
 /*Function that detects the pointers and regular variables in the textbox
 and makes a table with them*/
 function findPointers(){
+	let pointers;
+	let regVars;
 
 	//Gets the text typed by the user
 	codeText = document.getElementById("textbox").value;
@@ -210,8 +221,16 @@ function findPointers(){
 		findDereferencing(pointers, codeText);
 	}
 
+	
+
 	for(let x of regVars){
-		if(allVars.find(y => y.name == x.name)) continue;
+		let varObj = allVars.find(y => y.name == x.name);
+		if(varObj){
+			x.adress = varObj.adress;
+			varObj.content = x.content;
+			continue;
+		}
+		console.log("opa");
 		let randIndex = Math.floor(Math.random()*11)+1;
 		while(allVars[randIndex].name != ""){
 			randIndex = Math.floor(Math.random()*11)+1;
@@ -219,21 +238,72 @@ function findPointers(){
 			x.adress = allVars[randIndex].adress;
 			allVars[randIndex] = x;
 	}
+	if(regVars.length)
+	console.log("adress of the first regVar: ", regVars[0].adress);
+
+
+	
+
+
 	for(let x of pointers){
 		if(allVars.find(y => y.name == x.name)) continue;
-		let randIndex = Math.floor(Math.random()*11)+1;
+		let randIndex = Math.floor(Math.random()*12)+1;
 		while(allVars[randIndex].name != ""){
-			randIndex = Math.floor(Math.random()*11)+1;
+			randIndex = Math.floor(Math.random()*12)+1;
 		}
 			x.adress = allVars[randIndex].adress;
 			allVars[randIndex] = x;
+			console.log("content: ", allVars[randIndex].content);
 	}
 	console.log(allVars);
 
-
-
-
+	redraw();
 } 
+
+
+
+
+function draw() {
+  createCanvas(350, windowHeight);
+  const WIDTH = 350;
+  const HEIGHT = windowHeight/13;
+  const RADIUS = 5;
+  let i = 0;
+  if(allVars){
+    for(let element of allVars){
+
+      let color = getComputedStyle(document.documentElement).getPropertyValue('--memoryColor');
+      fill(color);
+      stroke('#eaeaea');
+      rect(WIDTH/2, i, WIDTH/2, HEIGHT , RADIUS, RADIUS, RADIUS, RADIUS);
+      noStroke();
+      fill('#eaeaea');
+      textSize(16);
+      textAlign(CENTER, CENTER);
+      if(element.constructor == Pointer){
+      	text("0x"+element.content.adress.toString(16), WIDTH-WIDTH/4, HEIGHT/2+i);
+      }
+      else{
+      	text(element.content, WIDTH-WIDTH/4, HEIGHT/2+i);
+      }
+      
+      //Name
+      textSize(12);
+      textAlign(LEFT, TOP);
+      text(element.name, 5+WIDTH/2, i+5);
+      
+      //Type
+      textAlign(LEFT);
+      text(element.type, 5+WIDTH/2, i+HEIGHT- 15);
+      
+      //Address of variable
+      textAlign(LEFT, CENTER);
+      text("0x"+element.adress.toString(16), WIDTH/4-15, HEIGHT/2+i);
+      i+=HEIGHT;
+    }
+  }
+  
+}
 
 
 
@@ -251,18 +321,6 @@ function findPointers(){
 var compiling;
  
 $(document).ready( function(){
-
-	allVars = new Array();
-	while(allVars.length != 12){
-	allVars.push(new RegularVariable());
-	}
-
-	let adress = 0x7ffc559ff164;
-	for(let element of allVars){
-		element.adress = adress;
-		adress++;
-	}
-
 
 
 	/*In the moment the user clicks the "Compilar e Executar" button the function below
@@ -381,45 +439,5 @@ function getMethod(api_id){
     }
 });
 
-
-function setup() {
-  createCanvas(350, windowHeight);
-}
-
-
-
-function draw() {
-  const WIDTH = 350;
-  const HEIGHT = 50;
-  const RADIUS = 5;
-  let i = 0;
-  if(allVars){
-    for(let element of allVars){
-      fill('#165112');
-      stroke('#eaeaea');
-      rect(WIDTH/2, i, WIDTH/2, HEIGHT , RADIUS, RADIUS, RADIUS, RADIUS);
-      noStroke();
-      fill('#eaeaea');
-      textSize(20);
-      textAlign(CENTER, CENTER);
-      if(element.constructor == Pointer){
-      	text("0x"+element.content.adress.toString(16), WIDTH-WIDTH/4, HEIGHT/2+i);
-      }
-      else{
-      	text(element.content, WIDTH-WIDTH/4, HEIGHT/2+i);
-      }
-      
-      textSize(12);
-      textAlign(LEFT, TOP);
-      text(element.name, 5+WIDTH/2, i+5);
-      textAlign(LEFT);
-      text(element.type, 5+WIDTH/2, i+HEIGHT- 15);
-      textAlign(CENTER, CENTER);
-      text("0x"+element.adress.toString(16), WIDTH/4, HEIGHT/2+i);
-      i+=50;
-    }
-  }
-  
-}
 
  

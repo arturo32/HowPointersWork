@@ -2,6 +2,7 @@
     --blocksColor: #272822;
     --titlesColor: #f92672;
     --outerColor: #d4d4dc;
+    --memoryColor: darkgreen;
 }
 
 
@@ -31,7 +32,8 @@ header h1{
 .box{
     color: var(--outerColor);
     border-style: solid;
-    border-width: 2px;
+    border-width: 0px;
+    box-shadow: 0 4px 30px rgb(0,0,0,0.64);
     border-radius: 20px;
     border-color: var(--outerColor);
     font-size: 12px; 
@@ -97,10 +99,11 @@ header h1{
     color: var(--titlesColor);
     vertical-align: top;
     margin: 0px;
-    margin-bottom: 5px;
+    margin-bottom: 12px;
     text-align: center;
-    font-family: Lucida Sans Typewriter,Lucida Console,monaco,Bitstream Vera Sans Mono,monospace;
-    font-weight: 400;
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    letter-spacing: 2px;
 }
 
 #inputC{
@@ -138,7 +141,7 @@ header h1{
 
 #button{
     display: block;
-    border: 2px var(--outerColor) solid;
+    border: 0px var(--outerColor) solid;
     background-color: transparent;
     color: var(--titlesColor);
     border-radius: 20px;
@@ -150,11 +153,12 @@ header h1{
     transition: all 150ms;
     transition-timing-function: ease-out;
     float: right;
+    box-shadow: 0 4px 30px rgb(0,0,0,0.64);
 }
 
 #button:hover{
     transform: translate(-3px, -3px);
-    box-shadow: 0px 0px 1px 1px #282626, 3px 3px 1px 1px #201818;
+    box-shadow: 0px 4px 15px rgb(0,0,0,0.64);
 }
 
 canvas {
@@ -162,9 +166,8 @@ canvas {
   display: inline-block;
   float: right;
   position: absolute;
-  left: 60%;
+  left: 58%;
   top: 0px;
-  background-color: #165112;
 }
 
 
