@@ -4,7 +4,7 @@ class RegularVariable{
 		this.type = "";
 		this.name = "";
 		this.content = "lixo";
-		this.adress = null;
+		this.address = null;
 	}
 }
 
@@ -13,7 +13,7 @@ class RegularVariable{
 		constructor(){
 			this.type = "";
 			this.name = "";
-			this.adress = null;
+			this.address = null;
 
 			//To receive afterwards a reference to the variable that it's pointing to
 			this.content = new RegularVariable(); 
@@ -175,10 +175,10 @@ while(allVars.length != 13){
 allVars.push(new RegularVariable());
 }
 
-let adress = 0x7ffc559ff164;
+let address = 0x7ffc559ff164;
 for(let element of allVars){
-	element.adress = adress;
-	adress++;
+	element.address = address;
+	address++;
 }
 $(document).ready( function(){
 	draws();
@@ -189,9 +189,7 @@ $(document).ready( function(){
 /*Function that detects the pointers and regular variables in the textbox
 and makes a table with them*/
 function findPointers(){
-	let pointers;
-	let regVars;
-
+	
 	//Gets the text typed by the user
 	codeText = document.getElementById("textbox").value;
 
@@ -204,7 +202,7 @@ function findPointers(){
 	/*setProperties, if it finds variables in the text as defined by the
 	RegEx above, returns an array filled with objects of type
 	RegularVariable. If	none were found, it returns a null array*/
-	regVars = setProperties(RegularVariable, variablesRegEx, codeText);
+	let regVars = setProperties(RegularVariable, variablesRegEx, codeText);
 
 
 	//Same RegEx as variablesRegEx but with an asterisk just after the type
@@ -213,7 +211,7 @@ function findPointers(){
 	/*setProperties, if it finds pointers in the text as defined by the
 	RegEx above, returns an array filled with objects of type
 	Pointer. If	none were found, it returns a null array*/
-	pointers = setProperties(Pointer, pointersRegEx, codeText, regVars);
+	let pointers = setProperties(Pointer, pointersRegEx, codeText, regVars);
 
 
 	//If at least one pointer was found
@@ -229,21 +227,18 @@ function findPointers(){
 	for(let x of regVars){
 		let varObj = allVars.find(y => y.name == x.name);
 		if(varObj){
-			x.adress = varObj.adress;
+			x.address = varObj.address;
 			varObj.content = x.content;
 			continue;
 		}
-		console.log("opa");
 		let randIndex = Math.floor(Math.random()*11)+1;
 		while(allVars[randIndex].name != ""){
 			randIndex = Math.floor(Math.random()*11)+1;
 		}
-			x.adress = allVars[randIndex].adress;
+			x.address = allVars[randIndex].address;
 			allVars[randIndex] = x;
 	}
 	if(regVars.length)
-	console.log("adress of the first regVar: ", regVars[0].adress);
-
 
 	
 
@@ -254,11 +249,9 @@ function findPointers(){
 		while(allVars[randIndex].name != ""){
 			randIndex = Math.floor(Math.random()*12)+1;
 		}
-			x.adress = allVars[randIndex].adress;
+			x.address = allVars[randIndex].address;
 			allVars[randIndex] = x;
-			console.log("content: ", allVars[randIndex].content);
 	}
-	console.log(allVars);
 
 	draws();
 } 
@@ -275,7 +268,7 @@ function draws(){
   const HEIGHT = windowHeight/13;
   const RADIUS = 5;
   let i = 0;
-  let arrowSpace = 8;
+  let arrowSpace = 9;
   let arrowColor = getComputedStyle(document.documentElement).getPropertyValue('--titlesColor');
   if(allVars){
     for(let element of allVars){
@@ -295,7 +288,7 @@ function draws(){
 		textSize(14);
 		textAlign(CENTER, CENTER);
 		if(element.constructor == Pointer){
-			text("0x"+element.content.adress.toString(16), WIDTH-WIDTH/4, HEIGHT/2+i);
+			text("0x"+element.content.address.toString(16), WIDTH-WIDTH/4, HEIGHT/2+i);
 		}
 		else{
 			text(element.content, WIDTH-WIDTH/4, HEIGHT/2+i);
@@ -313,13 +306,13 @@ function draws(){
 		//Address of variable
 		textSize(12);
 		textAlign(LEFT, CENTER);
-		text("0x"+element.adress.toString(16), WIDTH/4-15, HEIGHT/2+i);
+		text("0x"+element.address.toString(16), WIDTH/4-15, HEIGHT/2+i);
 
 		//Arrows
 		if(element.constructor == Pointer){
 			
 			stroke(arrowColor);
-			let varHeight = (element.adress - element.content.adress)*HEIGHT; 
+			let varHeight = (element.address - element.content.address)*HEIGHT; 
 			let pointerMiddle = i+HEIGHT/2;
 			noFill();
 			beginShape();
