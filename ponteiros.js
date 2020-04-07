@@ -180,6 +180,9 @@ for(let element of allVars){
 	element.adress = adress;
 	adress++;
 }
+$(document).ready( function(){
+	draws();
+})
 
 
 
@@ -257,49 +260,113 @@ function findPointers(){
 	}
 	console.log(allVars);
 
-	redraw();
+	draws();
 } 
 
 
+function setup(){
+
+}
 
 
-function draw() {
-  createCanvas(350, windowHeight);
+function draws(){
+  createCanvas(350+50, windowHeight);
   const WIDTH = 350;
   const HEIGHT = windowHeight/13;
   const RADIUS = 5;
   let i = 0;
+  let arrowSpace = 8;
+  let arrowColor = getComputedStyle(document.documentElement).getPropertyValue('--titlesColor');
   if(allVars){
     for(let element of allVars){
 
-      let color = getComputedStyle(document.documentElement).getPropertyValue('--memoryColor');
-      fill(color);
-      stroke('#eaeaea');
-      rect(WIDTH/2, i, WIDTH/2, HEIGHT , RADIUS, RADIUS, RADIUS, RADIUS);
-      noStroke();
-      fill('#eaeaea');
-      textSize(16);
-      textAlign(CENTER, CENTER);
-      if(element.constructor == Pointer){
-      	text("0x"+element.content.adress.toString(16), WIDTH-WIDTH/4, HEIGHT/2+i);
-      }
-      else{
-      	text(element.content, WIDTH-WIDTH/4, HEIGHT/2+i);
-      }
-      
-      //Name
-      textSize(12);
-      textAlign(LEFT, TOP);
-      text(element.name, 5+WIDTH/2, i+5);
-      
-      //Type
-      textAlign(LEFT);
-      text(element.type, 5+WIDTH/2, i+HEIGHT- 15);
-      
-      //Address of variable
-      textAlign(LEFT, CENTER);
-      text("0x"+element.adress.toString(16), WIDTH/4-15, HEIGHT/2+i);
-      i+=HEIGHT;
+
+    	//Drawing green rectangle
+		let color = getComputedStyle(document.documentElement).getPropertyValue('--memoryColor');
+		fill(color);
+		stroke("rgba(0,0,0,0.5)");
+		strokeWeight(2);
+		rect(WIDTH/2, i, WIDTH/2, HEIGHT , RADIUS, RADIUS, RADIUS, RADIUS);
+		strokeWeight(1);
+		
+		//Content
+		noStroke();
+		fill('#eaeaea');
+		textSize(14);
+		textAlign(CENTER, CENTER);
+		if(element.constructor == Pointer){
+			text("0x"+element.content.adress.toString(16), WIDTH-WIDTH/4, HEIGHT/2+i);
+		}
+		else{
+			text(element.content, WIDTH-WIDTH/4, HEIGHT/2+i);
+		}
+
+		//Name
+		textSize(10);
+		textAlign(LEFT, TOP);
+		text(element.name, 5+WIDTH/2, i+5);
+
+		//Type
+		textAlign(LEFT);
+		text(element.type, 5+WIDTH/2, i+HEIGHT- 15);
+
+		//Address of variable
+		textSize(12);
+		textAlign(LEFT, CENTER);
+		text("0x"+element.adress.toString(16), WIDTH/4-15, HEIGHT/2+i);
+
+		//Arrows
+		if(element.constructor == Pointer){
+			
+			stroke(arrowColor);
+			let varHeight = (element.adress - element.content.adress)*HEIGHT; 
+			let pointerMiddle = i+HEIGHT/2;
+			noFill();
+			beginShape();
+				vertex(WIDTH, pointerMiddle);
+				if(varHeight > 0){
+					vertex(WIDTH+arrowSpace, pointerMiddle-arrowSpace);
+					vertex(WIDTH+arrowSpace, pointerMiddle -varHeight + arrowSpace);
+					vertex(WIDTH, pointerMiddle - varHeight);
+				}
+				else{
+					vertex(WIDTH+arrowSpace, pointerMiddle+arrowSpace);
+					vertex(WIDTH+arrowSpace, pointerMiddle + varHeight*(-1) - arrowSpace);
+					vertex(WIDTH, pointerMiddle + varHeight*(-1));
+						
+				
+				}
+			endShape();
+
+			angleMode(DEGREES);
+			fill(arrowColor);
+			beginShape();
+				if(varHeight > 0){
+					//Arrow point
+					vertex(WIDTH+sin(45-20)*10, pointerMiddle - varHeight + cos(45-20)*10);
+
+					noStroke();
+					vertex(WIDTH, pointerMiddle - varHeight);
+					stroke(arrowColor);
+
+					vertex(WIDTH+sin(20+45)*10, pointerMiddle - varHeight + cos(20+45)*10);		
+				}
+				else{
+					//Arrow point
+					vertex(WIDTH+sin(45-20)*10, pointerMiddle + varHeight*(-1) - cos(45-20)*10);
+
+					noStroke();
+					vertex(WIDTH, pointerMiddle + varHeight*(-1));
+					stroke(arrowColor);
+
+					vertex(WIDTH+sin(20+45)*10, pointerMiddle + varHeight*(-1) - cos(20+45)*10);
+				
+				}
+			endShape(CLOSE);
+			arrowSpace += 9;
+		}
+
+		i+=HEIGHT;
     }
   }
   
