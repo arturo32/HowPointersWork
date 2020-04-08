@@ -41,16 +41,16 @@ function getContent(varObj, contentFound, codeText, regVars = null){
 			if(contentFound != "lixo"){
 				
 				/*A regular variable object with the same name of contentFound
-				is searched in the reVars array*/
+				is searched in the regVars array*/
 				let ptrContent = regVars.find(x => x.name == contentFound.replace(/\&*/, ""));
 				
-				/*If found, the content of varObjs[i] receive a reference to
+				/*If found, the content of varObj receive a reference to
 				such object*/
 				if(ptrContent) varObj.content = ptrContent;
 			}
 		}
 
-		//If the elements of varObjs are regular variable objects
+		//If varObj is a regular variable object
 		else{
 
 			/*If contentFound is not empty then the content of the variable
@@ -152,7 +152,7 @@ function setProperties(objConstructor, regex, codeText, regVars = null){
 		let newObj =  new objConstructor();
 
 		//Setting its properties
-		newObj.type = matchArray[1].replace(/\s*/, "");
+		newObj.type = matchArray[1].replace(/\s*/g, "");
 		newObj.name = matchArray[2];
 
 		//getContent searches for contents beyond declarations 
@@ -167,21 +167,25 @@ function setProperties(objConstructor, regex, codeText, regVars = null){
 }
 
 
-
+//Global variable that will store all pointers and regular variables objects
 let allVars;
 
-allVars = new Array();
-while(allVars.length != 13){
-allVars.push(new RegularVariable());
-}
-
-let address = 0x7ffc559ff164;
-for(let element of allVars){
-	element.address = address;
-	address++;
-}
+/*As soon as the site loads allVars receives empty regular variables objects.
+Then, each object receives arbitrary memory's addresses. In the end, 
+the drawMemory function is called
+*/
 $(document).ready( function(){
-	draws();
+	allVars = new Array();
+	while(allVars.length != 13){
+		allVars.push(new RegularVariable());
+	}
+
+	let address = 0x7ffc559ff164;
+	for(let element of allVars){
+		element.address = address;
+		address++;
+	}
+	drawMemory();
 })
 
 
@@ -222,8 +226,7 @@ function findPointers(){
 		findDereferencing(pointers, codeText);
 	}
 
-	
-
+	//
 	for(let x of regVars){
 		let varObj = allVars.find(y => y.name == x.name);
 		if(varObj){
@@ -240,9 +243,7 @@ function findPointers(){
 	}
 	if(regVars.length)
 
-	
-
-
+	//
 	for(let x of pointers){
 		if(allVars.find(y => y.name == x.name)) continue;
 		let randIndex = Math.floor(Math.random()*12)+1;
@@ -253,116 +254,126 @@ function findPointers(){
 			allVars[randIndex] = x;
 	}
 
-	draws();
+	drawMemory();
 } 
 
-
+//Function declaration to make functions of the p5.js library work
 function setup(){
-
 }
 
+//Function that draws the memory representation using p5.js functions
+function drawMemory(){
 
-function draws(){
-  createCanvas(350+50, windowHeight);
-  const WIDTH = 350;
-  const HEIGHT = windowHeight/13;
-  const RADIUS = 5;
-  let i = 0;
-  let arrowSpace = 9;
-  let arrowColor = getComputedStyle(document.documentElement).getPropertyValue('--titlesColor');
-  if(allVars){
+	//Width of the memory cells plus their addresses
+	const WIDTH = 280;
+
+	//Height of each memory cell
+	const HEIGHT = windowHeight/13;
+
+	//Width of each cell
+	const RECTWIDTH = WIDTH*0.65;
+
+	//Radius of the corners of each cell
+	const RADIUS = 5;
+
+	/*Creating canvas with the cells+address width plus the space
+	required by the arrows that connect pointers to regular variables.
+	Its height is of the entire site*/
+	createCanvas(WIDTH+50, windowHeight);
+	
+	/*Cumulative space between arrow and the cells. In each iteration
+	it grows so that the arrow lines don't become indistinguishable
+	from one another*/
+	let arrowSpace = 9;
+	
+	//Color of the titles of the page coming from a CSS variable
+	let titlesColor = getComputedStyle(document.documentElement).getPropertyValue('--titlesColor');
+    
+	//Cumulative height that increases each iteration of the for loop below
+	let totalHeight = 0;
+    
+    //Drawing all the cells with all the elements of allVars
     for(let element of allVars){
 
-
-    	//Drawing green rectangle
+    	//Drawing memory cell 
 		let color = getComputedStyle(document.documentElement).getPropertyValue('--memoryColor');
-		fill(color);
-		stroke("rgba(0,0,0,0.5)");
-		strokeWeight(2);
-		rect(WIDTH/2, i, WIDTH/2, HEIGHT , RADIUS, RADIUS, RADIUS, RADIUS);
+		fill("#2d2e29");
+		stroke("#fd971f");
 		strokeWeight(1);
+		rect(WIDTH-RECTWIDTH, totalHeight, RECTWIDTH, HEIGHT , RADIUS, RADIUS, RADIUS, RADIUS);
 		
 		//Content
 		noStroke();
 		fill('#eaeaea');
-		textSize(14);
+		textSize(16);
 		textAlign(CENTER, CENTER);
 		if(element.constructor == Pointer){
-			text("0x"+element.content.address.toString(16), WIDTH-WIDTH/4, HEIGHT/2+i);
+			text("0x"+element.content.address.toString(16), WIDTH-RECTWIDTH/2, HEIGHT/2+totalHeight);
 		}
 		else{
-			text(element.content, WIDTH-WIDTH/4, HEIGHT/2+i);
+			text(element.content, WIDTH-RECTWIDTH/2, HEIGHT/2+totalHeight);
 		}
 
 		//Name
 		textSize(10);
 		textAlign(LEFT, TOP);
-		text(element.name, 5+WIDTH/2, i+5);
+		text(element.name, 5+WIDTH-RECTWIDTH, totalHeight+5);
 
 		//Type
 		textAlign(LEFT);
-		text(element.type, 5+WIDTH/2, i+HEIGHT- 15);
+		text(element.type, 5+WIDTH-RECTWIDTH, totalHeight+HEIGHT- 15);
 
 		//Address of variable
+		fill("#fd971f");
 		textSize(12);
 		textAlign(LEFT, CENTER);
-		text("0x"+element.address.toString(16), WIDTH/4-15, HEIGHT/2+i);
+		text("0x"+element.address.toString(16), 0, HEIGHT/2+totalHeight);
 
-		//Arrows
+		//Arrow
 		if(element.constructor == Pointer){
 			
-			stroke(arrowColor);
+			//Line of arrow
+			stroke("#fd971f");
+
+			/*Difference between the heights of the pointer and the variable that
+			it points to*/
 			let varHeight = (element.address - element.content.address)*HEIGHT; 
-			let pointerMiddle = i+HEIGHT/2;
+
+			//Middle of the pointer memory cell
+			let pointerMiddle = totalHeight+HEIGHT/2;
 			noFill();
+
+			/*Variable that is -1 when the arrow comes from the top to the bottom
+			and 1 when the arrow comes from the bottom to the top*/
+			let c = (varHeight < 0)? -1 : 1;
+			
 			beginShape();
 				vertex(WIDTH, pointerMiddle);
-				if(varHeight > 0){
-					vertex(WIDTH+arrowSpace, pointerMiddle-arrowSpace);
-					vertex(WIDTH+arrowSpace, pointerMiddle -varHeight + arrowSpace);
-					vertex(WIDTH, pointerMiddle - varHeight);
-				}
-				else{
-					vertex(WIDTH+arrowSpace, pointerMiddle+arrowSpace);
-					vertex(WIDTH+arrowSpace, pointerMiddle + varHeight*(-1) - arrowSpace);
-					vertex(WIDTH, pointerMiddle + varHeight*(-1));
-						
-				
-				}
+				vertex(WIDTH+arrowSpace, pointerMiddle - arrowSpace*c);
+				vertex(WIDTH+arrowSpace, pointerMiddle - varHeight + arrowSpace*c);
+				vertex(WIDTH, pointerMiddle - varHeight);	
 			endShape();
 
+			/*Point of arrow. Its sides have a size of 10 and they form a angle
+			of 20° from the arrow line*/
 			angleMode(DEGREES);
-			fill(arrowColor);
+			fill("#fd971f");
 			beginShape();
-				if(varHeight > 0){
-					//Arrow point
-					vertex(WIDTH+sin(45-20)*10, pointerMiddle - varHeight + cos(45-20)*10);
+				vertex(WIDTH+sin(45-20)*10, pointerMiddle - varHeight + cos(45-20)*10*c);
 
-					noStroke();
-					vertex(WIDTH, pointerMiddle - varHeight);
-					stroke(arrowColor);
+				noStroke();
+				vertex(WIDTH, pointerMiddle - varHeight);
+				stroke("#fd971f");
 
-					vertex(WIDTH+sin(20+45)*10, pointerMiddle - varHeight + cos(20+45)*10);		
-				}
-				else{
-					//Arrow point
-					vertex(WIDTH+sin(45-20)*10, pointerMiddle + varHeight*(-1) - cos(45-20)*10);
-
-					noStroke();
-					vertex(WIDTH, pointerMiddle + varHeight*(-1));
-					stroke(arrowColor);
-
-					vertex(WIDTH+sin(20+45)*10, pointerMiddle + varHeight*(-1) - cos(20+45)*10);
-				
-				}
+				vertex(WIDTH+sin(45+20)*10, pointerMiddle - varHeight + cos(45+20)*10*c);			
 			endShape(CLOSE);
 			arrowSpace += 9;
 		}
 
-		i+=HEIGHT;
-    }
-  }
-  
+		//Incrementing totalHeight by a height of a memory cell
+		totalHeight += HEIGHT;
+	}
+ 	
 }
 
 
