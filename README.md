@@ -33,6 +33,7 @@ The second thing to check is the errors parameters! There are two: "build_stderr
 
 
 ## What will be done
+* Change the size of memory cells according to the type of variable that they store;
 * Identify assignment of variables with another variables;
 * Identify and apply arithmetic operators with numbers, variables and assignments (e.g. +=, \*=);
 * Identify and apply the increment operator for both regular variables and pointers; 
