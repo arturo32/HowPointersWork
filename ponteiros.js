@@ -166,7 +166,6 @@ function setProperties(objConstructor, regex, codeText, regVars = null){
 	return varObjs;
 }
 
-
 //Global variable that will store all pointers and regular variables objects
 let allVars;
 
@@ -187,6 +186,42 @@ $(document).ready( function(){
 	}
 	drawMemory();
 })
+
+
+/*Define, for each object of the varObjs array, an arbitrary memory 
+address coming from the addresses already defined in the allVars
+array*/
+function setMemoryAddresses(varObjs){
+	for(let obj of varObjs){
+
+		//Searching if the object already exists in allVars
+		let allVarsObj = allVars.find(y => y.name == obj.name);
+		
+		/*If so, the content in allVarsObj is updated because
+		allVars is a global array but the object of varObjs is
+		created and destroyed all the time. The same is done
+		with the obj of varObjs receiving the address of the
+		allVarsObj*/
+		if(allVarsObj){
+			allVarsObj.content = obj.content;
+			obj.address = allVarsObj.address;
+			continue;
+		}
+
+		/*A random and empty index is defined to the new
+		object be inserted in the allVars array*/
+		let randIndex = Math.floor(Math.random()*13);
+		while(allVars[randIndex].name != ""){
+			randIndex = Math.floor(Math.random()*13);
+		}
+			obj.address = allVars[randIndex].address;
+			allVars[randIndex] = obj;
+	}	
+}
+
+
+
+
 
 
 
@@ -226,36 +261,21 @@ function findPointers(){
 		findDereferencing(pointers, codeText);
 	}
 
-	//
-	for(let x of regVars){
-		let varObj = allVars.find(y => y.name == x.name);
-		if(varObj){
-			x.address = varObj.address;
-			varObj.content = x.content;
-			continue;
-		}
-		let randIndex = Math.floor(Math.random()*11)+1;
-		while(allVars[randIndex].name != ""){
-			randIndex = Math.floor(Math.random()*11)+1;
-		}
-			x.address = allVars[randIndex].address;
-			allVars[randIndex] = x;
-	}
-	if(regVars.length)
+	//Setting the memory's addresses of the variables
+	setMemoryAddresses(regVars);
+	setMemoryAddresses(pointers);
 
-	//
-	for(let x of pointers){
-		if(allVars.find(y => y.name == x.name)) continue;
-		let randIndex = Math.floor(Math.random()*12)+1;
-		while(allVars[randIndex].name != ""){
-			randIndex = Math.floor(Math.random()*12)+1;
-		}
-			x.address = allVars[randIndex].address;
-			allVars[randIndex] = x;
-	}
-
+	//Calling the function that draws the memory representation
 	drawMemory();
 } 
+
+
+
+
+
+
+
+
 
 //Function declaration to make functions of the p5.js library work
 function setup(){
