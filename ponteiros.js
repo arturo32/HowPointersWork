@@ -25,7 +25,7 @@ class RegularVariable{
 
 /*Function that separates the contents from the elements of varArray
 and put them in the content properties of the objects in varObjs*/ 
-function getContent(varObj, contentFound, codeText, regVars = null){
+function getContent(varObj, codeText, regVars = null){
 
 		//If the elements of varObjs are pointer objects
 		if(varObj.constructor == Pointer){
@@ -33,9 +33,8 @@ function getContent(varObj, contentFound, codeText, regVars = null){
 			/*If the variable wasn't initialized in the moment it was declared,
 			the function searchesLaterContent is called to find out it was 
 			initialized later*/
-			if(contentFound == null){
-				contentFound = searchLaterContent(varObj, codeText);
-			}
+			
+			let contentFound = searchLaterContent(varObj, codeText);
 
 			//If the pointer was initialized at any moment in the code
 			if(contentFound != "lixo"){
@@ -57,7 +56,7 @@ function getContent(varObj, contentFound, codeText, regVars = null){
 			receives the contentFound. Else, it receives what searchesLaterContent
 			returns ("lixo", i.e. garbage, or the last value assigned to it in the
 			code*/
-			varObj.content = contentFound ? contentFound : searchLaterContent(varObj, codeText);
+			varObj.content = searchLaterContent(varObj, codeText);
 		}
 
 }
@@ -73,16 +72,16 @@ function searchLaterContent(varObj, codeText){
 
 	/*Match all lines that have the (whole) name of varObj and ends with
 	an assignment. Prevents getting dereferencing pointers using the
-	"[^\\*]". The result is an iterator*/
-	let contentsIterator = codeText.matchAll(new RegExp("[^\\*]\\b" + varObj.name + "\\b" + assignment, 'g'));
+	"[^\\*]" option. The result is an iterator*/
+	let contentsIterator = codeText.matchAll(new RegExp("(?:\\w\\s*\\**|[^\\*])\\b" + varObj.name + "\\b" + assignment, 'g'));
 
-
+	console.log(varObj.name);
 	/*Getting the first item matched. It is an object with an attribute
 	("value") that is an array with its first element being the entire
 	match of the line and the other being the capturing groups of the
 	assignment RegEx*/
 	let contentObj = contentsIterator.next();
-
+	console.log(contentObj.value);
 	//If no match was found
 	if(contentObj.done) return "lixo";
 
@@ -91,7 +90,7 @@ function searchLaterContent(varObj, codeText){
 
 	//While there are still elements to iterate with the iterator
 	while(!contentObj.done){
-
+		console.log(contentObj.value);
 		/*Getting the third element of the matched array
 		(the capturing group that matches only the content)*/
 		laterContent = contentObj.value[2];
@@ -112,7 +111,7 @@ function findDereferencing(pointers, codeText){
 	/*There are two capturing groups in this RegEx: the first one
 	is the name of the pointer and the second one is the value 
 	assigned to the dereferenced pointer*/
-	let dereferencesRegex =  /\n*\s*\*\s*(\w+)\s*\=\s*(\w+)\s*;/gi;
+	let dereferencesRegex =  /[^\w]\n*\s*\*\s*(\w+)\s*\=\s*(\w+)\s*;/gi;
 
 	/*matchAll returns an iterator that can be seen as an array of
 	arrays. Each outer array is a match of the RegEx in an array format:
@@ -126,8 +125,9 @@ function findDereferencing(pointers, codeText){
 	/*For each match of deferences iterator it's found a corresponding 
 	pointer name and then the value assigned to the pointer dereferenced
 	is assigned to the variable pointed by this pointer*/
-	for(const def of dereferences){
-		pointers.find(ptr => ptr.name == def[1]).content.content = def[2];
+	for(let def of dereferences){
+		let ptrObj = pointers.find(ptr => ptr.name == def[1]);
+		if(ptrObj) ptrObj.content.content = def[2];
 	}
 }
 
@@ -156,7 +156,7 @@ function setProperties(objConstructor, regex, codeText, regVars = null){
 		newObj.name = matchArray[2];
 
 		//getContent searches for contents beyond declarations 
-		getContent(newObj, matchArray[3], codeText, regVars); 
+		getContent(newObj, codeText, regVars); 
 
 		//Putting newObj as the last element of the varObjs array 
 		varObjs.push(newObj);
@@ -251,6 +251,7 @@ function findPointers(){
 	RegEx above, returns an array filled with objects of type
 	Pointer. If	none were found, it returns a null array*/
 	let pointers = setProperties(Pointer, pointersRegEx, codeText, regVars);
+	console.log(pointers);
 
 
 	//If at least one pointer was found
@@ -264,6 +265,8 @@ function findPointers(){
 	//Setting the memory's addresses of the variables
 	setMemoryAddresses(regVars);
 	setMemoryAddresses(pointers);
+	console.log("after addresses: ", pointers);
+	console.log("regVars: ", regVars);
 
 	//Calling the function that draws the memory representation
 	drawMemory();
