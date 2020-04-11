@@ -1,11 +1,14 @@
-# PointersInC
+> *Este arquivo README também está disponível em português brasileiro. Clique em `README(pt-br).md` nos arquivos acima para lê-lo.*
+
+
+# How\*PointersWork
 A site that help students understand how pointers work. Available at <a href = "https://arturo32.github.io">arturo32.github.io</a>.
 
 ## Objective
 To help students understand pointers in the C programming language through a visual representation of the computer memory, which changes as the user types its code.
 
 ## What has been done
-The site can currently recognize, using ReGex in JavaScript:
+The site, using RegEx in JavaScript, can currently recognize:
 * Pointers and regular variables declarations;
 * Initializations of pointers and regular variables done at the same time of the declaration or separately;
 * Reassignment of regular variables and pointers;
