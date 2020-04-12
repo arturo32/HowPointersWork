@@ -24,12 +24,7 @@
       
 
       <div id = "Text">
-
-        <!-- The function findPointers is called when the ";" key or the enter key is pressed and released or when the user pastes something in the textbox. -->
-        <!-- When the user pastes something a time is set to allow the text be "inserted" before the execution of the function -->
-        <textarea type="text" id="textbox" class = "box" spellcheck="false" placeholder="Digite aqui seu código em C." onkeyup="if(window.event.keyCode == 59
-        || window.event.keyCode == 13 || window.event.keyCode == 191)findPointers();" onpaste="setTimeout(function(){findPointers()}, 100)" autofocus ></textarea>
-       
+        <textarea type="text" id="textbox" class = "box" spellcheck="false" placeholder="Digite aqui seu código em C." autofocus ></textarea>
         <button id = "button">Compilar e executar</button>
       </div> 
     
