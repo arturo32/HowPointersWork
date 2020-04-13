@@ -20,6 +20,10 @@ class Pointer{
 	}
 }
 
+/*Redraws the memory each time the window of the browser is resized.
+A time of 100 milliseconds is set to wait for the values of the new
+size be updated*/
+window.addEventListener("resize", ()=> setTimeout( ()=> drawMemory(), 100 ));
 
 //Selecting the element with ID textbox (where the user types their code)
 var textbox = document.querySelector("#textbox");
@@ -34,7 +38,7 @@ textbox.addEventListener("paste", keyChecker);
 semicolon, the "enter" key or have pasted something in the textbox*/
 function keyChecker(e){
 
-	/*If the event that trigered this function was a paste event then
+	/*If the event that triggered this function was a paste event then
 	it is set a timeout to wait the text be placed in the textbox and,
 	finally, the findPointers function is called*/
 	if(e.type == "paste"){
