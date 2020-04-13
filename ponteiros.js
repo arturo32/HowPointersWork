@@ -222,7 +222,7 @@ $(document).ready( function(){
 		element.address = address;
 		address++;
 	}
-	drawMemory();
+	setTimeout( ()=> drawMemory(), 100);
 })
 
 
