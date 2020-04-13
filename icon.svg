@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="187.82982mm"
+   height="179.21915mm"
+   viewBox="0 0 187.82982 179.21915"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="desenhando.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="-145.05244"
+     inkscape:cy="312.16835"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="717"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-10.786197,-52.208729)">
+    <g
+       aria-label="*"
+       transform="matrix(1.1286896,0,0,1.1286896,-100.08992,-311.60188)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       id="flowRoot3713">
+      <path
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:333.33334351px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';fill:#f92672;fill-opacity:1;stroke-width:0.80597043"
+         d="m 168.7458,339.34653 c 0,14.13753 0,28.27508 0,42.41261 -14.28395,-7.78367 -28.56778,-15.56757 -42.85182,-23.3511 -3.839,7.12061 -7.67583,14.2424 -11.51498,21.36294 14.17065,7.34176 28.34232,14.68152 42.51336,22.02252 -14.17054,7.38237 -28.34146,14.76407 -42.51179,22.14686 3.83958,7.12217 7.67872,14.24457 11.51656,21.36767 14.28231,-7.86977 28.56588,-15.73724 42.84867,-23.60612 0,14.6696 0,29.33921 0,44.00882 8.50834,0 17.01668,0 25.52502,0 0,-14.66856 0,-29.33712 0,-44.00568 14.2386,7.86857 28.47888,15.7341 42.71644,23.60455 3.83852,-7.12087 7.67535,-14.24266 11.51498,-21.36293 -14.00524,-7.38506 -28.01064,-14.76982 -42.01594,-22.15475 14.0059,-7.34231 28.01135,-14.68546 42.01752,-22.02723 -3.83804,-7.11953 -7.67648,-14.23883 -11.51185,-21.3598 -14.2405,7.78296 -28.48075,15.56639 -42.72115,23.34954 -10e-6,-14.67328 0,-29.34656 0,-44.01984 -8.50834,0 -17.01668,0 -25.52502,0 v 0.80597 z"
+         id="path4553"
+         inkscape:connector-curvature="0" />
+    </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3721"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="scale(0.26458333)"><flowRegion
+         id="flowRegion3723"><rect
+           id="rect3725"
+           width="217.14285"
+           height="151.42857"
+           x="100"
+           y="302.51968" /></flowRegion><flowPara
+         id="flowPara3727"></flowPara></flowRoot>  </g>
+</svg>

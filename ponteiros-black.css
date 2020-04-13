@@ -4,6 +4,13 @@
     --outerColor: #d4d4dc;
     --memoryColor: darkgreen;
 }
+
+@font-face{
+    font-family: DejaVuSans;
+    src: url(DejaVuSans-Bold.ttf);
+}
+
+
 html, body{
     height: 100%;
 }
@@ -19,6 +26,7 @@ body{
     background-color: #272822;
 }
 
+
 header{
     top: -20px;
     height: 20%;
@@ -27,7 +35,8 @@ header{
 
 header h1{
     color: var(--outerColor);
-    font-family: lulo-clean-w01-one-bold, sans-serif;
+    font-family: DejaVuSans, sans-serif;
+    font-weight: 200;
     letter-spacing: 0.1em;
     text-align: left;
     font-size: 4vh;
