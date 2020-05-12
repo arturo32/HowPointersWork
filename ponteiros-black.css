@@ -23,7 +23,7 @@ body{
     padding: 5%;
     padding-top: 0px;
     padding-bottom: 0px;
-    background-color: #272822;
+    background-color: var(--blocksColor);
 }
 
 
@@ -48,8 +48,8 @@ header h1{
     color: var(--outerColor);
     border-style: solid;
     border-width: 0px;
-    box-shadow: 0 4px 30px rgb(0,0,0,0.64);
-    border-radius: 20px;
+    box-shadow: 0 0px 15px #191A19;
+    border-radius: 5px;
     border-color: var(--outerColor);
     font-size: 12px; 
     font-style: normal; 
@@ -102,12 +102,13 @@ header h1{
     transition: all 150ms;
     transition-timing-function: ease-out;
     float: right;
-    box-shadow: 0 4px 30px rgb(0,0,0,0.64);
+    box-shadow: 0 0px 15px #191A19;
+    
 }
 
 #button:hover{
     transform: translate(-3px, -3px);
-    box-shadow: 0px 4px 15px rgb(0,0,0,0.64);
+    box-shadow: 0px 0px 5px #191A19;
 }
 
 
