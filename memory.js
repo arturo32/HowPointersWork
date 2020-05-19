@@ -65,6 +65,7 @@ class memoryCell{
 		//Address of variable
 		fill("#fd971f");
 		textSize(12);
+		textFont("sans-serif");
 		textAlign(LEFT, CENTER);
 		text("0x"+this.element.address.toString(16), 0, this.height/2+this.y);
 	}

@@ -23,7 +23,7 @@ showing the options available (or hiding them if it was already
 clicked). The rotation and location of the arrow also changes*/
 lang_options.onclick = function(){
 	if(window.getComputedStyle(lang_options).getPropertyValue("height") == "29px"){
-		lang_options.style.height = "87px";
+		lang_options.style.height = "84px";
 		arrow.style.transform = "rotate(-135deg)";
 		arrow.style.top = "10px";
 
