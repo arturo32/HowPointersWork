@@ -1,6 +1,6 @@
 <!DOCTYPE  html>
-<html>
 
+<html>  
   <head>
     <meta charset="UTF-8">
     
@@ -17,39 +17,50 @@
   <body>
     
   	<header>
-  		<h1>COMO<br/><big><span style="color:var(--titlesColor);">*</span>PONTEIROS</big><br/>FUNCIONAM</h1>
+  		<h1>COMO<br><big><span style="color:var(--titlesColor);">*</span>PONTEIROS</big><br>FUNCIONAM</h1>
   	</header>
 
     <div id="codeBlocks">
       
 
-      <div id = "Text">
-        <textarea type="text" id="textbox" class = "box" spellcheck="false" placeholder="Digite aqui seu código em C." autofocus ></textarea>
-        <button id = "button">Compilar e executar</button>
+      <div id="Text">
+        <textarea type="text" id="textbox" class="box" spellcheck="false" placeholder="Digite aqui seu código em C." autofocus=""></textarea>
+
+          <!-- Extra div to make the absolute position of the lang_options div relative to it-->
+          <div>
+            <div id="lang_options" >
+              <div class = "arrow" ></div>
+              <p id = "lang_selected" title="Linguagem"  >C</p> 
+              <p id = "lang_C" class = "lang_item" >C</p>
+              <p id = "lang_Cpp" class = "lang_item" >C++</p>
+            </div>
+          </div>
+          
+    
+        <button id="button">Compilar e executar</button>
       </div> 
     
       
-      <div id = "Blocks">
+      <div id="Blocks">
 
-        <div id = "inputBlock">
+        <div id="inputBlock">
           <p>input</p>
-          <textarea id = "inputC" class = "box" spellcheck="false" type = "text" placeholder="Digite aqui todas as entradas do seu código separadas por espaço/enter."></textarea>
+          <textarea id="inputC" class="box" spellcheck="false" type="text" placeholder="Digite aqui todas as entradas do seu código separadas por espaço/enter."></textarea>
         </div>
 
-        <div id = "outputBlock" >
+        <div id="outputBlock">
           <p>output</p>
-          <div id = "outputC" class = "box"></div>
+          <div id="outputC" class="box"></div>
         </div> 
       </div>
 
 
     </div>
 
-    <footer>Documentação e código disponível em <a href="https://github.com/arturo32/arturo32.github.io">github.com/arturo32/arturo32.github.io</a></footer>
-    
-  	
-    
-  </body> 
+    <footer>Documentação e código disponíveis em <a href="https://github.com/arturo32/arturo32.github.io">github.com/arturo32/arturo32.github.io</a></footer>
+   
+
+  </body>
 
   <script type="text/javascript" src="memory.js"></script>
   <script type="text/javascript" src="pointers.js"></script>

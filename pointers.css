@@ -79,6 +79,7 @@ header h1{
     height: 62%;
     box-sizing: border-box;
     margin-right: 50px;
+    position: relative;
 }
 
 #textbox{
@@ -89,19 +90,65 @@ header h1{
     box-sizing: border-box;
 }
 
+
+
+#lang_options{
+    width: 75px;
+    border: 0px;
+    display: inline-block; 
+    margin-top: 15px;
+    background-color: transparent;
+    color: var(--titlesColor);
+    border-radius: 20px;
+    position: absolute;
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 300ms ease-out;
+    box-shadow: 0 0px 15px #191A19;
+    height: 29px;   
+    overflow-y: hidden; 
+}
+
+#lang_options p{
+    margin: 0px;
+    padding-top: 3px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+}
+
+
+.lang_item:hover{
+    background-color: #31322D;
+}
+
+.arrow {
+  border: solid var(--titlesColor);
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(45deg);
+  position: absolute;
+  left: 71%;
+  top: 7px;
+  transition: all 300ms ease-out;
+}
+
+
+
+
 #button{
     display: block;
     border: 0px var(--outerColor) solid;
     background-color: transparent;
     color: var(--titlesColor);
     border-radius: 20px;
-    height: 10%;
+    height: 29px;
     font-family: Arial, sans-serif;
     font-weight: 600;
     cursor: pointer;
     margin-top: 15px;
-    transition: all 150ms;
-    transition-timing-function: ease-out;
+    transition: all 150ms ease-out;
     float: right;
     box-shadow: 0 0px 15px #191A19;
     

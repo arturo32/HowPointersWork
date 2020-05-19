@@ -7,6 +7,55 @@
 
 //Variable to set interval of a compiling message
 var compiling;
+
+/*Variable to be used in the POST request to specify the
+language that will be compiled. Default is C.*/
+var lang = "c";
+
+//Selecting the div element with "arrow" class
+var arrow = document.querySelector(".arrow");
+
+//Selecting the div element with "language" ID
+var lang_options = document.querySelector("#lang_options");
+
+/*When the lang_options box is clicked, its height is changed,
+showing the options available (or hiding them if it was already
+clicked). The rotation and location of the arrow also changes*/
+lang_options.onclick = function(){
+	if(window.getComputedStyle(lang_options).getPropertyValue("height") == "29px"){
+		lang_options.style.height = "87px";
+		arrow.style.transform = "rotate(-135deg)";
+		arrow.style.top = "10px";
+
+	}
+	else{
+		lang_options.style.height = "29px";
+		arrow.style.transform = "rotate(45deg)";
+		arrow.style.top = "7px";
+	}
+}	
+
+
+//Selecting the items of the lang_options
+var lang_selected = document.querySelector("#lang_selected");
+var lang_C = document.querySelector("#lang_C");
+var lang_Cpp = document.querySelector("#lang_Cpp");
+
+/*If the option that contains "C" is clicked, the lang_selected
+content is change to "C" and the language send to the POST
+request is changed to "c". The same happens with the "C++"
+option*/
+lang_C.onclick = function(){
+	lang_selected.innerHTML = "C";
+	lang = "c";
+}
+lang_Cpp.onclick = function(){ 
+	lang_selected.innerHTML = "C++";
+	lang = "cpp";
+}
+
+
+
  
 $(document).ready( function(){
 
@@ -17,10 +66,14 @@ $(document).ready( function(){
 	 to the getMethod function.*/
 	$("#button").click(function(){
 
+
+
 		//Shows the user, in the outputC box, that the code is compiling
 		document.getElementById("outputC").innerHTML = "Compilando...";
 
 		//Adding a dot in the ouputC every second
+		//In case the user press the button more than once, the previous interval is cleared
+		clearInterval(compiling);
 		compiling = setInterval(function(){
 			document.getElementById("outputC").innerHTML += ".";
 	 	}, 1000);
@@ -30,9 +83,9 @@ $(document).ready( function(){
 	  	var strings = document.getElementById("textbox").value;
 	    $.post("https://api.paiza.io/runners/create",
 	    	{
-		    	source_code: `${strings}`,
-		    	language: "c",
-		    	input: `${inputText}`,
+		    	source_code: strings,
+		    	language: lang,
+		    	input: inputText,
 		    	api_key: "guest"
 	    	},
 
