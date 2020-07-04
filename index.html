@@ -1,14 +1,11 @@
 <!DOCTYPE  html>
 
-<html>  
+<html lang="pt-br">  
   <head>
-    <meta charset="UTF-8">
-    
-    <!-- JQuery library-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    
-    
-    
+    <meta charset="UTF-8">    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Description" content="A site that helps students understand how pointers work.">
+
     <link rel="stylesheet" type="text/css" href="pointers.css">
     <title>Ponteiros</title>
     <link rel="icon" id="iconImage" href="icon.svg" type="image/icon type">
@@ -23,7 +20,7 @@
       
 
       <div id="Text">
-        <textarea type="text" id="textbox" class="box" spellcheck="false" placeholder="Digite aqui seu código em C." autofocus=""></textarea>
+        <textarea type="text" id="textbox" class="box" spellcheck="false" placeholder="Digite aqui seu código em C ou C++." autofocus=""></textarea>
 
           <!-- Extra div to make the absolute position of the lang_options div relative to it-->
           <div>
@@ -36,7 +33,7 @@
           </div>
           
     
-        <button id="button">Compilar e executar</button>
+        <button id="button" title="Compilar e executar">Compilar e executar</button>
       </div> 
     
       
@@ -61,6 +58,9 @@
 
     <!-- p5.js library -->
     <script type="text/javascript" src="p5.min.js"></script>
+
+    <!-- JQuery library-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <script type="text/javascript" src="memory.js"></script>
     <script type="text/javascript" src="pointers.js"></script>
