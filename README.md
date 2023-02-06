@@ -4,6 +4,11 @@
 # How\*PointersWork
 A site that help students understand how pointers work. Available at <a href = "https://arturo32.github.io">arturo32.github.io</a>.
 
+<p align="center">
+ <img src="./images/demo.gif"
+   alt="Gif showing a demonstration of the site: while the user is typing in the space on the left, in the right a representation of a computer's memory is showing the variables and pointers being created."/>
+</p>
+
 ## Objective
 To help students understand pointers in the C programming language through a visual representation of the computer memory, which changes as the user types its code.
 

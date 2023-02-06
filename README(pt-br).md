@@ -4,6 +4,11 @@ Um site que ajuda estudantes a entenderem como funcionam ponteiros. Disponível 
 ## Objetivo
 Ajudar estudantes a entenderem os ponteiros na linguagem de programação C através de uma representação visual da memória do computador, que muda conforme o usuário digita seu código.
 
+<p align="center">
+ <img src="./images/demo.gif"
+   alt="Gif que mostra o site sendo usado: enquanto o usuário digita na esquerda, uma representação da memória do computador na direita mostra as variáveis e ponteiros sendo criados."/>
+</p>
+
 ## O que foi feito
 Atualmente, usando o RegEx em JavaScript, o site pode reconhecer:
 * Declarações de ponteiros e variáveis regulares;
