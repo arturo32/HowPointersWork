@@ -186,7 +186,8 @@ header h1{
     float: right;
 }
 
-#Blocks p{
+#Blocks p,
+#Blocks label {
     color: var(--titlesColor);
     vertical-align: top;
     margin: 0px;
@@ -195,6 +196,7 @@ header h1{
     font-family: Arial, sans-serif;
     font-weight: 600;
     letter-spacing: 2px;
+    display: block;
 }
 
 #inputC{
