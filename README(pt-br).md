@@ -1,5 +1,5 @@
 # Como\*PonteirosFuncionam
-Um site que ajuda estudantes a entenderem como funcionam ponteiros. Disponível em <a href = "https://arturo32.github.io">arturo32.github.io</a>.
+Um site que ajuda estudantes a entenderem como funcionam ponteiros. Disponível em <a href = "https://arturo32.github.io/HowPointersWork/">arturo32.github.io/HowPointersWork</a>.
 
 ## Objetivo
 Ajudar estudantes a entenderem os ponteiros na linguagem de programação C através de uma representação visual da memória do computador, que muda conforme o usuário digita seu código.

@@ -2,7 +2,7 @@
 
 
 # How\*PointersWork
-A site that help students understand how pointers work. Available at <a href = "https://arturo32.github.io">arturo32.github.io</a>.
+A site that help students understand how pointers work. Available at <a href = "https://arturo32.github.io/HowPointersWork/">arturo32.github.io/HowPointersWork</a>.
 
 <p align="center">
  <img src="./images/demo.gif"
