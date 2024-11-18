@@ -34,7 +34,7 @@
           </div>
 
 
-          <button id="button" title="Compilar e executar">Compilar e executar</button>
+          <button id="button" title="Compilar e executar" onclick="vueApp.sendCode()">Compilar e executar</button>
         </div>
 
 
@@ -55,7 +55,9 @@
 
       </section>
       <section id="memoryContainer">
-        <memory></memory>
+        <div>
+          <memory :codeTrace="codeTrace"></memory>
+        </div>
       </section>
     </main>
 

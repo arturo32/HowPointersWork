@@ -64,35 +64,35 @@ $(document).ready( function(){
 	 is activated. It sends a POST request to the Paiza serve with the code and inputs that 
 	 the user has written. After the POST request succeeds, it takes its response and sends 
 	 to the getMethod function.*/
-	$("#button").click(function(){
-
-
-
-		//Shows the user, in the outputC box, that the code is compiling
-		document.getElementById("outputC").innerHTML = "Compilando...";
-
-		//Adding a dot in the ouputC every second
-		//In case the user press the button more than once, the previous interval is cleared
-		clearInterval(compiling);
-		compiling = setInterval(function(){
-			document.getElementById("outputC").innerHTML += ".";
-	 	}, 1000);
-
-
-  		var inputText = document.getElementById("inputC").value;
-	  	var strings = document.getElementById("textbox").value;
-	    $.post("https://api.paiza.io/runners/create",
-	    	{
-		    	source_code: strings,
-		    	language: lang,
-		    	input: inputText,
-		    	api_key: "guest"
-	    	},
-
-	   		function(data) {
-				getMethod(data.id);	
-			}, "json"); 
-	});
+	// $("#button").click(function(){
+	//
+	//
+	//
+	// 	//Shows the user, in the outputC box, that the code is compiling
+	// 	document.getElementById("outputC").innerHTML = "Compilando...";
+	//
+	// 	//Adding a dot in the ouputC every second
+	// 	//In case the user press the button more than once, the previous interval is cleared
+	// 	clearInterval(compiling);
+	// 	compiling = setInterval(function(){
+	// 		document.getElementById("outputC").innerHTML += ".";
+	//  	}, 1000);
+	//
+	//
+  	// 	var inputText = document.getElementById("inputC").value;
+	//   	var strings = document.getElementById("textbox").value;
+	//     $.post("https://api.paiza.io/runners/create",
+	//     	{
+	// 	    	source_code: strings,
+	// 	    	language: lang,
+	// 	    	input: inputText,
+	// 	    	api_key: "guest"
+	//     	},
+	//
+	//    		function(data) {
+	// 			getMethod(data.id);
+	// 		}, "json");
+	// });
 });
 
 
