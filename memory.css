@@ -1,0 +1,15 @@
+:root {
+	--cell-border: #fd971f;
+}
+
+.memory-cell {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid var(--cell-border);
+	border-radius: 5px;
+	color: white;
+	width: 13rem;
+	height: 3rem;
+	font-family: Arial, sans-serif;
+}

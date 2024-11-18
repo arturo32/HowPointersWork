@@ -6,55 +6,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="A site that helps students understand how pointers work.">
 
-    <link rel="stylesheet" type="text/css" href="pointers.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="stylesheet" type="text/css" href="memory.css">
     <title>Ponteiros</title>
     <link rel="icon" id="iconImage" href="icon.svg" type="image/icon type">
   </head>
   <body>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     
   	<header>
   		<h1>COMO<br><big><span style="color:var(--titlesColor);">*</span>PONTEIROS</big><br>FUNCIONAM</h1>
   	</header>
 
-    <div id="codeBlocks">
-      
-
-      <div id="Text">
-        <textarea id="textbox" class="box" spellcheck="false" placeholder="Digite aqui seu código em C ou C++." autofocus=""></textarea>
+    <main>
+      <section id="codeBlocks">
+        <div id="Text">
+          <textarea id="textbox" class="box" spellcheck="false" placeholder="Digite aqui seu código em C ou C++." autofocus=""></textarea>
 
           <!-- Extra div to make the absolute position of the lang_options div relative to it-->
           <div>
             <div id="lang_options" >
               <div class = "arrow" ></div>
-              <p id = "lang_selected" title="Linguagem"  >C</p> 
+              <p id = "lang_selected" title="Linguagem"  >C</p>
               <p id = "lang_C" class = "lang_item" >C</p>
               <p id = "lang_Cpp" class = "lang_item" >C++</p>
             </div>
           </div>
-          
-    
-        <button id="button" title="Compilar e executar">Compilar e executar</button>
-      </div> 
-    
-      
-      <div id="Blocks">
 
-        <div id="inputBlock">
-          <label for="inputC">input</label>
-          <textarea id="inputC" class="box" spellcheck="false" placeholder="Digite aqui todas as entradas do seu código separadas por espaço/enter."></textarea>
+
+          <button id="button" title="Compilar e executar">Compilar e executar</button>
         </div>
 
-        <div id="outputBlock">
-          <label for="outputC">output</label>
-          <div id="outputC" class="box"></div>
-        </div> 
-      </div>
+
+        <div id="Blocks">
+
+          <div id="inputBlock">
+            <label for="inputC">input</label>
+            <textarea id="inputC" class="box" spellcheck="false" placeholder="Digite aqui todas as entradas do seu código separadas por espaço/enter."></textarea>
+          </div>
+
+          <div id="outputBlock">
+            <label for="outputC">output</label>
+            <div id="outputC" class="box"></div>
+          </div>
+        </div>
 
 
-    </div>
+
+      </section>
+      <section id="memoryContainer">
+        <memory></memory>
+      </section>
+    </main>
+
 
     <footer>Documentação e código disponíveis em <a href="https://github.com/arturo32/HowPointersWork">github.com/arturo32/HowPointersWork</a></footer>
-   
+
+
 
     <!-- p5.js library -->
     <script type="text/javascript" src="p5.min.js"></script>
@@ -62,9 +70,11 @@
     <!-- JQuery library-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    <script type="text/javascript" src="memory.js"></script>
-    <script type="text/javascript" src="pointers.js"></script>
+<!--    <script type="text/javascript" src="memory.js"></script>-->
+<!--    <script type="text/javascript" src="pointers.js"></script>-->
+
     <script type="text/javascript" src="api.js"></script>
+    <script type="module" src="memoryContainer.js"></script>
   </body>
 
 

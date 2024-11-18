@@ -21,9 +21,7 @@ html, body{
 body{
     font-family: "Times New Roman", Times, serif;
     font-size: 18px;
-    padding: 5%;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding: 0 5%;
     background-color: var(--blocksColor);
 }
 
@@ -44,12 +42,21 @@ header h1{
     height: 100%
 } 
 
+main {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+main section {
+    flex-grow: 1;
+}
 
 .box{
     color: var(--outerColor);
     border-style: solid;
-    border-width: 0px;
-    box-shadow: 0 0px 15px #191A19;
+    border-width: 0;
+    box-shadow: 0 0 15px #191A19;
     border-radius: 5px;
     border-color: var(--outerColor);
     font-size: 12px; 
@@ -65,11 +72,17 @@ header h1{
 }
 
 
-#codeBlocks{
+main > section {
     display: inline-block;
     width: 50%;
     height: 75%;
     box-sizing: border-box;
+}
+
+#memoryContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 
@@ -94,7 +107,7 @@ header h1{
 
 #lang_options{
     width: 75px;
-    border: 0px;
+    border: 0;
     display: inline-block; 
     margin-top: 15px;
     background-color: var(--blocksColor);
@@ -106,13 +119,13 @@ header h1{
     font-size: 16px;
     cursor: pointer;
     transition: all 300ms ease-out;
-    box-shadow: 0 0px 15px #191A19;
+    box-shadow: 0 0 15px #191A19;
     height: 29px;   
     overflow-y: hidden; 
 }
 
 #lang_options p{
-    margin: 0px;
+    margin: 0;
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 10px;
@@ -140,7 +153,7 @@ header h1{
 
 #button{
     display: block;
-    border: 0px var(--outerColor) solid;
+    border: 0 var(--outerColor) solid;
     background-color: transparent;
     color: var(--titlesColor);
     border-radius: 20px;
@@ -151,13 +164,13 @@ header h1{
     margin-top: 15px;
     transition: all 150ms ease-out;
     float: right;
-    box-shadow: 0 0px 15px #191A19;
+    box-shadow: 0 0 15px #191A19;
     
 }
 
 #button:hover{
     transform: translate(-3px, -3px);
-    box-shadow: 0px 0px 5px #191A19;
+    box-shadow: 0 0 5px #191A19;
 }
 
 
@@ -173,7 +186,7 @@ header h1{
     display: inline-block;
     width: 40%;
     height: 100%;
-    margin-left: 0px;
+    margin-left: 0;
     vertical-align: top;
 }
 
@@ -181,7 +194,7 @@ header h1{
     display: inline-block;
     width: 40%;
     height: 100%;
-    margin-right: 0px; 
+    margin-right: 0;
     vertical-align: top;
     float: right;
 }
@@ -190,7 +203,7 @@ header h1{
 #Blocks label {
     color: var(--titlesColor);
     vertical-align: top;
-    margin: 0px;
+    margin: 0;
     margin-bottom: 12px;
     text-align: center;
     font-family: Arial, sans-serif;
@@ -206,7 +219,7 @@ header h1{
     padding-left: 10px;
     padding-right: 13px;
     white-space: pre-line;
-    margin: 0px;
+    margin: 0;
     font-family: Lucida Sans Typewriter, Lucida Console, monaco, Bitstream Vera Sans Mono, monospace; 
     line-height: 20px;
     overflow: auto;
@@ -233,12 +246,12 @@ header h1{
 }
 
 canvas {
-  border: 0px;
+  border: 0;
   display: inline-block;
   float: right;
   position: absolute;
   left: 62%;
-  top: 0px;
+  top: 0;
 }
 
 footer{
