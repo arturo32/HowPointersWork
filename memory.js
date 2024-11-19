@@ -1,17 +1,14 @@
 import MemoryCell from "./memoryCell.js";
 export default {
 	template: `
-		<template>
-			<div v-for="variable in codeTrace">
-				<memory-cell :value="variable[0]"></memory-cell>
-			</div>
-		</template>`,
+		<memory-cell v-for="variable in vars" :variable="variable"></memory-cell>
+			`,
 	data() {
 		return {
 			componentName: 'Memory'
 		};
 	},
-	props: ['codeTrace'],
+	props: ['vars'],
 	components: {
 		MemoryCell
 	}

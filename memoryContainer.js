@@ -22,14 +22,7 @@ const vm = createApp({
 					},
 					body: JSON.stringify({
 						"language": "gdb",
-						"code": "#include<stdio.h> \n "
-							+ "int main(){\n "
-							+ "int firstVar = 3; \n "
-							+ "int secondVar = firstVar +1;\n "
-							+ "int* firstPointer = &firstVar;\n "
-							+ "*firstPointer = 55;\n "
-							+ "return 0; \n "
-							+ "}"
+						"code": document.getElementById("textbox").value
 					})
 				});
 				if (!response.ok) {
