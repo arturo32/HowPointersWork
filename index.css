@@ -152,9 +152,8 @@ main > section {
 
 
 
-#button{
+#button {
     display: block;
-    border: 0 var(--outerColor) solid;
     background-color: transparent;
     color: var(--titlesColor);
     border-radius: 20px;
@@ -166,15 +165,19 @@ main > section {
     transition: all 150ms ease-out;
     float: right;
     box-shadow: 0 0 15px #191A19;
-    
+    padding: 0 0.5rem;
 }
 
 #button:hover{
-    transform: translate(-3px, -3px);
-    box-shadow: 0 0 5px #191A19;
+    transform: scale(0.99);
+    box-shadow: 0 0 10px #191A19, 0 0 3px 0 var(--titlesColor);
 }
 
-
+#lang_options,
+#button {
+    border: 1px solid var(--titlesColor);
+    box-shadow: 0 0 15px #191A19, 0 0 3px 0 var(--titlesColor);
+}
 
 #Blocks{
     vertical-align: top;

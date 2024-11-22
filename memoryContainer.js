@@ -30,8 +30,8 @@ const vm = createApp({
 				}
 
 				const json = await response.json();
+				globalArrows = []
 				this.codeTrace = this.extractLocals(json);
-				console.log(this.codeTrace);
 			} catch (error) {
 				console.error(error.message);
 			}
@@ -39,8 +39,14 @@ const vm = createApp({
 		extractLocals(json) {
 			const lastLineState = json.trace[json.trace.length - 2];
 			const locals = lastLineState.stack_to_render[0].encoded_locals;
-			console.log(Object.entries(locals));
-			return Object.entries(locals);
+
+			// Transforms [{varName: properties}] into [["varname", properties]]
+			const localsArray = Object.entries(locals);
+
+			// Ordering by address
+			localsArray.sort((a, b) => a[1][1].localeCompare(b[1][1]));
+
+			return localsArray;
 		}
 	},
 
