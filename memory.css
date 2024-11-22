@@ -6,7 +6,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border: 1px solid var(--cell-border);
+	outline: 1px solid var(--cell-border);
 	border-radius: 5px;
 	color: white;
 	width: 15rem;
@@ -17,8 +17,7 @@
 	background-color: var(--blocksColor);
 }
 
-.memory-cell:hover {
-	/*transform: scale(1.2);*/
+.memory-cell:hover:not(.lixo) {
 	z-index: 2;
 	box-shadow: 0 0 18px 1px var(--cell-border);
 	cursor: pointer;
@@ -26,17 +25,32 @@
 
 .memory-cell .address {
 	position: absolute;
-	top: 0;
-	left: 0;
+	top: -1px;
+	left: -1px;
 	font-size: 0.6rem;
 	border: 1px solid var(--cell-border);
-	border-radius: 0 0 5px 0;
-	padding: 0.15rem;
+	border-radius: 5px 0 5px 0;
+	padding: 0.15rem 0.2rem;
+}
+
+.memory-cell .name,
+.memory-cell .type {
+	position: absolute;
+	bottom: 0.25rem;
+	font-size: 0.8rem;
 }
 
 .memory-cell .name {
-	position: absolute;
-	bottom: 0.25rem;
-	right: 0.25rem;
-	font-size: 0.8rem;
+	right: 0.4rem;
+}
+
+.memory-cell .type {
+	left: 0.4rem;
+}
+.memory-cell.pointer .type {
+	color: var(--titlesColor);
+}
+
+.memory-cell.lixo {
+	opacity: 0.2;
 }

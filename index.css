@@ -15,6 +15,7 @@
 html, body{
     height: 100%;
     overflow-y: hidden;
+    margin: 0;
 }
 
 
@@ -70,6 +71,7 @@ main section {
     overflow-x: hidden;
     resize: none;
     box-sizing: border-box;
+    outline: 1px solid #606060;
 }
 
 
@@ -84,6 +86,13 @@ main > section {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+    overflow: visible;
+}
+
+#memoryContainer > div {
+    /*position: absolute;*/
+    /*top: calc(-5rem * 5);*/
 }
 
 

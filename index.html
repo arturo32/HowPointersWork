@@ -21,7 +21,13 @@
     <main>
       <section id="codeBlocks">
         <div id="Text">
-          <textarea id="textbox" class="box" spellcheck="false" placeholder="Digite aqui seu código em C ou C++." autofocus=""></textarea>
+          <textarea id="textbox" class="box" spellcheck="false" placeholder="Digite aqui seu código em C ou C++." autofocus="">#include <stdio.h>
+int main() {
+  /* Digite aqui seu código em C */
+
+  return 0;
+}
+          </textarea>
 
           <!-- Extra div to make the absolute position of the lang_options div relative to it-->
           <div>
@@ -56,7 +62,7 @@
       </section>
       <section id="memoryContainer">
         <div>
-          <memory :vars="codeTrace"></memory>
+          <memory :vars="stack"></memory>
         </div>
       </section>
     </main>
@@ -72,6 +78,31 @@
     <script src="leader-line.min.js"></script>
     <script type="text/javascript">
       let globalArrows = [];
+      const editorIndentSpaces = 2;
+      const indentString = " ".repeat(editorIndentSpaces);
+      function indent(event) {
+        if(event.code === 'Enter') {
+          const textarea = event.target;
+          const v = textarea.value;
+          const startPos = textarea.selectionStart;
+          const endPos = textarea.selectionEnd;
+          event.preventDefault();
+
+          //Get the current indentation level and prefix the new line with the same
+          const prevLinePos = v.slice(0, startPos).lastIndexOf("\n") + 1;
+          const prevLine = v.slice(prevLinePos, endPos);
+          const levels = prevLine.match(/^ */)[0].length / editorIndentSpaces;
+          const indentation = indentString.repeat(levels);
+          textarea.value =
+              v.slice(0, endPos) + "\n" + indentation + v.slice(endPos);
+
+          //Set the cursor position
+          const newCursorPos = endPos + 1 + indentation.length;
+          textarea.setSelectionRange(newCursorPos, newCursorPos);
+        }
+      }
+      document.querySelector('#textbox').addEventListener('keydown', indent);
+
     </script>
 
     <script type="text/javascript" src="api.js"></script>
