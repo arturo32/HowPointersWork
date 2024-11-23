@@ -6,7 +6,8 @@ const vm = createApp({
 	data() {
 		return {
 			message: 'Hello Vues!',
-			stack: []
+			stack: [],
+			heap: []
 		}
 	},
 	components: {
@@ -36,6 +37,7 @@ const vm = createApp({
 				}
 				globalArrows = [];
 				this.stack = this.extractLocals(json);
+				this.heap = this.extractHeap(json);
 			} catch (error) {
 				console.error(error.message);
 			}
@@ -84,6 +86,18 @@ const vm = createApp({
 				posteriorCells.push(['', ['C_DATA', '0x' + newAddress.toString(16).toUpperCase(), 'lixo',  Math.floor(Math.random()*254).toString(2)]]);
 			}
 			return previousCells.concat(cells).concat(posteriorCells);
+		},
+		extractHeap(json) {
+			const lastLineState = json.trace[json.trace.length - 2];
+			const heap = lastLineState.heap;
+
+			// Transforms [{varName: properties}] into [["varname", properties]]
+			const heapArray = new Array(...Object.entries(heap));
+
+			// Ordering by address
+			heapArray.sort((a, b) => a[1][1].localeCompare(b[1][1]));
+
+			return heapArray;
 		}
 	},
 

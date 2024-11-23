@@ -1,8 +1,8 @@
 export default {
 	template: `<div :class="'memory-cell ' + 'memory-cell-' + variable[1][1] + ' ' + (variable[1][2][0] === '*' ? 'pointer' : variable[1][2])">
 					<div class="address">{{ variable[1][1] }}</div>	
-					<div class="content">{{ variable[1][3] }}</div>	
-					<div class="type">{{ variable[1][2] }}</div>
+					<div class="content">{{ content }}</div>	
+					<div class="type">{{ type }}</div>
 					<div class="name">{{ variable[0] }}</div>	
 				</div>`,
 	data() {
@@ -39,9 +39,20 @@ export default {
 			}
 		}
 	},
-	methods: {
-		createPointerArrow() {
-
+	computed: {
+		type() {
+			if (this.variable[1][2].constructor === Array) {
+				return this.variable[1][2][2];
+			} else {
+				return this.variable[1][2];
+			}
+		},
+		content() {
+			if (this.variable[1][2].constructor === Array) {
+				return this.variable[1][2][3];
+			} else {
+				return this.variable[1][3];
+			}
 		}
 	}
 }
