@@ -20,6 +20,7 @@ export default {
 		if(this.variable[1][2][0] === '*' || this.variable[1][2] === 'pointer') {
 			const pointerCell = document.querySelector('.memory-cell-' + this.variable[1][1]);
 			const pointedCell =  document.querySelector('.memory-cell-' + this.variable[1][3]);
+			const isPointedCellHeap = pointedCell.parentElement.id === 'heap';
 			if(pointedCell !== null) {
 				globalArrows.push(new LeaderLine(
 					pointerCell,
@@ -27,9 +28,9 @@ export default {
 					{
 						path: 'fluid',
 						startSocket: 'right',
-						endSocket: 'right',
-						startSocketGravity: [20, 0],
-						endSocketGravity: [20, 0],
+						endSocket: isPointedCellHeap? 'left' : 'right',
+						startSocketGravity: [15, 0],
+						endSocketGravity: isPointedCellHeap? [-20, 0] : [20, 0],
 						endPlug: 'arrow3',
 						size: 2,
 						endPlugSize: 2,
@@ -53,6 +54,6 @@ export default {
 			} else {
 				return this.variable[1][3];
 			}
-		}
+		},
 	}
 }

@@ -2,17 +2,23 @@
     --blocksColor: #272822;
     --titlesColor: #f92672;
     --outerColor: #d4d4dc;
-    --memoryColor: darkgreen;
+    --cell-border: #fd971f;
     font-size: 16px;
 }
 
-@font-face{
+@font-face {
     font-family: DejaVuSans;
     src: url(DejaVuSans-Bold.ttf);
 }
 
+@font-face {
+    font-family: DepartureMono;
+    src: url(DepartureMono-Regular.woff2);
+}
 
-html, body{
+
+
+html, body {
     height: 100%;
     overflow-y: hidden;
     margin: 0;
@@ -20,7 +26,7 @@ html, body{
 
 
 
-body{
+body {
     font-family: "Times New Roman", Times, serif;
     font-size: 18px;
     padding: 0 5%;
@@ -28,13 +34,13 @@ body{
 }
 
 
-header{
+header {
     top: -20px;
     height: 20%;
 }
 
 
-header h1{
+header h1 {
     color: var(--outerColor);
     font-family: DejaVuSans, sans-serif;
     font-weight: 200;
@@ -86,9 +92,13 @@ main > section {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 2rem;
+    gap: 3rem;
     position: relative;
     overflow: visible;
+}
+
+#memoryContainer h2 {
+    color: var(--cell-border);
 }
 
 #memoryContainer > div {
@@ -97,7 +107,7 @@ main > section {
 }
 
 
-#Text{
+#Text {
     display: inline-block;
     width: 100%;
     height: 62%;
@@ -106,7 +116,7 @@ main > section {
     position: relative;
 }
 
-#textbox{
+#textbox {
 	width: 100%;
 	height: 82%;
     padding: 20px;
@@ -116,7 +126,7 @@ main > section {
 
 
 
-#lang_options{
+#lang_options {
     width: 75px;
     border: 0;
     display: inline-block; 
@@ -161,6 +171,13 @@ main > section {
 
 
 
+#textBoxOptions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
 
 #button {
     display: block;
@@ -173,7 +190,6 @@ main > section {
     cursor: pointer;
     margin-top: 15px;
     transition: all 150ms ease-out;
-    float: right;
     box-shadow: 0 0 15px #191A19;
     padding: 0 0.5rem;
 }
@@ -189,14 +205,14 @@ main > section {
     box-shadow: 0 0 15px #191A19, 0 0 3px 0 var(--titlesColor);
 }
 
-#Blocks{
+#Blocks {
     vertical-align: top;
     width: 100%;
     height: 26%;
     padding-top: 20px;
 }
 
-#inputBlock{
+#inputBlock {
     display: inline-block;
     width: 40%;
     height: 100%;
@@ -204,7 +220,7 @@ main > section {
     vertical-align: top;
 }
 
-#outputBlock{
+#outputBlock {
     display: inline-block;
     width: 40%;
     height: 100%;
@@ -213,20 +229,26 @@ main > section {
     float: right;
 }
 
-#Blocks p,
-#Blocks label {
+label, 
+h2 {
     color: var(--titlesColor);
     vertical-align: top;
     margin: 0;
     margin-bottom: 12px;
-    text-align: center;
+    text-align: left;
     font-family: Arial, sans-serif;
     font-weight: 600;
     letter-spacing: 2px;
     display: block;
+    font-size: 1rem;
 }
 
-#inputC{
+#Blocks p,
+#Blocks label {
+    text-align: center;
+}
+
+#inputC {
     width: 100%;
     height: 75%;
     padding-top: 6px;
@@ -243,7 +265,7 @@ main > section {
 
 }
 
-#outputC{
+#outputC {
     width: 100%;
     height: 75%;
     padding-top: 6px;
@@ -259,16 +281,7 @@ main > section {
     box-sizing: border-box;
 }
 
-canvas {
-  border: 0;
-  display: inline-block;
-  float: right;
-  position: absolute;
-  left: 62%;
-  top: 0;
-}
-
-footer{
+footer {
     color: #eaeaea;
     font-family: Arial, sans-serif;
     font-weight: 400;
@@ -278,7 +291,7 @@ footer{
     vertical-align: bottom;
 }
 
-footer a{
+footer a {
     color: #66d9ef;
     text-decoration: none;
 }

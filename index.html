@@ -12,8 +12,9 @@
     <link rel="icon" id="iconImage" href="icon.svg" type="image/icon type">
   </head>
   <body>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    
+    <!-- Vue 3.5.13 -->
+    <script type="text/javascript" src="vue.global.js"></script>
+
   	<header>
   		<h1>COMO<br><big><span style="color:var(--titlesColor);">*</span>PONTEIROS</big><br>FUNCIONAM</h1>
   	</header>
@@ -21,6 +22,7 @@
     <main>
       <section id="codeBlocks">
         <div id="Text">
+          <label for="textbox">Editor</label>
           <textarea id="textbox" class="box" spellcheck="false" placeholder="Digite aqui seu código em C ou C++." autofocus="">#include <stdio.h>
 int main() {
   /* Digite aqui seu código em C */
@@ -28,19 +30,22 @@ int main() {
   return 0;
 }
           </textarea>
-
-          <!-- Extra div to make the absolute position of the lang_options div relative to it-->
-          <div>
-            <div id="lang_options" >
-              <div class = "arrow" ></div>
-              <p id = "lang_selected" title="Linguagem"  >C</p>
-              <p id = "lang_C" class = "lang_item" >C</p>
-              <p id = "lang_Cpp" class = "lang_item" >C++</p>
+          <div id="textBoxOptions">
+            <!-- Extra div to make the absolute position of the lang_options div relative to it-->
+            <div>
+              <div id="lang_options" >
+                <div class = "arrow" ></div>
+                <p id = "lang_selected" title="Linguagem"  >C</p>
+                <p id = "lang_C" class = "lang_item" >C</p>
+                <p id = "lang_Cpp" class = "lang_item" >C++</p>
+              </div>
             </div>
+
+
+            <button id="button" title="Compilar e executar" onclick="vueApp.sendCode()">Compilar e executar</button>
           </div>
 
-
-          <button id="button" title="Compilar e executar" onclick="vueApp.sendCode()">Compilar e executar</button>
+          
         </div>
 
 
@@ -60,18 +65,21 @@ int main() {
 
 
       </section>
+
       <section id="memoryContainer">
-        <div>
+        <div id="stack" class="memory-section">
+          <h2>Pilha</h2>
           <memory :vars="stack"></memory>
         </div>
-        <div>
-            <memory :vars="heap"></memory>
+        <div id="heap" class="memory-section">
+          <h2>Heap</h2>
+          <memory :vars="heap"></memory>
         </div>
       </section>
     </main>
 
 
-    <footer>Documentação e código disponíveis em <a href="https://github.com/arturo32/HowPointersWork">github.com/arturo32/HowPointersWork</a></footer>
+    <!-- <footer>Documentação e código disponíveis em <a href="https://github.com/arturo32/HowPointersWork">github.com/arturo32/HowPointersWork</a></footer> -->
 
 
     <!-- JQuery library-->

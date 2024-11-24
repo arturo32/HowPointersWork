@@ -47,6 +47,10 @@
 .memory-cell .type {
 	left: 0.4rem;
 }
+
+.memory-cell .content {
+	font-family: DepartureMono, sans-serif;
+}
 .memory-cell.pointer .type {
 	color: var(--titlesColor);
 }

@@ -97,6 +97,10 @@ const vm = createApp({
 			// Ordering by address
 			heapArray.sort((a, b) => a[1][1].localeCompare(b[1][1]));
 
+			for(let cell of heapArray) {
+				cell[0] = '';
+			}
+
 			return heapArray;
 		}
 	},
