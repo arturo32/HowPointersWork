@@ -16,29 +16,26 @@
     src: url(DepartureMono-Regular.woff2);
 }
 
-
-
 html, body {
-    height: 100%;
-    overflow-y: hidden;
+    height: 100vh;
+    overflow-y: auto;
     margin: 0;
+    box-sizing: border-box;
 }
-
-
 
 body {
     font-family: "Times New Roman", Times, serif;
     font-size: 18px;
-    padding: 0 5%;
+    padding: 4vh 5%;
     background-color: var(--blocksColor);
+    display: flex;
+    flex-direction: column;
+    gap: 4vh;
 }
-
 
 header {
-    top: -20px;
-    height: 20%;
+    box-sizing: border-box;
 }
-
 
 header h1 {
     color: var(--outerColor);
@@ -47,20 +44,29 @@ header h1 {
     letter-spacing: 0.1em;
     text-align: left;
     font-size: 4vh;
-    height: 100%
-} 
+    height: 100%;
+    margin: 0;
+}
 
 main {
     display: flex;
     flex-direction: row;
-    height: 100%;
+    height: 80%;
+    flex-wrap: wrap;
 }
 
-main section {
+main > section {
     flex-grow: 1;
+    min-width: min(100%, 300px);
+    display: inline-block;
+    width: 50%;
+    height: 100%;
+    box-sizing: border-box;
 }
 
-.box{
+
+#editor,
+.box {
     color: var(--outerColor);
     border-style: solid;
     border-width: 0;
@@ -81,48 +87,32 @@ main section {
 }
 
 
-main > section {
-    display: inline-block;
-    width: 50%;
-    height: 75%;
-    box-sizing: border-box;
-}
-
-#memoryContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 3rem;
-    position: relative;
-    overflow: visible;
-}
-
-#memoryContainer h2 {
-    color: var(--cell-border);
-}
-
-#memoryContainer > div {
-    /*position: absolute;*/
-    /*top: calc(-5rem * 5);*/
-}
-
 
 #Text {
     display: inline-block;
     width: 100%;
-    height: 62%;
+    height: 68%;
     box-sizing: border-box;
     margin-right: 50px;
     position: relative;
 }
 
-#textbox {
-	width: 100%;
-	height: 82%;
+#editor {
+    font-size: 1rem;
+    width: 100%;
+    height: 82%;
     padding: 20px;
     resize: none;
     box-sizing: border-box;
 }
+
+/*#textbox {*/
+/*	width: 100%;*/
+/*	height: 82%;*/
+/*    padding: 20px;*/
+/*    resize: none;*/
+/*    box-sizing: border-box;*/
+/*}*/
 
 
 
@@ -297,6 +287,17 @@ footer a {
 }
 
 
+/*Ace editor custom style*/
+/*.ace_gutter-active-line::before {*/
+/*    content: "→";*/
+/*    color: var(--cell-border);*/
+/*    font-size: 1.5rem;*/
+/*    width: 15px;*/
+/*    height: 15px;*/
+/*    position: absolute;*/
+/*    left: 0px;*/
+/*    vertical-align: center;*/
+/*}*/
 
 
 

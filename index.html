@@ -22,14 +22,16 @@
     <main>
       <section id="codeBlocks">
         <div id="Text">
-          <label for="textbox">Editor</label>
-          <textarea id="textbox" class="box" spellcheck="false" placeholder="Digite aqui seu código em C ou C++." autofocus="">#include <stdio.h>
-int main() {
-  /* Digite aqui seu código em C */
+          <label for="textboxEditor">Editor</label>
+            <!-- Ace code editor -->
+            <div id="editor"></div>
+<!--          <textarea id="textbox" class="box" spellcheck="false" placeholder="Digite aqui seu código em C ou C++." autofocus="">#include <stdio.h>-->
+<!--int main() {-->
+<!--  /* Digite aqui seu código em C */-->
 
-  return 0;
-}
-          </textarea>
+<!--  return 0;-->
+<!--}-->
+<!--          </textarea>-->
           <div id="textBoxOptions">
             <!-- Extra div to make the absolute position of the lang_options div relative to it-->
             <div>
@@ -83,45 +85,30 @@ int main() {
 
 
     <!-- JQuery library-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
 
     <!--    Arrows library-->
     <script src="leader-line.min.js"></script>
-    <script type="text/javascript">
-      let globalArrows = [];
-      const editorIndentSpaces = 2;
-      const indentString = " ".repeat(editorIndentSpaces);
-      function indent(event) {
-        if(event.code === 'Enter') {
-          const textarea = event.target;
-          const v = textarea.value;
-          const startPos = textarea.selectionStart;
-          const endPos = textarea.selectionEnd;
-          event.preventDefault();
 
-          //Get the current indentation level and prefix the new line with the same
-          const prevLinePos = v.slice(0, startPos).lastIndexOf("\n") + 1;
-          const prevLine = v.slice(prevLinePos, endPos);
-          const levels = prevLine.match(/^ */)[0].length / editorIndentSpaces;
-          const indentation = indentString.repeat(levels);
-          textarea.value =
-              v.slice(0, endPos) + "\n" + indentation + v.slice(endPos);
-
-          //Set the cursor position
-          const newCursorPos = endPos + 1 + indentation.length;
-          textarea.setSelectionRange(newCursorPos, newCursorPos);
-        }
-      }
-      document.querySelector('#textbox').addEventListener('keydown', indent);
-
+    <!-- Ace code editor   -->
+    <script src="src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        const editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/c_cpp");
+        editor.setOption('enableKeyboardAccessibility', true);
+        editor.textInput.getElement().id = "textboxEditor";
+        editor.textInput.getElement().classList.add('box');
+        editor.textInput.getElement().placeholder = "Digite aqui seu código em C ou C++";
+        editor.setShowPrintMargin(false);
+        editor.session.setValue('#include <stdio.h>\n\nint main(){\n\t// Digite aqui seu código em C ou C++\n\n\treturn 0;\n}')
     </script>
 
-    <script type="text/javascript" src="api.js"></script>
+    <script type="text/javascript">
+      let globalArrows = [];
+    </script>
+<!--    <script type="text/javascript" src="api.js"></script>-->
     <script type="module" src="memoryContainer.js"></script>
 
-
   </body>
-
-
-
 </html>

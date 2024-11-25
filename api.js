@@ -57,7 +57,7 @@ lang_Cpp.onclick = function(){
 
 
  
-$(document).ready( function(){
+// $(document).ready( function(){
 
 
 	/*In the moment the user clicks the "Compilar e Executar" button the function below
@@ -93,7 +93,7 @@ $(document).ready( function(){
 	// 			getMethod(data.id);
 	// 		}, "json");
 	// });
-});
+// });
 
 
 

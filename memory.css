@@ -2,6 +2,30 @@
 	--cell-border: #fd971f;
 }
 
+#memoryContainer {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	gap: 3rem;
+	position: relative;
+	overflow: hidden;
+}
+
+#memoryContainer h2 {
+	color: var(--cell-border);
+	text-align: center;
+}
+
+#memoryContainer > div {
+	/*position: absolute;*/
+	/*top: calc(-5rem * 5);*/
+}
+
+.memory-section {
+	width: 33%;
+	max-width: 15rem;
+}
+
 .memory-cell {
 	display: flex;
 	align-items: center;
@@ -9,7 +33,8 @@
 	outline: 1px solid var(--cell-border);
 	border-radius: 5px;
 	color: white;
-	width: 15rem;
+	width: 100%;
+	max-width: 15rem;
 	height: 5rem;
 	font-family: Arial, sans-serif;
 	position: relative;

@@ -24,7 +24,7 @@ const vm = createApp({
 					},
 					body: JSON.stringify({
 						"language": "gdb",
-						"code": document.getElementById("textbox").value
+						"code": editor.getValue()
 					})
 				});
 				if (!response.ok) {
@@ -36,8 +36,8 @@ const vm = createApp({
 					line.remove();
 				}
 				globalArrows = [];
-				this.stack = this.extractLocals(json);
 				this.heap = this.extractHeap(json);
+				this.stack = this.extractLocals(json);
 			} catch (error) {
 				console.error(error.message);
 			}
@@ -52,15 +52,17 @@ const vm = createApp({
 			// Ordering by address
 			localsArray.sort((a, b) => a[1][1].localeCompare(b[1][1]));
 
-			// Changing type of pointers from "pointer" to "*<type>"
+
 			for(const cell of localsArray) {
+				// Changing type of pointers from "pointer" to "*<type>"
 				if(cell[1][2] === 'pointer') {
 					const address = cell[1][3];
 					const pointedVariable = localsArray.find(pointedCell => pointedCell[1][1] === address);
 					if(pointedVariable !== undefined) {
 						cell[1][2] = '*' + pointedVariable[1][2];
 					} else {
-						cell[1][2] = 'pointer';
+						const pointedHeap = this.heap.find(pointedCell => pointedCell[1][1] === address);
+						cell[1][2] = pointedHeap !== undefined?  '*' + pointedHeap[1][2][2] : 'pointer';
 					}
 				}
 			}
