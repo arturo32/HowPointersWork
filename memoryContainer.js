@@ -5,9 +5,10 @@ const { createApp } = Vue;
 const vm = createApp({
 	data() {
 		return {
-			message: 'Hello Vues!',
+			json: null,
 			stack: [],
-			heap: []
+			heap: [],
+			currentLine: null,
 		}
 	},
 	components: {
@@ -31,19 +32,19 @@ const vm = createApp({
 					throw new Error(`Response status: ${response.status}`);
 				}
 
-				const json = await response.json();
-				for(let line of globalArrows) {
-					line.remove();
-				}
-				globalArrows = [];
-				this.heap = this.extractHeap(json);
-				this.stack = this.extractLocals(json);
+				this.json = await response.json();
+				this.currentLine = 0;
+				this.heap = this.extractHeap();
+				this.stack = this.extractLocals();
+				document.querySelector('#lineController').classList.add('show');
+				document.querySelector('#editor').classList.add('running');
+				editor.gotoLine(this.json.trace[this.currentLine].line);
 			} catch (error) {
 				console.error(error.message);
 			}
 		},
-		extractLocals(json) {
-			const lastLineState = json.trace[json.trace.length - 2];
+		extractLocals() {
+			const lastLineState = this.json.trace[this.currentLine];
 			const locals = lastLineState.stack_to_render[0].encoded_locals;
 
 			// Transforms [{varName: properties}] into [["varname", properties]]
@@ -56,14 +57,18 @@ const vm = createApp({
 			for(const cell of localsArray) {
 				// Changing type of pointers from "pointer" to "*<type>"
 				if(cell[1][2] === 'pointer') {
-					const address = cell[1][3];
-					const pointedVariable = localsArray.find(pointedCell => pointedCell[1][1] === address);
+					const pointedAddress = cell[1][3];
+					const pointedVariable = localsArray.find(pointedCell => pointedCell[1][1] === pointedAddress);
 					if(pointedVariable !== undefined) {
 						cell[1][2] = '*' + pointedVariable[1][2];
 					} else {
-						const pointedHeap = this.heap.find(pointedCell => pointedCell[1][1] === address);
+						const pointedHeap = this.heap.find(pointedCell => pointedCell[1][1] === pointedAddress);
 						cell[1][2] = pointedHeap !== undefined?  '*' + pointedHeap[1][2][2] : 'pointer';
 					}
+				}
+				// Transforming <UNINITIALIZED> into ?
+				if(cell[1][3] === '<UNINITIALIZED>') {
+					cell[1][3] = '?';
 				}
 			}
 
@@ -89,8 +94,8 @@ const vm = createApp({
 			}
 			return previousCells.concat(cells).concat(posteriorCells);
 		},
-		extractHeap(json) {
-			const lastLineState = json.trace[json.trace.length - 2];
+		extractHeap() {
+			const lastLineState = this.json.trace[this.currentLine];
 			const heap = lastLineState.heap;
 
 			// Transforms [{varName: properties}] into [["varname", properties]]
@@ -101,9 +106,29 @@ const vm = createApp({
 
 			for(let cell of heapArray) {
 				cell[0] = '';
+				if(cell[1][2][3] === '<UNINITIALIZED>') {
+					cell[1][2][3] = '?';
+				}
 			}
 
+
 			return heapArray;
+		},
+		nextLine() {
+			if(this.currentLine < this.json.trace.length - 2) {
+				this.currentLine++;
+				this.heap = this.extractHeap();
+				this.stack = this.extractLocals();
+				editor.gotoLine(this.json.trace[this.currentLine].line);
+			}
+		},
+		previousLine() {
+			if(this.currentLine > 0) {
+				this.currentLine--;
+				this.heap = this.extractHeap();
+				this.stack = this.extractLocals();
+				editor.gotoLine(this.json.trace[this.currentLine].line);
+			}
 		}
 	},
 

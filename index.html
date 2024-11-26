@@ -23,19 +23,13 @@
       <section id="codeBlocks">
         <div id="Text">
           <label for="textboxEditor">Editor</label>
-            <!-- Ace code editor -->
-            <div id="editor"></div>
-<!--          <textarea id="textbox" class="box" spellcheck="false" placeholder="Digite aqui seu código em C ou C++." autofocus="">#include <stdio.h>-->
-<!--int main() {-->
-<!--  /* Digite aqui seu código em C */-->
+          <!-- Ace code editor -->
+          <div id="editor"></div>
 
-<!--  return 0;-->
-<!--}-->
-<!--          </textarea>-->
           <div id="textBoxOptions">
             <!-- Extra div to make the absolute position of the lang_options div relative to it-->
-            <div>
-              <div id="lang_options" >
+            <div id="lang_container">
+              <div id="lang_options" class="button">
                 <div class = "arrow" ></div>
                 <p id = "lang_selected" title="Linguagem"  >C</p>
                 <p id = "lang_C" class = "lang_item" >C</p>
@@ -43,16 +37,18 @@
               </div>
             </div>
 
+            <div id="lineController">
+              <button class="button" onclick="vueApp.previousLine()">Anterior</button>
+              <button class="button" onclick="vueApp.nextLine()">Próxima</button>
+            </div>
 
-            <button id="button" title="Compilar e executar" onclick="vueApp.sendCode()">Compilar e executar</button>
+
+            <button id="compileButton" class="button" title="Compilar e executar" onclick="vueApp.sendCode()">Compilar e executar</button>
           </div>
-
           
         </div>
 
-
         <div id="Blocks">
-
           <div id="inputBlock">
             <label for="inputC">input</label>
             <textarea id="inputC" class="box" spellcheck="false" placeholder="Digite aqui todas as entradas do seu código separadas por espaço/enter."></textarea>
@@ -63,8 +59,6 @@
             <div id="outputC" class="box"></div>
           </div>
         </div>
-
-
 
       </section>
 
@@ -84,13 +78,10 @@
     <!-- <footer>Documentação e código disponíveis em <a href="https://github.com/arturo32/HowPointersWork">github.com/arturo32/HowPointersWork</a></footer> -->
 
 
-    <!-- JQuery library-->
-<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
-
-    <!--    Arrows library-->
+    <!-- Leader Line arrows library 1.0.7-4 -->
     <script src="leader-line.min.js"></script>
 
-    <!-- Ace code editor   -->
+    <!-- Ace code editor 1.35.5 -->
     <script src="src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <script>
         const editor = ace.edit("editor");
@@ -105,10 +96,39 @@
     </script>
 
     <script type="text/javascript">
-      let globalArrows = [];
+      let globalArrows = new Map();
+      let currentLine = null;
     </script>
-<!--    <script type="text/javascript" src="api.js"></script>-->
     <script type="module" src="memoryContainer.js"></script>
+
+    <!--Language select-->
+    <script type="text/javascript">
+      /*Variable to be used in the POST request to specify the
+      language that will be compiled. Default is C.*/
+      let lang = "c";
+
+      //Selecting the div element with "arrow" class
+      const arrow = document.querySelector(".arrow");
+      //Selecting the div element with "language" ID
+      const lang_options = document.querySelector("#lang_options");
+
+      /*When the lang_options box is clicked, its height is changed,
+	  showing the options available (or hiding them if it was already
+	  clicked). The rotation and location of the arrow also changes*/
+      lang_options.onclick = function(){
+        if(window.getComputedStyle(lang_options).getPropertyValue("height") === "29px"){
+          lang_options.style.height = "84px";
+          arrow.style.transform = "rotate(-135deg)";
+          arrow.style.top = "10px";
+
+        }
+        else{
+          lang_options.style.height = "29px";
+          arrow.style.transform = "rotate(45deg)";
+          arrow.style.top = "7px";
+        }
+      }
+    </script>
 
   </body>
 </html>

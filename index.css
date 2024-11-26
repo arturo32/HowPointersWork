@@ -106,42 +106,35 @@ main > section {
     box-sizing: border-box;
 }
 
-/*#textbox {*/
-/*	width: 100%;*/
-/*	height: 82%;*/
-/*    padding: 20px;*/
-/*    resize: none;*/
-/*    box-sizing: border-box;*/
-/*}*/
+#textBoxOptions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 0.9rem;
+}
 
-
+#lang_container {
+    width: 75px;
+    position: relative;
+}
 
 #lang_options {
     width: 75px;
-    border: 0;
-    display: inline-block; 
-    margin-top: 15px;
-    background-color: var(--blocksColor);
-    color: var(--titlesColor);
-    border-radius: 20px;
+    display: inline-block;
     position: absolute;
-    font-family: Arial, sans-serif;
-    font-weight: 600;
     font-size: 16px;
-    cursor: pointer;
     transition: all 300ms ease-out;
     box-shadow: 0 0 15px #191A19;
-    height: 29px;   
-    overflow-y: hidden; 
+    overflow-y: hidden;
 }
 
-#lang_options p{
+#lang_options p {
     margin: 0;
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 10px;
 }
-
 
 .lang_item:hover{
     background-color: #31322D;
@@ -159,40 +152,46 @@ main > section {
   transition: all 300ms ease-out;
 }
 
-
-
-#textBoxOptions {
-    display: flex;
+#lineController {
+    --titlesColor: var(--cell-border);
+    display: none;
+    flex-grow: 1;
     flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
+#lineController.show {
+    display: flex;
+}
 
-#button {
+#compileButton {
     display: block;
-    background-color: transparent;
-    color: var(--titlesColor);
-    border-radius: 20px;
-    height: 29px;
-    font-family: Arial, sans-serif;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 15px;
+}
+
+#compileButton,
+#lineController button {
     transition: all 150ms ease-out;
     box-shadow: 0 0 15px #191A19;
     padding: 0 0.5rem;
 }
 
-#button:hover{
+#compileButton:hover,
+#lineController button:hover {
     transform: scale(0.99);
     box-shadow: 0 0 10px #191A19, 0 0 3px 0 var(--titlesColor);
 }
 
-#lang_options,
-#button {
+.button {
     border: 1px solid var(--titlesColor);
     box-shadow: 0 0 15px #191A19, 0 0 3px 0 var(--titlesColor);
+    border-radius: 20px;
+    height: 29px;
+    background-color: var(--blocksColor);
+    color: var(--titlesColor);
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 #Blocks {
@@ -288,6 +287,15 @@ footer a {
 
 
 /*Ace editor custom style*/
+#editor.running.ace-monokai .ace_marker-layer .ace_active-line {
+    background: #fd971f2e;
+}
+
+#editor.running.ace-monokai .ace_gutter-layer .ace_gutter-active-line {
+    background: var(--cell-border);
+    color: var(--blocksColor);
+}
+
 /*.ace_gutter-active-line::before {*/
 /*    content: "→";*/
 /*    color: var(--cell-border);*/
