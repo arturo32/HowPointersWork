@@ -128,6 +128,24 @@
           arrow.style.top = "7px";
         }
       }
+
+      //Selecting the items of the lang_options
+      let lang_selected = document.querySelector("#lang_selected");
+      let lang_C = document.querySelector("#lang_C");
+      let lang_Cpp = document.querySelector("#lang_Cpp");
+
+      /*If the option that contains "C" is clicked, the lang_selected
+	  content is change to "C" and the language send to the POST
+	  request is changed to "c". The same happens with the "C++"
+	  option*/
+      lang_C.onclick = function(){
+        lang_selected.innerHTML = "C";
+        lang = "c";
+      }
+      lang_Cpp.onclick = function(){
+        lang_selected.innerHTML = "C++";
+        lang = "c++";
+      }
     </script>
 
   </body>

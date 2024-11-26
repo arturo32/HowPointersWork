@@ -24,7 +24,7 @@ const vm = createApp({
 						"Content-Type": "application/json",
 					},
 					body: JSON.stringify({
-						"language": "gdb",
+						"language": lang,
 						"code": editor.getValue()
 					})
 				});
