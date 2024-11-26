@@ -57,7 +57,7 @@ main {
 
 main > section {
     flex-grow: 1;
-    min-width: min(100%, 300px);
+    min-width: min(100%, 400px);
     display: inline-block;
     width: 50%;
     height: 100%;
