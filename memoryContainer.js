@@ -101,14 +101,16 @@ const vm = createApp({
 			}
 		},
 		addUnitilizedCells(cells) {
-			const lastAddress = parseInt(cells[cells.length - 1][1][1], 16);
+			if(cells.length > 0) {
+				const lastAddress = parseInt(cells[cells.length - 1][1][1], 16);
 
-			const posteriorCells = [];
-			for(let i = 1; i <= 10; ++i) {
-				const newAddress = lastAddress + i;
-				posteriorCells.push(['', ['C_DATA', '0x' + newAddress.toString(16).toUpperCase(), 'lixo',  '?']]);
+				const posteriorCells = [];
+				for(let i = 1; i <= 10; ++i) {
+					const newAddress = lastAddress + i;
+					posteriorCells.push(['', ['C_DATA', '0x' + newAddress.toString(16).toUpperCase(), 'lixo',  '?']]);
+				}
+				return cells.concat(posteriorCells);
 			}
-			return cells.concat(posteriorCells);
 		},
 		extractHeap() {
 			const lastLineState = this.json.trace[this.currentLine];
