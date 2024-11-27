@@ -48,4 +48,12 @@ The second thing to check is the errors parameters! There are two: "build_stderr
 * Identify arrays;
 * Use a "diff algorithm" for a faster experience in big codes (?).
 
+
+## Docker 
+
+```bash
+docker build -f Dockerfile -t hpw-front .
+docker run -p 8080:8080  -it hpw-front
+```
+
 *Icons from [reshot](https://www.reshot.com)
