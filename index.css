@@ -1,8 +1,24 @@
 :root{
-    --blocksColor: #272822;
-    --titlesColor: #f92672;
-    --outerColor: #d4d4dc;
-    --cell-border: #fd971f;
+    --dark-background: #272822;
+    --light-background: #F5E5D5;
+    --background-color: var(--dark-background);
+
+    --highlight-color: #f92672;
+
+    --dark-title-color: #d4d4dc;
+    --light-title-color: #272822;
+    --title-color: var(--dark-title-color);
+
+    --dark-box-shadow: 0 0 15px #191A19;
+    --light-box-shadow: 0 0 15px #f0d7bf;
+    --box-shadow: var(--dark-box-shadow);
+
+    --dark-cell-border: #fd971f;
+    --light-cell-border: #ec8000;
+    --cell-border: var(--dark-cell-border);
+
+    --mobile-threshold: 640px;
+
     font-size: 16px;
 }
 
@@ -12,8 +28,8 @@
 }
 
 @font-face {
-    font-family: DepartureMono;
-    src: url(DepartureMono-Regular.woff2);
+    font-family: NotoSansMono;
+    src: url(NotoSansMono-Regular.ttf);
 }
 
 html, body {
@@ -27,7 +43,7 @@ body {
     font-family: "Times New Roman", Times, serif;
     font-size: 18px;
     padding: 4vh 5%;
-    background-color: var(--blocksColor);
+    background-color: var(--background-color);
     display: flex;
     flex-direction: column;
     gap: 4vh;
@@ -35,17 +51,42 @@ body {
 
 header {
     box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 header h1 {
-    color: var(--outerColor);
+    color: var(--title-color);
     font-family: DejaVuSans, sans-serif;
     font-weight: 200;
     letter-spacing: 0.1em;
     text-align: left;
-    font-size: 4vh;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
     height: 100%;
     margin: 0;
+    position: relative;
+}
+
+header h1 span {
+    position: relative;
+    top: 0;
+}
+
+header h1 strong {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+}
+
+#themeButton {
+    background: transparent;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    cursor: pointer;
+}
+
+#themeButton img.hide {
+    display: none;
 }
 
 main {
@@ -64,21 +105,26 @@ main > section {
     box-sizing: border-box;
 }
 
+#codeBlocks {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
 
 #editor,
 .box {
-    color: var(--outerColor);
+    color: var(--title-color);
     border-style: solid;
     border-width: 0;
-    box-shadow: 0 0 15px #191A19;
+    box-shadow: var(--box-shadow);
     border-radius: 5px;
-    border-color: var(--outerColor);
+    border-color: var(--title-color);
     font-size: 12px; 
     font-style: normal; 
     font-variant: normal; 
     font-weight: 400; 
     line-height: 20px;
-    background-color: var(--blocksColor);
+    background-color: var(--background-color);
     overflow: auto;
     overflow-x: hidden;
     resize: none;
@@ -106,12 +152,21 @@ main > section {
     box-sizing: border-box;
 }
 
+.flex-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
 #textBoxOptions {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
     margin-top: 0.9rem;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 #lang_container {
@@ -125,7 +180,7 @@ main > section {
     position: absolute;
     font-size: 16px;
     transition: all 300ms ease-out;
-    box-shadow: 0 0 15px #191A19;
+    box-shadow: var(--box-shadow);
     overflow-y: hidden;
 }
 
@@ -141,7 +196,7 @@ main > section {
 }
 
 .arrow {
-  border: solid var(--titlesColor);
+  border: solid var(--highlight-color);
   border-width: 0 3px 3px 0;
   display: inline-block;
   padding: 3px;
@@ -153,12 +208,25 @@ main > section {
 }
 
 #lineController {
-    --titlesColor: var(--cell-border);
+    --highlight-color: var(--cell-border);
     display: none;
-    flex-grow: 1;
     flex-direction: row;
-    justify-content: center;
+    justify-content: end;
     gap: 0.5rem;
+}
+
+@media (width < 640px) {
+    #lineController {
+        width: 100%;
+        flex-grow: 1;
+    }
+    #lineController button {
+        flex-grow: 1;
+    }
+    .flex-buttons {
+        width: 100%;
+        flex-grow: 1;
+    }
 }
 
 #lineController.show {
@@ -172,23 +240,23 @@ main > section {
 #compileButton,
 #lineController button {
     transition: all 150ms ease-out;
-    box-shadow: 0 0 15px #191A19;
+    box-shadow: var(--box-shadow);
     padding: 0 0.5rem;
 }
 
 #compileButton:hover,
 #lineController button:hover {
     transform: scale(0.99);
-    box-shadow: 0 0 10px #191A19, 0 0 3px 0 var(--titlesColor);
+    box-shadow: var(--box-shadow), 0 0 3px 0 var(--highlight-color);
 }
 
 .button {
-    border: 1px solid var(--titlesColor);
-    box-shadow: 0 0 15px #191A19, 0 0 3px 0 var(--titlesColor);
+    border: 1px solid var(--highlight-color);
+    box-shadow: var(--box-shadow), 0 0 3px 0 var(--highlight-color);
     border-radius: 20px;
     height: 29px;
-    background-color: var(--blocksColor);
-    color: var(--titlesColor);
+    background-color: var(--background-color);
+    color: var(--highlight-color);
     font-family: Arial, sans-serif;
     font-weight: 600;
     cursor: pointer;
@@ -198,7 +266,6 @@ main > section {
     vertical-align: top;
     width: 100%;
     height: 26%;
-    padding-top: 20px;
 }
 
 #inputBlock {
@@ -220,7 +287,7 @@ main > section {
 
 label, 
 h2 {
-    color: var(--titlesColor);
+    color: var(--highlight-color);
     vertical-align: top;
     margin: 0;
     margin-bottom: 12px;
@@ -286,14 +353,15 @@ footer a {
 }
 
 
+
 /*Ace editor custom style*/
-#editor.running.ace-monokai .ace_marker-layer .ace_active-line {
+#editor.running .ace_marker-layer .ace_active-line {
     background: #fd971f2e;
 }
 
-#editor.running.ace-monokai .ace_gutter-layer .ace_gutter-active-line {
+#editor.running .ace_gutter-layer .ace_gutter-active-line {
     background: var(--cell-border);
-    color: var(--blocksColor);
+    color: var(--background-color);
 }
 
 /*.ace_gutter-active-line::before {*/

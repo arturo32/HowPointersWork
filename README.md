@@ -48,3 +48,4 @@ The second thing to check is the errors parameters! There are two: "build_stderr
 * Identify arrays;
 * Use a "diff algorithm" for a faster experience in big codes (?).
 
+*Icons from [reshot](https://www.reshot.com)

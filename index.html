@@ -16,7 +16,11 @@
     <script type="text/javascript" src="vue.global.js"></script>
 
   	<header>
-  		<h1>COMO<br><big><span style="color:var(--titlesColor);">*</span>PONTEIROS</big><br>FUNCIONAM</h1>
+      <h1>COMO<br><span style="color:var(--highlight-color);">*</span><strong>PONTEIROS</strong><br>FUNCIONAM</h1>
+      <button id="themeButton" onclick="toggleTheme()">
+        <img src="icons/sun.svg" alt="Tema claro" title="Tema claro">
+        <img src="icons/moon.svg" alt="Tema escuro" class="hide" title="Tema escuro">
+      </button>
   	</header>
 
     <main>
@@ -27,23 +31,25 @@
           <div id="editor"></div>
 
           <div id="textBoxOptions">
-            <!-- Extra div to make the absolute position of the lang_options div relative to it-->
-            <div id="lang_container">
-              <div id="lang_options" class="button">
-                <div class = "arrow" ></div>
-                <p id = "lang_selected" title="Linguagem"  >C</p>
-                <p id = "lang_C" class = "lang_item" >C</p>
-                <p id = "lang_Cpp" class = "lang_item" >C++</p>
+            <div class="flex-buttons">
+              <!-- Extra div to make the absolute position of the lang_options div relative to it-->
+              <div id="lang_container">
+                <div id="lang_options" class="button">
+                  <div class = "arrow" ></div>
+                  <p id = "lang_selected" title="Linguagem"  >C</p>
+                  <p id = "lang_C" class = "lang_item" >C</p>
+                  <p id = "lang_Cpp" class = "lang_item" >C++</p>
+                </div>
               </div>
+
+              <button id="compileButton" class="button" title="Compilar e executar" onclick="vueApp.sendCode()">Compilar e executar</button>
             </div>
+
 
             <div id="lineController">
               <button class="button" onclick="vueApp.previousLine()">Anterior</button>
               <button class="button" onclick="vueApp.nextLine()">Próxima</button>
             </div>
-
-
-            <button id="compileButton" class="button" title="Compilar e executar" onclick="vueApp.sendCode()">Compilar e executar</button>
           </div>
           
         </div>
@@ -146,6 +152,48 @@
         lang_selected.innerHTML = "C++";
         lang = "c++";
       }
+    </script>
+
+    <!-- Theme change-->
+    <script>
+      function toggleTheme() {
+        const buttonIcons = document.getElementById('themeButton').children;
+        for(let icon of buttonIcons) {
+          icon.classList.toggle('hide');
+        }
+
+        const root = document.querySelector(':root');
+        const currentBackgroundColor = getComputedStyle(root).getPropertyValue('--background-color');
+        const lightBackgroundColor = getComputedStyle(root).getPropertyValue('--light-background');
+        const darkBackgroundColor = getComputedStyle(root).getPropertyValue('--dark-background');
+
+        if(currentBackgroundColor === darkBackgroundColor) {
+          root.style.setProperty('--background-color', lightBackgroundColor);
+          const lightTitleColor = getComputedStyle(root).getPropertyValue('--light-title-color');
+          const lightBoxShadow = getComputedStyle(root).getPropertyValue('--light-box-shadow');
+          const lightCellBorder = getComputedStyle(root).getPropertyValue('--light-cell-border');
+
+          root.style.setProperty('--title-color', lightTitleColor);
+          root.style.setProperty('--box-shadow', lightBoxShadow);
+          root.style.setProperty('--cell-border', lightCellBorder);
+
+
+          editor.setTheme("ace/theme/cloud9_day");
+        } else {
+          root.style.setProperty('--background-color', darkBackgroundColor);
+          const darkTitleColor = getComputedStyle(root).getPropertyValue('--dark-title-color');
+          const darkBoxShadow = getComputedStyle(root).getPropertyValue('--dark-box-shadow');
+          const darkCellBorder = getComputedStyle(root).getPropertyValue('--dark-cell-border');
+
+          root.style.setProperty('--title-color', darkTitleColor);
+          root.style.setProperty('--box-shadow', darkBoxShadow);
+          root.style.setProperty('--cell-border', darkCellBorder);
+
+          editor.setTheme("ace/theme/monokai");
+        }
+      }
+
+
     </script>
 
   </body>

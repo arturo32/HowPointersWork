@@ -9,37 +9,41 @@
 	gap: 3rem;
 	position: relative;
 	overflow: hidden;
+	font-family: NotoSansMono, sans-serif;
+}
+
+@media (width < 640px) {
+	#memoryContainer {
+		justify-content: space-between;
+	}
 }
 
 #memoryContainer h2 {
 	color: var(--cell-border);
 	text-align: center;
-}
-
-#memoryContainer > div {
-	/*position: absolute;*/
-	/*top: calc(-5rem * 5);*/
+	font-family: inherit;
 }
 
 .memory-section {
-	width: 33%;
+	width: 40%;
 	max-width: 15rem;
 }
 
 .memory-cell {
+	font-family: inherit;
+	letter-spacing: 1px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	outline: 1px solid var(--cell-border);
 	border-radius: 5px;
-	color: white;
+	color: var(--title-color);
 	width: 100%;
 	max-width: 15rem;
 	height: 5rem;
-	font-family: Arial, sans-serif;
 	position: relative;
 	transition: box-shadow 0.2s ease-out;
-	background-color: var(--blocksColor);
+	background-color: var(--background-color);
 }
 
 .memory-cell:hover:not(.lixo) {
@@ -67,6 +71,7 @@
 
 .memory-cell .name {
 	right: 0.4rem;
+	font-size: 0.9rem;
 }
 
 .memory-cell .type {
@@ -74,10 +79,10 @@
 }
 
 .memory-cell .content {
-	font-family: DepartureMono, sans-serif;
+
 }
 .memory-cell.pointer .type {
-	color: var(--titlesColor);
+	color: var(--highlight-color);
 }
 
 .memory-cell.lixo {
