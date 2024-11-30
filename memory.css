@@ -1,0 +1,90 @@
+:root {
+	--cell-border: #fd971f;
+}
+
+#memoryContainer {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	gap: 3rem;
+	position: relative;
+	overflow: hidden;
+	font-family: NotoSansMono, sans-serif;
+}
+
+@media (width < 640px) {
+	#memoryContainer {
+		justify-content: space-between;
+	}
+}
+
+#memoryContainer h2 {
+	color: var(--cell-border);
+	text-align: center;
+	font-family: inherit;
+}
+
+.memory-section {
+	width: 40%;
+	max-width: 15rem;
+}
+
+.memory-cell {
+	font-family: inherit;
+	letter-spacing: 1px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	outline: 1px solid var(--cell-border);
+	border-radius: 5px;
+	color: var(--title-color);
+	width: 100%;
+	max-width: 15rem;
+	height: 5rem;
+	position: relative;
+	transition: box-shadow 0.2s ease-out;
+	background-color: var(--background-color);
+}
+
+.memory-cell:hover:not(.lixo) {
+	z-index: 2;
+	box-shadow: 0 0 18px 1px var(--cell-border);
+	cursor: pointer;
+}
+
+.memory-cell .address {
+	position: absolute;
+	top: -1px;
+	left: -1px;
+	font-size: 0.6rem;
+	border: 1px solid var(--cell-border);
+	border-radius: 5px 0 5px 0;
+	padding: 0.15rem 0.2rem;
+}
+
+.memory-cell .name,
+.memory-cell .type {
+	position: absolute;
+	bottom: 0.25rem;
+	font-size: 0.8rem;
+}
+
+.memory-cell .name {
+	right: 0.4rem;
+	font-size: 0.9rem;
+}
+
+.memory-cell .type {
+	left: 0.4rem;
+}
+
+.memory-cell .content {
+
+}
+.memory-cell.pointer .type {
+	color: var(--highlight-color);
+}
+
+.memory-cell.lixo {
+	opacity: 0.2;
+}

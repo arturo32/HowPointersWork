@@ -24,11 +24,17 @@ Enquanto o usuário digita na caixa de texto, as variáveis que ele cria aparece
 
 O site, como bônus, também possui um compilador online com caixas de texto de entrada e saída que funciona através de uma API fornecida por https://paiza.io/en. Em seu site eles dizem que o serviço da API não é garantido de forma alguma, mas parece que estou autorizado a usá-la para fins não comerciais (seus <a href="https://paiza.jp/guide/kiyaku">termos de serviço</a> estão apenas em japonês). Eu realmente deveria procurar outra API de outro site. Se você conhece alguma, por favor, me avise. 
 
+## Como rodar localmente
+Devido ao uso de módulos JS, é necessário algum tipo de servidor web local para rodar esta aplicação. Um deles é o `http-server`. Se tiver `npx` instalado em sua máquina, basta rodar:
+
+```
+npx http-server . -c-1
+```
+
+(A flag `-c-1` desativa o cache)
+
 ## Como funciona
-Expressões regulares. Muitas. <br/>
-Cada vez que o usuário digita enter, ponto e vírgula ou cola algo na caixa de texto, uma função é chamada (no código HMTL) para procurar por ponteiros e variáveis regulares usando RegEx (expressões regulares). Se forem encontradas, mais funções, com mais RegEx, são chamadas para separar o tipo, nome e conteúdo das variáveis e colocá-las em dois arrays de objetos: um de variáveis regulares e outro de ponteiros. <br/>
-Ambos têm elementos com três propriedades, mas o "conteúdo" do ponteiro, ao invés de ser um inteiro ou uma palavra, é um objeto do tipo regularVariable. Ele recebe uma referência de uma variável existente para poder modificá-la: quando um ponteiro é desreferenciado, por exemplo, o ponteiro pode facilmente acessar a variável para a qual ele está apontando e alterar seu valor. <br/>
-Depois de tudo isso, os arrays recebem endereços de memória arbitrários e são adicionados ao array allVars. Este array então é usado na função drawMemory onde seus atributos são mostrados na tela dentro das células da memória através de funções da biblioteca <a href="https://p5js.org/">p5.js</a>.
+
 
 ### API do Compilador
 Toda a documentação da API está <a href = "http://api.paiza.io/docs/swagger/#!/runners/". >aqui</a>. Como não é muito amigável com usuários de APIs iniciantes (como eu!), vou explicar com detalhes como uso ele. <br/>

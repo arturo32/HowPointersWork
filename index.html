@@ -6,67 +6,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="Description" content="A site that helps students understand how pointers work.">
 
-    <link rel="stylesheet" type="text/css" href="pointers.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="stylesheet" type="text/css" href="memory.css">
     <title>Ponteiros</title>
     <link rel="icon" id="iconImage" href="icon.svg" type="image/icon type">
   </head>
   <body>
-    
+    <!-- Vue 3.5.13 -->
+    <script type="text/javascript" src="vue.global.js"></script>
+
   	<header>
-  		<h1>COMO<br><big><span style="color:var(--titlesColor);">*</span>PONTEIROS</big><br>FUNCIONAM</h1>
+      <h1>COMO<br><span style="color:var(--highlight-color);">*</span><strong>PONTEIROS</strong><br>FUNCIONAM</h1>
+      <button id="themeButton" onclick="toggleTheme()">
+        <img src="icons/sun.svg" alt="Tema claro" title="Tema claro">
+        <img src="icons/moon.svg" alt="Tema escuro" class="hide" title="Tema escuro">
+      </button>
   	</header>
 
-    <div id="codeBlocks">
-      
+    <main>
+      <section id="codeBlocks">
+        <div id="Text">
+          <label for="textboxEditor">Editor</label>
+          <!-- Ace code editor -->
+          <div id="editor"></div>
 
-      <div id="Text">
-        <textarea id="textbox" class="box" spellcheck="false" placeholder="Digite aqui seu código em C ou C++." autofocus=""></textarea>
+          <div id="textBoxOptions">
+            <div class="flex-buttons">
+              <!-- Extra div to make the absolute position of the lang_options div relative to it-->
+              <div id="lang_container">
+                <div id="lang_options" class="button">
+                  <div class = "arrow" ></div>
+                  <p id = "lang_selected" title="Linguagem"  >C</p>
+                  <p id = "lang_C" class = "lang_item" >C</p>
+                  <p id = "lang_Cpp" class = "lang_item" >C++</p>
+                </div>
+              </div>
 
-          <!-- Extra div to make the absolute position of the lang_options div relative to it-->
-          <div>
-            <div id="lang_options" >
-              <div class = "arrow" ></div>
-              <p id = "lang_selected" title="Linguagem"  >C</p> 
-              <p id = "lang_C" class = "lang_item" >C</p>
-              <p id = "lang_Cpp" class = "lang_item" >C++</p>
+              <button id="compileButton" class="button" title="Compilar e executar" onclick="vueApp.sendCode()">Compilar e executar</button>
+            </div>
+
+
+            <div id="lineController">
+              <button class="button" onclick="vueApp.previousLine()">Anterior</button>
+              <button class="button" onclick="vueApp.nextLine()">Próxima</button>
             </div>
           </div>
           
-    
-        <button id="button" title="Compilar e executar">Compilar e executar</button>
-      </div> 
-    
-      
-      <div id="Blocks">
-
-        <div id="inputBlock">
-          <label for="inputC">input</label>
-          <textarea id="inputC" class="box" spellcheck="false" placeholder="Digite aqui todas as entradas do seu código separadas por espaço/enter."></textarea>
         </div>
 
-        <div id="outputBlock">
-          <label for="outputC">output</label>
-          <div id="outputC" class="box"></div>
-        </div> 
-      </div>
+        <div id="Blocks">
+          <div id="inputBlock">
+            <label for="inputC">input</label>
+            <textarea id="inputC" class="box" spellcheck="false" placeholder="Digite aqui todas as entradas do seu código separadas por espaço/enter."></textarea>
+          </div>
+
+          <div id="outputBlock">
+            <label for="outputC">output</label>
+            <div id="outputC" class="box"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <section id="memoryContainer">
+        <div id="stack" class="memory-section">
+          <h2>Pilha</h2>
+          <memory :vars="stack"></memory>
+        </div>
+        <div id="heap" class="memory-section">
+          <h2>Heap</h2>
+          <memory :vars="heap"></memory>
+        </div>
+      </section>
+    </main>
 
 
-    </div>
+    <!-- <footer>Documentação e código disponíveis em <a href="https://github.com/arturo32/HowPointersWork">github.com/arturo32/HowPointersWork</a></footer> -->
 
-    <footer>Documentação e código disponíveis em <a href="https://github.com/arturo32/HowPointersWork">github.com/arturo32/HowPointersWork</a></footer>
-   
 
-    <!-- p5.js library -->
-    <script type="text/javascript" src="p5.min.js"></script>
+    <!-- Leader Line arrows library 1.0.7-4 -->
+    <script src="leader-line.min.js"></script>
 
-    <!-- JQuery library-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Ace code editor 1.35.5 -->
+    <script src="src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        const editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/c_cpp");
+        editor.setOption('enableKeyboardAccessibility', true);
+        editor.textInput.getElement().id = "textboxEditor";
+        editor.textInput.getElement().classList.add('box');
+        editor.textInput.getElement().placeholder = "Digite aqui seu código em C ou C++";
+        editor.setShowPrintMargin(false);
+        editor.session.setValue('#include <stdio.h>\n\nint main(){\n\t// Digite aqui seu código em C ou C++\n\n\treturn 0;\n}')
+    </script>
 
-    <script type="text/javascript" src="memory.js"></script>
-    <script type="text/javascript" src="pointers.js"></script>
-    <script type="text/javascript" src="api.js"></script>
+    <script type="text/javascript">
+      let globalArrows = new Map();
+      let currentLine = null;
+    </script>
+    <script type="module" src="memoryContainer.js"></script>
+
+    <!--Language select-->
+    <script type="text/javascript">
+      /*Variable to be used in the POST request to specify the
+      language that will be compiled. Default is C.*/
+      let lang = "c";
+
+      //Selecting the div element with "arrow" class
+      const arrow = document.querySelector(".arrow");
+      //Selecting the div element with "language" ID
+      const lang_options = document.querySelector("#lang_options");
+
+      /*When the lang_options box is clicked, its height is changed,
+	  showing the options available (or hiding them if it was already
+	  clicked). The rotation and location of the arrow also changes*/
+      lang_options.onclick = function(){
+        if(window.getComputedStyle(lang_options).getPropertyValue("height") === "29px"){
+          lang_options.style.height = "84px";
+          arrow.style.transform = "rotate(-135deg)";
+          arrow.style.top = "10px";
+
+        }
+        else{
+          lang_options.style.height = "29px";
+          arrow.style.transform = "rotate(45deg)";
+          arrow.style.top = "7px";
+        }
+      }
+
+      //Selecting the items of the lang_options
+      let lang_selected = document.querySelector("#lang_selected");
+      let lang_C = document.querySelector("#lang_C");
+      let lang_Cpp = document.querySelector("#lang_Cpp");
+
+      /*If the option that contains "C" is clicked, the lang_selected
+	  content is change to "C" and the language send to the POST
+	  request is changed to "c". The same happens with the "C++"
+	  option*/
+      lang_C.onclick = function(){
+        lang_selected.innerHTML = "C";
+        lang = "c";
+      }
+      lang_Cpp.onclick = function(){
+        lang_selected.innerHTML = "C++";
+        lang = "c++";
+      }
+    </script>
+
+    <!-- Theme change-->
+    <script>
+      function toggleTheme() {
+        const buttonIcons = document.getElementById('themeButton').children;
+        for(let icon of buttonIcons) {
+          icon.classList.toggle('hide');
+        }
+
+        const root = document.querySelector(':root');
+        const currentBackgroundColor = getComputedStyle(root).getPropertyValue('--background-color');
+        const lightBackgroundColor = getComputedStyle(root).getPropertyValue('--light-background');
+        const darkBackgroundColor = getComputedStyle(root).getPropertyValue('--dark-background');
+
+        if(currentBackgroundColor === darkBackgroundColor) {
+          root.style.setProperty('--background-color', lightBackgroundColor);
+          const lightTitleColor = getComputedStyle(root).getPropertyValue('--light-title-color');
+          const lightBoxShadow = getComputedStyle(root).getPropertyValue('--light-box-shadow');
+          const lightCellBorder = getComputedStyle(root).getPropertyValue('--light-cell-border');
+
+          root.style.setProperty('--title-color', lightTitleColor);
+          root.style.setProperty('--box-shadow', lightBoxShadow);
+          root.style.setProperty('--cell-border', lightCellBorder);
+
+
+          editor.setTheme("ace/theme/cloud9_day");
+        } else {
+          root.style.setProperty('--background-color', darkBackgroundColor);
+          const darkTitleColor = getComputedStyle(root).getPropertyValue('--dark-title-color');
+          const darkBoxShadow = getComputedStyle(root).getPropertyValue('--dark-box-shadow');
+          const darkCellBorder = getComputedStyle(root).getPropertyValue('--dark-cell-border');
+
+          root.style.setProperty('--title-color', darkTitleColor);
+          root.style.setProperty('--box-shadow', darkBoxShadow);
+          root.style.setProperty('--cell-border', darkCellBorder);
+
+          editor.setTheme("ace/theme/monokai");
+        }
+      }
+
+
+    </script>
+
   </body>
-
-
-
 </html>
