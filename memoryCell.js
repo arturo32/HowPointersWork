@@ -63,7 +63,12 @@ export default {
 			if (this.isInHeap) {
 				return this.variable[1][2][2];
 			} else {
-				return this.variable[1][2];
+				if(this.variable[1][0] === "C_ARRAY") {
+					return this.variable[1][2] + '[]';
+				} else {
+					return this.variable[1][2];	
+				}
+				
 			}
 		},
 		content() {
