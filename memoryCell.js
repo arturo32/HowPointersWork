@@ -29,6 +29,13 @@ export default {
 			this.createPointerArrow();
 		}
 	},
+	unmounted() {
+		if(this.variable[1][2][0] === '*' || this.variable[1][2] === 'pointer') {
+			if(globalArrows.has(this.address + this.content)) {
+				globalArrows.get(this.address + this.content).remove();
+			}
+		}
+	},
 	methods: {
 		createPointerArrow() {
 			if(this.content !== '?') {
@@ -44,7 +51,7 @@ export default {
 							{
 								path: 'fluid',
 								startSocket: 'right',
-								endSocket: isPointedCellHeap? 'left' : 'right',
+								endSocket: isPointedCellHeap? (this.isInHeap? 'right' : 'left') : 'right',
 								startSocketGravity: isPointedCellHeap? [15, 0] : [15, 0],
 								endSocketGravity: isPointedCellHeap? [-20, 0] : [20, 0],
 								endPlug: 'arrow3',
