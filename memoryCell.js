@@ -79,7 +79,7 @@ export default {
 			}
 		},
 		content() {
-			if (this.isInHeap) {
+			if (this.isArray) {
 				return this.variable[1][2][3];
 			} else {
 				return this.variable[1][3];
@@ -91,6 +91,9 @@ export default {
 		isInHeap() {
 			return this.variable[2];
 		},
+		isArray() {
+			this.variable[2][2].constructor === Array;
+		}
 	},
 	watch: {
 		variable:{
