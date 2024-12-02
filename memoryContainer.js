@@ -16,7 +16,7 @@ const vm = createApp({
 	},
 	methods: {
 		async sendCode() {
-			const url = "http://35.188.81.96:8000/execute";
+			const url = "https://hpw.arturoweb.com/execute";
 			try {
 				const response = await fetch(url, {
 					method: "POST",
