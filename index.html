@@ -36,9 +36,9 @@
               <div id="lang_container">
                 <div id="lang_options" class="button">
                   <div class = "arrow" ></div>
-                  <p id = "lang_selected" title="Linguagem"  >C</p>
-                  <p id = "lang_C" class = "lang_item" >C</p>
+                  <p id = "lang_selected" title="Linguagem"  >C++</p>
                   <p id = "lang_Cpp" class = "lang_item" >C++</p>
+                  <p id = "lang_C" class = "lang_item" >C</p>
                 </div>
               </div>
 
@@ -90,6 +90,8 @@
     <!-- Ace code editor 1.35.5 -->
     <script src="src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <script>
+        const cppInitialCode = '#include <iostream>\nusing namespace std;\n\nint main(){\n\t// Digite aqui seu código em C++\n\n\treturn 0;\n}';
+        const cInitialCode = '#include <stdio.h>\n\nint main(){\n\t// Digite aqui seu código em C\n\n\treturn 0;\n}';
         const editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
         editor.session.setMode("ace/mode/c_cpp");
@@ -98,7 +100,8 @@
         editor.textInput.getElement().classList.add('box');
         editor.textInput.getElement().placeholder = "Digite aqui seu código em C ou C++";
         editor.setShowPrintMargin(false);
-        editor.session.setValue('#include <stdio.h>\n\nint main(){\n\t// Digite aqui seu código em C ou C++\n\n\treturn 0;\n}')
+        editor.session.setValue(cppInitialCode);
+        
     </script>
 
     <script type="text/javascript">
@@ -110,8 +113,8 @@
     <!--Language select-->
     <script type="text/javascript">
       /*Variable to be used in the POST request to specify the
-      language that will be compiled. Default is C.*/
-      let lang = "c";
+      language that will be compiled. Default is C++.*/
+      let lang = "c++";
 
       //Selecting the div element with "arrow" class
       const arrow = document.querySelector(".arrow");
@@ -147,10 +150,18 @@
       lang_C.onclick = function(){
         lang_selected.innerHTML = "C";
         lang = "c";
+        if (editor.getValue() === cppInitialCode) {
+          editor.session.setValue(cInitialCode);  
+        }
+        
       }
       lang_Cpp.onclick = function(){
         lang_selected.innerHTML = "C++";
         lang = "c++";
+        if (editor.getValue() === cInitialCode) {
+          editor.session.setValue(cppInitialCode);  
+        }
+        
       }
     </script>
 
