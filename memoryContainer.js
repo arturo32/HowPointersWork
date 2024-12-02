@@ -137,8 +137,11 @@ const vm = createApp({
 			const heap = lastLineState.heap;
 
 			// Transforms [{varName: properties}] into [["varname", properties]]
-			const heapArray = new Array(...Object.entries(heap));
+			let heapArray = new Array(...Object.entries(heap));
 
+
+			// Removes unallocated cells
+			heapArray = heapArray.filter(cell => cell[1][2] !== undefined);
 
 			let arrayCells = [];
 			for(let cell of heapArray) {
@@ -150,6 +153,9 @@ const vm = createApp({
 			}
 			heapArray.push(...arrayCells);
 
+			// Removes unallocated cells
+			heapArray = heapArray.filter(cell => cell[1][2] !== undefined);
+
 			for(let cell of heapArray) {
 				if(cell[1][2][2] === 'pointer') {
 					cell[1][2][2] = this.findPointedCell(cell, heapArray.concat(this.stack));
@@ -158,6 +164,8 @@ const vm = createApp({
 				}
 				cell[2] = true;
 			}
+
+
 
 			// Ordering by address
 			heapArray.sort((a, b) => a[1][1].localeCompare(b[1][1]));
