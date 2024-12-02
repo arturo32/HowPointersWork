@@ -92,7 +92,7 @@ export default {
 			return this.variable[2];
 		},
 		isArray() {
-			this.variable[1][2].constructor === Array;
+			this.variable[1][2].constructor === Array || this.variable[0] === 'C_ARRAY';
 		}
 	},
 	watch: {
