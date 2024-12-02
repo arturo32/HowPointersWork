@@ -31,6 +31,10 @@
 	padding: 0 1px;
 }
 
+.memory-section::-webkit-scrollbar {
+	display: none;
+}
+
 .memory-cell {
 	font-family: inherit;
 	letter-spacing: 1px;
