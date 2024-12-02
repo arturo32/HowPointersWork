@@ -75,6 +75,7 @@ const vm = createApp({
 				if(cell[1][0] === 'C_ARRAY') {
 					this.flatArray(cell, arrayCells)
 				}
+				cell[2] = false;
 			}
 			localsArray.push(...arrayCells);
 
@@ -127,6 +128,7 @@ const vm = createApp({
 					cell[1][2][3] = '?';
 				}
 				this.flatArray(cell, arrayCells);
+				cell[2] = true;
 			}
 			heapArray.push(...arrayCells);
 
