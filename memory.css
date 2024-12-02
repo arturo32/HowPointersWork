@@ -27,6 +27,8 @@
 .memory-section {
 	width: 40%;
 	max-width: 15rem;
+	overflow-y: auto;
+	padding: 0 1px;
 }
 
 .memory-cell {
