@@ -1,5 +1,5 @@
 export default {
-	template: `<div :class="'memory-cell ' + 'memory-cell-' + variable[1][1] + ' ' + (variable[1][2][0] === '*' ? 'pointer' : variable[1][2])">
+	template: `<div :class="'memory-cell ' + 'memory-cell-' + variable[1][1] + ' ' + (isPointer ? 'pointer' : variable[1][2])">
 					<div class="address">{{ address }}</div>	
 					<div class="content">{{ content }}</div>	
 					<div class="type">{{ type }}</div>
@@ -17,12 +17,12 @@ export default {
 		}
 	},
 	mounted() {
-		if(this.variable[1][2][0] === '*' || this.variable[1][2] === 'pointer') {
+		if(this.isPointer) {
 			this.createPointerArrow();
 		}
 	},
 	updated() {
-		if(this.variable[1][2][0] === '*' || this.variable[1][2] === 'pointer') {
+		if(this.isPointer) {
 			if(globalArrows.has(this.address + this.content)) {
 				globalArrows.get(this.address + this.content).remove();
 			}
@@ -30,7 +30,7 @@ export default {
 		}
 	},
 	unmounted() {
-		if(this.variable[1][2][0] === '*' || this.variable[1][2] === 'pointer') {
+		if(this.isPointer) {
 			if(globalArrows.has(this.address + this.content)) {
 				globalArrows.get(this.address + this.content).remove();
 			}
@@ -93,6 +93,9 @@ export default {
 		},
 		isArray() {
 			return this.variable[1][2].constructor === Array;
+		},
+		isPointer() {
+			return this.variable[1][2][0] === '*' || this.variable[1][2] === 'pointer';
 		}
 	},
 	watch: {
