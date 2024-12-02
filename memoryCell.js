@@ -53,7 +53,7 @@ export default {
 								startSocket: 'right',
 								endSocket: isPointedCellHeap? (this.isInHeap? 'right' : 'left') : 'right',
 								startSocketGravity: isPointedCellHeap? [15, 0] : [15, 0],
-								endSocketGravity: isPointedCellHeap? [-20, 0] : [20, 0],
+								endSocketGravity: isPointedCellHeap? (this.isInHeap? [20, 0] : [-20, 0]) : [20, 0],
 								endPlug: 'arrow3',
 								size: 2,
 								endPlugSize: 2,
@@ -68,7 +68,12 @@ export default {
 	computed: {
 		type() {
 			if (this.isInHeap) {
-				return this.variable[1][2][2];
+				if(this.isArray) {
+					return this.variable[1][2][2];
+				} else {
+					return this.variable[1][2];
+				}
+
 			} else {
 				if(this.variable[1][0] === "C_ARRAY") {
 					return this.variable[1][2][2] + '[]';
@@ -95,7 +100,8 @@ export default {
 			return this.variable[1][2].constructor === Array;
 		},
 		isPointer() {
-			return this.variable[1][2][0] === '*' || this.variable[1][2] === 'pointer';
+			return this.isArray? this.variable[1][2][2][0] === '*' || this.variable[1][2][2] === 'pointer' :
+				this.variable[1][2][0] === '*' || this.variable[1][2] === 'pointer';
 		}
 	},
 	watch: {

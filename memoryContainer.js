@@ -52,18 +52,7 @@ const vm = createApp({
 
 
 			let arrayCells = [];
-			for(const cell of localsArray) {
-				// Changing type of pointers from "pointer" to "*<type>"
-				if(cell[1][2] === 'pointer') {
-					const pointedAddress = cell[1][3];
-					const pointedVariable = localsArray.find(pointedCell => pointedCell[1][1] === pointedAddress);
-					if(pointedVariable !== undefined) {
-						cell[1][2] = '*' + pointedVariable[1][2];
-					} else {
-						const pointedHeap = this.heap.find(pointedCell => pointedCell[1][1] === pointedAddress);
-						cell[1][2] = pointedHeap !== undefined?  '*' + pointedHeap[1][2][2] : 'pointer';
-					}
-				}
+			for(let cell of localsArray) {
 				// Transforming <UNINITIALIZED> into ?
 				if(cell[1][3] === '<UNINITIALIZED>') {
 					cell[1][3] = '?';
@@ -75,9 +64,16 @@ const vm = createApp({
 				if(cell[1][0] === 'C_ARRAY') {
 					this.flatArray(cell, arrayCells)
 				}
-				cell[2] = false;
 			}
 			localsArray.push(...arrayCells);
+
+			for(let cell of localsArray) {
+				// Changing type of pointers from "pointer" to "*<type>"
+				if(cell[1][2] === 'pointer') {
+					cell[1][2] = this.findPointedCell(cell, localsArray.concat(this.heap));
+				}
+				cell[2] = false;
+			}
 
 			// Ordering by address
 			localsArray.sort((a, b) => a[1][1].localeCompare(b[1][1]));
@@ -87,6 +83,29 @@ const vm = createApp({
 			}
 
 			return localsArray;
+		},
+		findPointedCell(cell, cells) {
+			let pointedAddress;
+			if (cell[1][0] === 'C_DATA') {
+				pointedAddress = cell[1][3];
+			} else {
+				pointedAddress = cell[1][2][3];
+			}
+
+			const pointedCell = cells.find(pointedCell => pointedCell[1][1] === pointedAddress);
+			if(pointedCell !== undefined) {
+				if(pointedCell[1][0] === 'C_DATA') {
+					return '*' + pointedCell[1][2];
+				} else {
+					if(pointedCell[1][2][2] === 'pointer') {
+						return '*' + this.findPointedCell(pointedCell, cells);
+					} else {
+						return '*' + pointedCell[1][2][2];
+					}
+				}
+			} else {
+				return 'pointer';
+			}
 		},
 		flatArray(cell, arrayCells) {
 			let i = 3;
@@ -128,9 +147,17 @@ const vm = createApp({
 					cell[1][2][3] = '?';
 				}
 				this.flatArray(cell, arrayCells);
-				cell[2] = true;
 			}
 			heapArray.push(...arrayCells);
+
+			for(let cell of heapArray) {
+				if(cell[1][2][2] === 'pointer') {
+					cell[1][2][2] = this.findPointedCell(cell, heapArray.concat(this.stack));
+				} else if(cell[1][2] === 'pointer') {
+					cell[1][2] = this.findPointedCell(cell, heapArray.concat(this.stack));
+				}
+				cell[2] = true;
+			}
 
 			// Ordering by address
 			heapArray.sort((a, b) => a[1][1].localeCompare(b[1][1]));
