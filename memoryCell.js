@@ -89,7 +89,7 @@ export default {
 			return this.variable[1][1];
 		},
 		isInHeap() {
-			return this.variable[1][2].constructor === Array
+			return this.variable[2];
 		},
 	},
 	watch: {
