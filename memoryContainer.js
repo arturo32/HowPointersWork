@@ -16,7 +16,7 @@ const vm = createApp({
 	},
 	methods: {
 		async sendCode() {
-			const url = "https://hpw.arturoweb.com/execute";
+			const url = "http://localhost:8000/execute"; // http://localhost:8000/execute
 			try {
 				const response = await fetch(url, {
 					method: "POST",
@@ -29,15 +29,35 @@ const vm = createApp({
 					})
 				});
 				if (!response.ok) {
-					throw new Error(`Response status: ${response.status}`);
+					if(response.status === 400) {
+						const compilerError = await response.json();
+						if (compilerError.error.event === 'compiler') {
+							const errorLine = compilerError.error.line;
+							const errorColumn = compilerError.error.column;
+							const msgError = `Linha ${errorLine}, coluna ${errorColumn}: ${compilerError.error.exception_msg}`;
+
+							editor.gotoLine(Number(errorLine), Number(errorColumn), true);
+							document.querySelector('#editor').classList.remove('running');
+							document.querySelector('#editor').classList.add('compiler-error');
+							document.querySelector('#lineController').classList.add('show');
+							alert(msgError);
+							document.querySelector('#outputC').textContent = msgError;
+						} else {
+							alert('Erro desconhecido no servidor!');
+						}
+
+					}
+					return;
 				}
 
 				this.json = await response.json();
 				this.currentLine = 0;
 				this.heap = this.extractHeap();
 				this.stack = this.extractLocals();
+				document.querySelector('#outputC').textContent = '';
 				document.querySelector('#lineController').classList.add('show');
 				document.querySelector('#editor').classList.add('running');
+				document.querySelector('#editor').classList.remove('compiler-error');
 				editor.gotoLine(this.json.trace[this.currentLine].line);
 			} catch (error) {
 				console.error(error.message);

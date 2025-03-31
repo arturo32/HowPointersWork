@@ -364,6 +364,14 @@ footer a {
     color: var(--background-color);
 }
 
+#editor.compiler-error .ace_marker-layer .ace_active-line {
+    background: rgba(253, 31, 31, 0.18);
+}
+#editor.compiler-error .ace_gutter-layer .ace_gutter-active-line {
+    background: #fd1f1f;
+    color: var(--background-color);
+}
+
 /*.ace_gutter-active-line::before {*/
 /*    content: "→";*/
 /*    color: var(--cell-border);*/
