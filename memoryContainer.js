@@ -65,44 +65,61 @@ const vm = createApp({
 		},
 		extractLocals() {
 			const lastLineState = this.json.trace[this.currentLine];
-			const locals = lastLineState.stack_to_render[0].encoded_locals;
+			const stackFrames = [];
 
-			// Transforms [{varName: properties}] into [["varname", properties]]
-			const localsArray = new Array(...Object.entries(locals));
+			for (const stackFrame of lastLineState.stack_to_render) {
+				const locals = stackFrame.encoded_locals;
+
+				// Transforms [{varName: properties}] into [["varname", properties]]
+				const localsArray = new Array(...Object.entries(locals));
 
 
-			let arrayCells = [];
-			for(let cell of localsArray) {
-				// Transforming <UNINITIALIZED> into ?
-				if(cell[1][3] === '<UNINITIALIZED>') {
-					cell[1][3] = '?';
+				let arrayCells = [];
+				for(let cell of localsArray) {
+					// Transforming <UNINITIALIZED> into ?
+					if(cell[1][3] === '<UNINITIALIZED>') {
+						cell[1][3] = '?';
+					}
+					if(cell[1][2].constructor === Array && cell[1][2][3] === '<UNINITIALIZED>') {
+						cell[1][2][3] = '?';
+					}
+
+					if(cell[1][0] === 'C_ARRAY') {
+						this.flatArray(cell, arrayCells)
+					}
 				}
-				if(cell[1][2].constructor === Array && cell[1][2][3] === '<UNINITIALIZED>') {
-					cell[1][2][3] = '?';
+				localsArray.push(...arrayCells);
+
+				for(let cell of localsArray) {
+					// Changing type of pointers from "pointer" to "*<type>"
+					if(cell[1][2] === 'pointer') {
+						cell[1][2] = this.findPointedCell(cell, localsArray.concat(this.heap));
+					}
+					cell[2] = false;
 				}
 
-				if(cell[1][0] === 'C_ARRAY') {
-					this.flatArray(cell, arrayCells)
-				}
+				// Ordering by address
+				localsArray.sort((a, b) => a[1][1].localeCompare(b[1][1]));
+
+				stackFrames.push({frameName: stackFrame.func_name, localVars: localsArray});
 			}
-			localsArray.push(...arrayCells);
 
-			for(let cell of localsArray) {
-				// Changing type of pointers from "pointer" to "*<type>"
-				if(cell[1][2] === 'pointer') {
-					cell[1][2] = this.findPointedCell(cell, localsArray.concat(this.heap));
+			const cellsQtd = stackFrames.flatMap(stackFrame => stackFrame.localVars).length;
+			if(cellsQtd < 20) {
+				const lastFrame = stackFrames[stackFrames.length - 1];
+				const lastCell = lastFrame.localVars[lastFrame.localVars.length - 1];
+				const lastAddress = lastCell[1][1];
+				let lastType;
+				if(lastCell[1][0] === "C_ARRAY") {
+					lastType = lastCell[1][2][2] + '[]';
+				} else {
+					lastType = lastCell[1][2];
 				}
-				cell[2] = false;
+
+				stackFrames.push({frameName: null, localVars: this.addUnitilizedCells(lastAddress, lastType, Math.min(20 - cellsQtd, 10))});
 			}
 
-			// Ordering by address
-			localsArray.sort((a, b) => a[1][1].localeCompare(b[1][1]));
-
-			if(localsArray.length < 20) {
-				return this.addUnitilizedCells(localsArray);
-			}
-
-			return localsArray;
+			return stackFrames;
 		},
 		findPointedCell(cell, cells) {
 			let pointedAddress;
@@ -140,17 +157,16 @@ const vm = createApp({
 				++i;
 			}
 		},
-		addUnitilizedCells(cells) {
-			if(cells.length > 0) {
-				const lastAddress = parseInt(cells[cells.length - 1][1][1], 16);
+		addUnitilizedCells(lastAddress, lastType, quantity) {
+			const hexLastAddress = parseInt(lastAddress, 16);
 
-				const posteriorCells = [];
-				for(let i = 1; i <= 10; ++i) {
-					const newAddress = lastAddress + i;
-					posteriorCells.push(['', ['C_DATA', '0x' + newAddress.toString(16).toUpperCase(), 'lixo',  '?']]);
-				}
-				return cells.concat(posteriorCells);
+			const posteriorCells = [];
+			for(let i = 1; i <= quantity; ++i) {
+				const newAddress = hexLastAddress + i;
+				posteriorCells.push(['', ['C_DATA', '0x' + newAddress.toString(16).toUpperCase(), 'lixo',  '?']]);
 			}
+			return posteriorCells;
+
 		},
 		extractHeap() {
 			const lastLineState = this.json.trace[this.currentLine];

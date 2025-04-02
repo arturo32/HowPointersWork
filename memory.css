@@ -35,6 +35,37 @@
 	display: none;
 }
 
+.stack-frame {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	border-top: 1px solid var(--highlight-color);
+}
+
+.stack-frame h3 {
+	color: var(--highlight-color);
+	position: absolute;
+	left: -5rem;
+	margin: 0;
+	font-size: 1rem;
+}
+
+/*Vertical writing*/
+/*.stack-frame h3 {
+	color: #fd971f;
+	margin: 0;
+	font-size: 1rem;
+	writing-mode: sideways-lr;
+	align-self: flex-start;
+	margin-top: 0.25rem;
+}*/
+
+
+.cells-container {
+	flex-grow: 1;
+}
+
 .memory-cell {
 	font-family: inherit;
 	letter-spacing: 1px;
