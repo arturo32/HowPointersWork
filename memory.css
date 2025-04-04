@@ -39,27 +39,45 @@
 	position: relative;
 	display: flex;
 	flex-direction: row;
-	gap: 2rem;
-	border-top: 1px solid var(--highlight-color);
 }
 
-.stack-frame h3 {
-	color: var(--highlight-color);
-	position: absolute;
-	left: -5rem;
-	margin: 0;
-	font-size: 1rem;
-}
+/*.stack-frame h3 {*/
+/*	color: var(--highlight-color);*/
+/*	position: absolute;*/
+/*	left: -5rem;*/
+/*	margin: 0;*/
+/*	font-size: 1rem;*/
+/*}*/
 
 /*Vertical writing*/
-/*.stack-frame h3 {
+.stack-frame hr {
+	color: #fd971f;
+	position: absolute;
+	width: 90%;
+	top: -1px;
+	margin: 0;
+	left: 0;
+}
+.stack-frame .frame-name {
+	height: 5rem;
+	display: block;
+	white-space: nowrap;
+	padding: 0.5rem 0;
+	box-sizing: border-box;
+	width: 1.7rem;
+}
+.stack-frame .frame-name h3 {
+	overflow-y: hidden;
+	text-overflow: ellipsis;
 	color: #fd971f;
 	margin: 0;
 	font-size: 1rem;
-	writing-mode: sideways-lr;
+	writing-mode: vertical-lr; /* sideways-lr does not work well with text-overflow: ellipsis */
+	transform: rotate(180deg);
 	align-self: flex-start;
-	margin-top: 0.25rem;
-}*/
+	text-align: end;
+	height: 100%;
+}
 
 
 .cells-container {
