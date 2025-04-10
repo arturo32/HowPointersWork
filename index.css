@@ -19,6 +19,8 @@
 
     --mobile-threshold: 640px;
 
+    --background-color-animation: var(--dark-background) var(--light-background);
+
     font-size: 16px;
 }
 
@@ -39,15 +41,104 @@ html, body {
     box-sizing: border-box;
 }
 
+@property --o {
+    syntax: '<length-percentage>+';
+    initial-value: 50%;
+    inherits: false
+}
+
+@property --pos {
+    syntax: '<length-percentage>';
+    initial-value: 0%;
+    inherits: false
+}
+
+@property --c0 {
+    syntax: '<color>';
+    initial-value: red;
+    inherits: false
+}
+
+@property --c1 {
+    syntax: '<color>';
+    initial-value: red;
+    inherits: false
+}
+
+/*body {*/
+/*    --c0: var(--light-background);*/
+/*    --c1: var(--dark-background);*/
+/*    font-family: "Times New Roman", Times, serif;*/
+/*    font-size: 18px;*/
+/*    padding: 4vh 5%;*/
+
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    gap: 4vh;*/
+
+/*    background: radial-gradient(circle at 94% 6%,*/
+/*    var(--c0) var(--pos, 0%), var(--c1) 0);*/
+/*    animation: a 0s infinite;*/
+/*    animation-name: c0, o, pos, c1;*/
+/*    animation-duration: 2s, 20s, 1s;*/
+/*    animation-timing-function: steps(1), steps(1), ease-in-out;*/
+/*}*/
+
+/*@keyframes pos { 90%, 100% { --pos: 100% } }*/
+
+/*@keyframes c0 { 50% { --c0: #{nth($c, 2)} } }*/
+
+/*@keyframes c1 { 50% { --c1: #{nth($c, 1)} } }*/
+
+
 body {
+    --c0: var(--light-background);
+    --c1: var(--dark-background);
     font-family: "Times New Roman", Times, serif;
     font-size: 18px;
     padding: 4vh 5%;
-    background-color: var(--background-color);
+
     display: flex;
     flex-direction: column;
     gap: 4vh;
+
+    background: radial-gradient(
+        circle at var(--x, 0) var(--y, 0),
+        var(--gc0, var(--c0)) var(--stop, 0%),
+        var(--gc1, var(--c1)) 0);
+    background-size: 100vw 100vh;
 }
+
+/*body:after {*/
+/*    !* just to prettify stuff *!*/
+/*    !* use absolute positioning because*/
+/*	 * margin: 0 on body*/
+/*	 * breaks Edge for some reason *!*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    right: 0;*/
+/*    bottom: 0;*/
+/*    left: 0;*/
+/*    font: calc(16vmin + 3rem)/100vh Leckerli One, cursive;*/
+/*    text-align: center;*/
+/*    cursor: pointer;*/
+/*    content: 'Click!';*/
+/*}*/
+
+/*@supports (mix-blend-mode: screen) {*/
+/*    body:after {*/
+/*        !* in supports because*/
+/*		 * background: inherit*/
+/*		 * breaks Edge for some reason*/
+/*		 * (sorry, I had no better idea) *!*/
+/*        background: inherit;*/
+/*        -webkit-background-clip: text;*/
+/*        background-clip: text;*/
+/*        color: transparent;*/
+/*        filter: invert(1) grayscale(1) contrast(3);*/
+/*    }*/
+/*}*/
+
 
 header {
     box-sizing: border-box;
@@ -124,7 +215,7 @@ main > section {
     font-variant: normal; 
     font-weight: 400; 
     line-height: 20px;
-    background-color: var(--background-color);
+    background-color: transparent;
     overflow: auto;
     overflow-x: hidden;
     resize: none;
@@ -255,7 +346,7 @@ main > section {
     box-shadow: var(--box-shadow), 0 0 3px 0 var(--highlight-color);
     border-radius: 20px;
     height: 29px;
-    background-color: var(--background-color);
+    background-color: transparent;
     color: var(--highlight-color);
     font-family: Arial, sans-serif;
     font-weight: 600;
@@ -361,7 +452,7 @@ footer a {
 
 #editor.running .ace_gutter-layer .ace_gutter-active-line {
     background: var(--cell-border);
-    color: var(--background-color);
+    color: transparent;
 }
 
 #editor.compiler-error .ace_marker-layer .ace_active-line {
@@ -369,7 +460,7 @@ footer a {
 }
 #editor.compiler-error .ace_gutter-layer .ace_gutter-active-line {
     background: #fd1f1f;
-    color: var(--background-color);
+    color: transparent;
 }
 
 /*.ace_gutter-active-line::before {*/
