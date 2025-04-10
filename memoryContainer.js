@@ -16,6 +16,7 @@ const vm = createApp({
 	},
 	methods: {
 		async sendCode() {
+			showLoadingSpinner();
 			const url = "http://localhost:8000/execute"; // http://localhost:8000/execute
 			try {
 				const response = await fetch(url, {
@@ -40,13 +41,16 @@ const vm = createApp({
 							document.querySelector('#editor').classList.remove('running');
 							document.querySelector('#editor').classList.add('compiler-error');
 							document.querySelector('#lineController').classList.add('show');
+							hideLoadingSpinner();
 							alert(msgError);
 							document.querySelector('#outputC').textContent = msgError;
 						} else {
+							hideLoadingSpinner();
 							alert('Erro desconhecido no servidor!');
 						}
 
 					}
+					hideLoadingSpinner();
 					return;
 				}
 
@@ -59,8 +63,10 @@ const vm = createApp({
 				document.querySelector('#editor').classList.add('running');
 				document.querySelector('#editor').classList.remove('compiler-error');
 				editor.gotoLine(this.json.trace[this.currentLine].line);
+				hideLoadingSpinner();
 			} catch (error) {
 				console.error(error.message);
+				hideLoadingSpinner();
 			}
 		},
 		extractLocals() {

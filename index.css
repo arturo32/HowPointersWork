@@ -49,6 +49,47 @@ body {
     gap: 4vh;
 }
 
+.loading-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    opacity: 0.5;
+    background: black;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    grid-gap: 1rem;
+    z-index: 10;
+}
+
+.loading-overlay .loading-spinner {
+    height: 3.5rem;
+    width: 3.5rem;
+    animation: spin 1.5s ease-in-out infinite;
+    transform-origin: center;
+}
+
+.loading-overlay .loading-text {
+    font-family: NotoSansMono, sans-serif;
+    color: white;
+    font-size: 1.2rem;
+    position: absolute;
+    top: 55vh;
+    font-weight: 700;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 header {
     box-sizing: border-box;
     display: flex;

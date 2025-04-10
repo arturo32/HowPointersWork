@@ -15,6 +15,11 @@
     <!-- Vue 3.5.13 -->
     <script type="text/javascript" src="vue.global.js"></script>
 
+    <div id="compilingLoader" class="loading-overlay" role="alert" aria-hidden="true" tabindex="-1">
+      <img alt="" class="loading-spinner" aria-hidden="true" tabindex="-1" src="icon.svg">
+      <div class="loading-text">Compilando...</div>
+    </div>
+
   	<header>
       <h1>COMO<br><span style="color:var(--highlight-color);">*</span><strong>PONTEIROS</strong><br>FUNCIONAM</h1>
       <button id="themeButton" onclick="toggleTheme()">
@@ -105,7 +110,6 @@
 
     <script type="text/javascript">
       let globalArrows = new Map();
-      let currentLine = null;
     </script>
     <script type="module" src="memoryContainer.js"></script>
 
@@ -204,6 +208,32 @@
       }
 
 
+    </script>
+
+    <!--    Loading screen-->
+    <script>
+      const overlay = document.getElementById('compilingLoader');
+      const headerTag = document.querySelector('header');
+      const mainTag = document.querySelector('main');
+      const buttons = document.querySelectorAll('button');
+
+      function showLoadingSpinner() {
+        overlay.style.display = 'flex';
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        headerTag.style.filter = 'blur(2px)';
+        mainTag.style.filter = 'blur(2px)';
+        buttons.forEach(button => button.disabled = true);
+      }
+
+      function hideLoadingSpinner() {
+        overlay.style.display = 'none';
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = 'auto';
+        headerTag.style.filter = '';
+        mainTag.style.filter = '';
+        buttons.forEach(button => button.disabled = false); // anti-pattern
+      }
     </script>
 
   </body>
