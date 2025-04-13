@@ -69,7 +69,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0.5;
+    opacity: 0.3;
     background: black;
 }
 
@@ -126,7 +126,7 @@ header h1 strong {
     font-size: clamp(1.8rem, 4vw, 2.8rem);
 }
 
-#themeButton {
+#headerButtons button {
     background: transparent;
     width: 2.5rem;
     height: 2.5rem;
@@ -134,14 +134,14 @@ header h1 strong {
     cursor: pointer;
 }
 
-#themeButton img.hide {
+#themeButton .hide {
     display: none;
 }
 
 main {
     display: flex;
     flex-direction: row;
-    height: 80%;
+    height: 78%;
     flex-wrap: wrap;
 }
 
@@ -335,7 +335,8 @@ main > section {
 }
 
 label, 
-h2 {
+h2,
+h3 {
     color: var(--highlight-color);
     vertical-align: top;
     margin: 0;
@@ -433,4 +434,19 @@ footer a {
 /*}*/
 
 
+.visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    white-space: nowrap;
+    outline: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    left: 0;
+}
 

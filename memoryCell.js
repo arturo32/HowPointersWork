@@ -42,7 +42,7 @@ export default {
 				const pointerCell = document.querySelector('.memory-cell-' + this.address);
 				const pointedCell =  document.querySelector('.memory-cell-' + this.content);
 				if(pointedCell !== null) {
-					const isPointedCellHeap = pointedCell.parentElement.id === 'heap';
+					const isPointedCellHeap = pointedCell.parentElement.parentElement.id === 'heap';
 					globalArrows.set(
 						this.address + this.content,
 						new LeaderLine(

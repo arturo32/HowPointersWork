@@ -22,11 +22,22 @@
     </div>
 
   	<header>
-      <h1>COMO<br><span style="color:var(--highlight-color);">*</span><strong>PONTEIROS</strong><br>FUNCIONAM</h1>
-      <button id="themeButton" onclick="toggleTheme()">
-        <img src="icons/sun.svg" alt="Tema claro" title="Tema claro">
-        <img src="icons/moon.svg" alt="Tema escuro" class="hide" title="Tema escuro">
-      </button>
+      <h1>COMO<br><span aria-hidden="true" style="color:var(--highlight-color);">*</span><strong>PONTEIROS</strong><br>FUNCIONAM</h1>
+      <div id="headerButtons">
+<!--        <button id="configButton">-->
+<!--          <img src="icons/cog.svg">-->
+<!--        </button>-->
+        <button id="themeButton" onclick="toggleTheme()">
+          <div id="lightThemeIcon">
+            <img src="icons/sun.svg" alt="" aria-hidden="true" title="Tema claro">
+            <span class="visually-hidden">Tema claro</span>
+          </div>
+          <div id="darkThemeIcon" class="hide">
+            <img src="icons/moon.svg" alt="" aria-hidden="true" title="Tema escuro">
+            <span class="visually-hidden">Tema escuro</span>
+          </div>
+        </button>
+      </div>
   	</header>
 
     <main>
@@ -38,15 +49,19 @@
 
           <div id="textBoxOptions">
             <div class="flex-buttons">
+              <select id="langOptions">
+                <option value="c++" selected>C++</option>
+                <option value="c">C</option>
+              </select>
               <!-- Extra div to make the absolute position of the lang_options div relative to it-->
-              <div id="lang_container">
-                <div id="lang_options" class="button">
-                  <div class = "arrow" ></div>
-                  <p id = "lang_selected" title="Linguagem"  >C++</p>
-                  <p id = "lang_Cpp" class = "lang_item" >C++</p>
-                  <p id = "lang_C" class = "lang_item" >C</p>
-                </div>
-              </div>
+<!--              <div id="lang_container">-->
+<!--                <div id="lang_options" class="button">-->
+<!--                  <div class="arrow" aria-hidden="true"></div>-->
+<!--                  <p id="lang_selected" title="Linguagem">C++</p>-->
+<!--                  <p id="lang_Cpp" class="lang_item">C++</p>-->
+<!--                  <p id="lang_C" class="lang_item">C</p>-->
+<!--                </div>-->
+<!--              </div>-->
 
               <button id="compileButton" class="button" title="Compilar e executar" onclick="vueApp.sendCode()">Compilar e executar</button>
             </div>
@@ -62,26 +77,29 @@
 
         <div id="Blocks">
           <div id="inputBlock">
-            <label for="inputC">input</label>
+            <label for="inputC">entrada</label>
             <textarea id="inputC" class="box" spellcheck="false" placeholder="Digite aqui todas as entradas do seu código separadas por espaço/enter."></textarea>
           </div>
 
           <div id="outputBlock">
-            <label for="outputC">output</label>
+            <label for="outputC">saída</label>
             <div id="outputC" class="box"></div>
           </div>
         </div>
 
       </section>
 
-      <section id="memoryContainer">
-        <div id="stack" class="memory-section">
-          <h2>Pilha</h2>
-          <memory :stack-frames="stack"></memory>
-        </div>
-        <div id="heap" class="memory-section">
-          <h2>Heap</h2>
-          <memory :heap-vars="heap"></memory>
+      <section id="memorySection">
+        <h2>Memória</h2>
+        <div id="memoryContainer">
+          <div id="stack" class="memory-section">
+            <h3>Pilha</h3>
+            <memory :stack-frames="stack"></memory>
+          </div>
+          <div id="heap" class="memory-section">
+            <h3>Heap</h3>
+            <memory :heap-vars="heap"></memory>
+          </div>
         </div>
       </section>
     </main>
@@ -98,6 +116,14 @@
     <script>
         const cppInitialCode = '#include <iostream>\nusing namespace std;\n\nint main(){\n\t// Digite aqui seu código em C++\n\n\treturn 0;\n}';
         const cInitialCode = '#include <stdio.h>\n#include <stdlib.h>\n\nint main(){\n\t// Digite aqui seu código em C\n\n\treturn 0;\n}';
+        // ace.config.setMessages({
+        //   "text-input.aria-label": `Editor, Cursor na linha $0`,
+        //   "editor.scroller.aria-label": `Conteúdo do editor, pressione Enter para começar a escrever, pressione Esc para sair`,
+        //   "editor.gutter.aria-label": `Linhas do editor, pressione Enter para interagir com as setas, pressione Esc para sair`,
+        //   "editor.scroller.aria-roledescription": 'Teste',
+        //   "editor.gutter.aria-roledescription": 'Teste',
+        //   "text-input.aria-roledescription": 'Será que existe?'
+        // });
         const editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
         editor.session.setMode("ace/mode/c_cpp");
@@ -116,57 +142,70 @@
 
     <!--Language select-->
     <script type="text/javascript">
-      /*Variable to be used in the POST request to specify the
-      language that will be compiled. Default is C++.*/
-      let lang = "c++";
+      // /*Variable to be used in the POST request to specify the
+      // language that will be compiled. Default is C++.*/
+      // let lang = "c++";
+      //
+      // //Selecting the div element with "arrow" class
+      // const arrow = document.querySelector(".arrow");
+      // //Selecting the div element with "language" ID
+      // const lang_options = document.querySelector("#lang_options");
+      //
+      // /*When the lang_options box is clicked, its height is changed,
+	  // showing the options available (or hiding them if it was already
+	  // clicked). The rotation and location of the arrow also changes*/
+      // lang_options.onclick = function(){
+      //   if(window.getComputedStyle(lang_options).getPropertyValue("height") === "29px"){
+      //     lang_options.style.height = "84px";
+      //     arrow.style.transform = "rotate(-135deg)";
+      //     arrow.style.top = "10px";
+      //
+      //   }
+      //   else{
+      //     lang_options.style.height = "29px";
+      //     arrow.style.transform = "rotate(45deg)";
+      //     arrow.style.top = "7px";
+      //   }
+      // }
+      //
+      // //Selecting the items of the lang_options
+      // let lang_selected = document.querySelector("#lang_selected");
+      // let lang_C = document.querySelector("#lang_C");
+      // let lang_Cpp = document.querySelector("#lang_Cpp");
+      //
+      // /*If the option that contains "C" is clicked, the lang_selected
+	  // content is change to "C" and the language send to the POST
+	  // request is changed to "c". The same happens with the "C++"
+	  // option*/
+      // lang_C.onclick = function(){
+      //   lang_selected.innerHTML = "C";
+      //   lang = "c";
+      //   if (editor.getValue() === cppInitialCode) {
+      //     editor.session.setValue(cInitialCode);
+      //   }
+      //
+      // }
+      // lang_Cpp.onclick = function(){
+      //   lang_selected.innerHTML = "C++";
+      //   lang = "c++";
+      //   if (editor.getValue() === cInitialCode) {
+      //     editor.session.setValue(cppInitialCode);
+      //   }
+      // }
 
-      //Selecting the div element with "arrow" class
-      const arrow = document.querySelector(".arrow");
-      //Selecting the div element with "language" ID
-      const lang_options = document.querySelector("#lang_options");
-
-      /*When the lang_options box is clicked, its height is changed,
-	  showing the options available (or hiding them if it was already
-	  clicked). The rotation and location of the arrow also changes*/
-      lang_options.onclick = function(){
-        if(window.getComputedStyle(lang_options).getPropertyValue("height") === "29px"){
-          lang_options.style.height = "84px";
-          arrow.style.transform = "rotate(-135deg)";
-          arrow.style.top = "10px";
-
-        }
-        else{
-          lang_options.style.height = "29px";
-          arrow.style.transform = "rotate(45deg)";
-          arrow.style.top = "7px";
-        }
-      }
-
-      //Selecting the items of the lang_options
-      let lang_selected = document.querySelector("#lang_selected");
-      let lang_C = document.querySelector("#lang_C");
-      let lang_Cpp = document.querySelector("#lang_Cpp");
-
-      /*If the option that contains "C" is clicked, the lang_selected
-	  content is change to "C" and the language send to the POST
-	  request is changed to "c". The same happens with the "C++"
-	  option*/
-      lang_C.onclick = function(){
-        lang_selected.innerHTML = "C";
-        lang = "c";
-        if (editor.getValue() === cppInitialCode) {
-          editor.session.setValue(cInitialCode);  
-        }
-        
-      }
-      lang_Cpp.onclick = function(){
-        lang_selected.innerHTML = "C++";
+      const langSelect = document.getElementById('langOptions');
+      langSelect.addEventListener('change', (e) => {
         lang = "c++";
-        if (editor.getValue() === cInitialCode) {
-          editor.session.setValue(cppInitialCode);  
+        if(e.target.value === 'c++') {
+          if (editor.getValue() === cInitialCode) {
+            editor.session.setValue(cppInitialCode);
+          }
+        } else if(e.target.value === 'c') {
+          if (editor.getValue() === cppInitialCode) {
+            editor.session.setValue(cInitialCode);
+          }
         }
-        
-      }
+      });
     </script>
 
     <!-- Theme change-->

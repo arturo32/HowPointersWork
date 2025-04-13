@@ -41,6 +41,7 @@ var lang_selected = document.querySelector("#lang_selected");
 var lang_C = document.querySelector("#lang_C");
 var lang_Cpp = document.querySelector("#lang_Cpp");
 
+
 /*If the option that contains "C" is clicked, the lang_selected
 content is change to "C" and the language send to the POST
 request is changed to "c". The same happens with the "C++"
@@ -53,6 +54,12 @@ lang_Cpp.onclick = function(){
 	lang_selected.innerHTML = "C++";
 	lang = "cpp";
 }
+
+
+// langSelect.onselect = function (e) {
+// 	console.log(e);
+// 	console.log(e.value);
+// }
 
 
 
