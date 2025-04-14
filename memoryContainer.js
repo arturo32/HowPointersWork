@@ -221,6 +221,14 @@ const vm = createApp({
 				this.stack = this.extractLocals();
 				editor.gotoLine(this.json.trace[this.currentLine].line);
 				document.querySelector('#outputC').textContent = this.json.trace[this.currentLine].stdout;
+			} else if(this.currentLine === this.json.trace.length - 2) {
+				this.currentLine++;
+				const lastLineState = this.json.trace[this.currentLine];
+				if(lastLineState.event === 'exception' && !lastLineState.exception_msg.startsWith('=== Valgrind stdout ===')) {
+					editor.gotoLine(this.json.trace[this.currentLine].line);
+					document.querySelector('#outputC').textContent = this.json.trace[this.currentLine].exception_msg;
+				}
+
 			}
 		},
 		previousLine() {

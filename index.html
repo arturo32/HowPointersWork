@@ -116,14 +116,19 @@
     <script>
         const cppInitialCode = '#include <iostream>\nusing namespace std;\n\nint main(){\n\t// Digite aqui seu código em C++\n\n\treturn 0;\n}';
         const cInitialCode = '#include <stdio.h>\n#include <stdlib.h>\n\nint main(){\n\t// Digite aqui seu código em C\n\n\treturn 0;\n}';
-        // ace.config.setMessages({
-        //   "text-input.aria-label": `Editor, Cursor na linha $0`,
-        //   "editor.scroller.aria-label": `Conteúdo do editor, pressione Enter para começar a escrever, pressione Esc para sair`,
-        //   "editor.gutter.aria-label": `Linhas do editor, pressione Enter para interagir com as setas, pressione Esc para sair`,
-        //   "editor.scroller.aria-roledescription": 'Teste',
-        //   "editor.gutter.aria-roledescription": 'Teste',
-        //   "text-input.aria-roledescription": 'Será que existe?'
-        // });
+        ace.config.setMessages({
+          "text-input.aria-label": `Editor, Cursor na linha $0`,
+          "editor.scroller.aria-label": `Conteúdo do editor, pressione Enter para começar a escrever, pressione Esc para sair`,
+          "editor.gutter.aria-label": `Linhas do editor, pressione Enter para interagir com as setas, pressione Esc para sair`,
+          "editor.scroller.aria-roledescription": 'editor',
+          "editor.gutter.aria-roledescription": 'editor',
+          "text-input.aria-roledescription": 'editor',
+          "gutter.code-folding.range.aria-label": `Alternar colapso de código, linhas $0 a $1`,
+          "gutter.code-folding.open.title": 'Colapsar código',
+          "inline-fold.closed.title": 'Expandir código',
+          "gutter.code-folding.closed.title": 'Expandir código',
+          "gutter.code-folding.open.aria-label": `Alternar colapso de código, linha $0`
+        });
         const editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
         editor.session.setMode("ace/mode/c_cpp");
@@ -193,14 +198,16 @@
       //   }
       // }
 
+      let lang = "c++";
       const langSelect = document.getElementById('langOptions');
       langSelect.addEventListener('change', (e) => {
-        lang = "c++";
         if(e.target.value === 'c++') {
+          lang = "c++";
           if (editor.getValue() === cInitialCode) {
             editor.session.setValue(cppInitialCode);
           }
         } else if(e.target.value === 'c') {
+            lang = "c";
           if (editor.getValue() === cppInitialCode) {
             editor.session.setValue(cInitialCode);
           }
