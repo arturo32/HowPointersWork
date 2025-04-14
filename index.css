@@ -336,7 +336,8 @@ main > section {
 
 label, 
 h2,
-h3 {
+h3,
+h4 {
     color: var(--highlight-color);
     vertical-align: top;
     margin: 0;

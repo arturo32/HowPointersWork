@@ -1,9 +1,10 @@
 export default {
-	template: `<div :class="'memory-cell ' + 'memory-cell-' + variable[1][1] + ' ' + (isPointer ? 'pointer' : variable[1][2])">
-					<div class="address">{{ address }}</div>	
-					<div class="content">{{ content }}</div>	
-					<div class="type">{{ type }}</div>
-					<div class="name">{{ variable[0] }}</div>	
+	template: `<div :class="'memory-cell ' + 'memory-cell-' + variable[1][1] + ' ' + (isPointer ? 'pointer' : variable[1][2])"
+				:ariaHidden="type === 'lixo'" :tabindex="type === 'lixo' ? -1 : 0">
+					<div class="address"><span class="visually-hidden">Endereço: </span>{{ address }}</div>	
+					<div class="content"><span class="visually-hidden">Valor: {{ content === '?' ? 'não inicializado' : '' }}</span><span :ariaHidden="content === '?'">{{ content }}</span></div>	
+					<div class="type"><span class="visually-hidden">Tipo: </span>{{ type }}</div>
+					<div class="name"><span class="visually-hidden">Nome: </span>{{variable[0] }}</div>	
 				</div>`,
 	data() {
 		return {

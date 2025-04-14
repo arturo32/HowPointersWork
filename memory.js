@@ -7,7 +7,7 @@ export default {
 				<template v-if="stackFrame.frameName !== null">
 					<hr/>
 					<div class="frame-name">
-						<h3 :title="stackFrame.frameName">{{ stackFrame.frameName }}</h3>
+						<h4 :title="stackFrame.frameName">{{ stackFrame.frameName }}</h4>
 					</div>
 				</template>
 				<template v-else>

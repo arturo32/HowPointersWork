@@ -78,7 +78,7 @@
 	box-sizing: border-box;
 	width: 1.7rem;
 }
-.stack-frame .frame-name h3 {
+.stack-frame .frame-name h4 {
 	overflow-y: hidden;
 	text-overflow: ellipsis;
 	color: #fd971f;
@@ -113,7 +113,8 @@
 	background-color: var(--background-color);
 }
 
-.memory-cell:hover:not(.lixo) {
+.memory-cell:hover:not(.lixo),
+.memory-cell:focus-visible:not(.lixo) {
 	z-index: 2;
 	box-shadow: 0 0 18px 1px var(--cell-border);
 	cursor: pointer;
