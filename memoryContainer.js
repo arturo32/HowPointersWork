@@ -112,20 +112,22 @@ const vm = createApp({
 
 			const cellsQtd = stackFrames.flatMap(stackFrame => stackFrame.localVars).length;
 			if(cellsQtd < 20) {
-				const lastFrame = stackFrames[stackFrames.length - 1];
-				const lastCell = lastFrame.localVars[lastFrame.localVars.length - 1];
-				const lastAddress = lastCell[1][1];
-				let lastType;
-				if(lastCell[1][0] === "C_ARRAY") {
-					lastType = lastCell[1][2][2] + '[]';
-				} else {
-					lastType = lastCell[1][2];
+				const lastAddress = this.findLastAddress(stackFrames, stackFrames.length - 1);
+				if(lastAddress !== null) {
+					stackFrames.push({frameName: null, localVars: this.addUnitilizedCells(lastAddress, Math.min(20 - cellsQtd, 10))});
 				}
-
-				stackFrames.push({frameName: null, localVars: this.addUnitilizedCells(lastAddress, lastType, Math.min(20 - cellsQtd, 10))});
 			}
 
 			return stackFrames;
+		},
+		findLastAddress(stackFrames, i) {
+			if(stackFrames[i].localVars.length > 0) {
+				return stackFrames[i].localVars[stackFrames[i].localVars.length - 1][1][1];
+			} else if(i - 1 > 0) {
+				this.findLastAddress(stackFrames, i-1);
+			} else {
+				return '0xFFF000BAC';
+			}
 		},
 		findPointedCell(cell, cells) {
 			let pointedAddress;
@@ -163,7 +165,7 @@ const vm = createApp({
 				++i;
 			}
 		},
-		addUnitilizedCells(lastAddress, lastType, quantity) {
+		addUnitilizedCells(lastAddress, quantity) {
 			const hexLastAddress = parseInt(lastAddress, 16);
 
 			const posteriorCells = [];
