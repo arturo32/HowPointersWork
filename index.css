@@ -451,3 +451,8 @@ footer a {
     left: 0;
 }
 
+
+textarea:disabled,
+input:disabled {
+    opacity: 0.4;
+}

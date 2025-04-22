@@ -78,7 +78,7 @@
         <div id="Blocks">
           <div id="inputBlock">
             <label for="inputC">entrada</label>
-            <textarea id="inputC" class="box" spellcheck="false" placeholder="Digite aqui todas as entradas do seu código separadas por espaço/enter."></textarea>
+            <textarea disabled id="inputC" class="box" spellcheck="false" placeholder="Digite aqui todas as entradas do seu código separadas por espaço/enter."></textarea>
           </div>
 
           <div id="outputBlock">
@@ -97,7 +97,7 @@
             <memory :stack-frames="stack"></memory>
           </div>
           <div id="heap" class="memory-section">
-            <h3>Heap</h3>
+            <h3 lang="en">Heap</h3>
             <memory :heap-vars="heap"></memory>
           </div>
         </div>
