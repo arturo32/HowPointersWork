@@ -16,6 +16,13 @@ const vm = createApp({
 	},
 	methods: {
 		async sendCode() {
+			const programInput = document.querySelector('#inputC').value;
+			const alphanumeric = /^(([\p{sc=Latn}\p{N}]*|\p{N}+[.,]\p{N}+)[\s\n]*)*$/u;
+			if(!programInput.match(alphanumeric)) {
+				alert('Apenas caracteres alfanuméricos latinos são aceitos na entrada de dados!');
+				return;
+			}
+
 			showLoadingSpinner();
 			const url = "http://localhost:8000/execute"; // http://localhost:8000/execute
 			try {
@@ -26,7 +33,8 @@ const vm = createApp({
 					},
 					body: JSON.stringify({
 						"language": lang,
-						"code": editor.getValue()
+						"code": editor.getValue(),
+						"input": programInput
 					})
 				});
 				if (!response.ok) {
