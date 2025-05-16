@@ -71,8 +71,11 @@
 	left: 0;
 }
 .stack-frame .frame-name {
-	height: 5rem;
-	display: block;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: inline;
 	white-space: nowrap;
 	padding: 0.5rem 0;
 	box-sizing: border-box;
@@ -94,6 +97,7 @@
 
 .cells-container {
 	flex-grow: 1;
+	margin-left: 1.7rem;
 }
 
 .memory-cell {
