@@ -27,8 +27,11 @@ docker run -p 8080:8080  -it hpw-front
 ## TODO
 - Improve acessibility
     - How to "show" arrows to assistive technologies?;
-    - Notify assistive technologies of change in memory (aria-live?);
+    - Notify assistive technologies of changes in memory (aria-live?);
     - "Show" highlighted line to assistive technologies in execution mode;
 - Add levels of abstraction (one showing/ommiting memory adresses, other showing the values in binary, hiding the stack-heap separation);
+- Improve visualization of long arrays;
+- Improve visualiation of C++'s pass by reference parameters (ex.: void fun(int &x)). Currently they are shown as pointers;
+- Add visualziation for global variables;
 
 *Icons from [reshot](https://www.reshot.com)
