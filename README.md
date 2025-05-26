@@ -21,7 +21,7 @@ To help students understand pointers in the C programming language through a vis
 
 ```bash
 docker build -f Dockerfile -t hpw-front .
-docker run -p 8080:8080  -it hpw-front
+docker run -p 8080:8080 -it hpw-front #detached: sudo docker run -d -p 8080:8080 hpw-front
 ```
 
 ## TODO
