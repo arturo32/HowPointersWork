@@ -15,7 +15,7 @@ export default {
 				</template>
 				
 				<div class="cells-container">
-					<memory-cell v-for="variable in stackFrame.localVars" :variable="variable"></memory-cell>
+					<memory-cell v-for="variable in stackFrame.localVars" :key="variable[1][1]" :variable="variable"></memory-cell>
 				</div>
 			</div>
 			<memory-cell v-if="heapVars !== undefined" v-for="variable in heapVars" :variable="variable"></memory-cell>

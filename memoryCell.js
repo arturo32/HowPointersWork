@@ -25,7 +25,19 @@ export default {
 	updated() {
 		if(this.isPointer) {
 			if(globalArrows.has(this.address + this.content)) {
-				globalArrows.get(this.address + this.content).remove();
+				let danglingPointer = false;
+				try {
+					globalArrows.get(this.address + this.content).end;
+				} catch(e) {
+					danglingPointer = true;
+					globalArrows.delete(this.address + this.content);
+				}
+
+				if(danglingPointer) {
+					// TODO: draw dangling pointer
+				} else {
+					globalArrows.get(this.address + this.content).remove();
+				}
 			}
 			this.createPointerArrow();
 		}
@@ -33,7 +45,16 @@ export default {
 	unmounted() {
 		if(this.isPointer) {
 			if(globalArrows.has(this.address + this.content)) {
-				globalArrows.get(this.address + this.content).remove();
+				let arrowIsGone = false;
+				try {
+					globalArrows.get(this.address + this.content).end;
+				} catch(e) {
+					arrowIsGone = true;
+					globalArrows.delete(this.address + this.content);
+				}
+				if(!arrowIsGone) {
+					globalArrows.get(this.address + this.content).remove();
+				}
 			}
 		}
 	},
@@ -115,7 +136,17 @@ export default {
 				if(newAddress !== oldAddress || newContent !== oldContent) {
 					const oldKey = oldAddress + oldContent;
 					if(globalArrows.has(oldKey)) {
-						globalArrows.get(oldKey).remove();
+						let arrowIsGone = false;
+						try {
+							globalArrows.get(this.address + this.content).end;
+						} catch(e) {
+							arrowIsGone = true;
+							globalArrows.delete(this.address + this.content);
+						}
+						if(!arrowIsGone) {
+							globalArrows.get(oldKey).remove();
+						}
+
 						globalArrows.delete(oldKey);
 					}
 
