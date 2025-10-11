@@ -24,7 +24,7 @@ const vm = createApp({
 			}
 
 			showLoadingSpinner();
-			const url = "http://localhost:8000/execute"; // http://localhost:8000/execute
+			const url = "http://137.131.210.201:8000/execute"; // http://localhost:8000/execute
 			try {
 				const response = await fetch(url, {
 					method: "POST",
