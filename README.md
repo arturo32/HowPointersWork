@@ -34,5 +34,6 @@ sudo docker run -p 8080:8080 -it hpw-front #detached: sudo docker run -d -p 8080
 - Improve visualization of long arrays;
 - Improve visualization of C++'s pass by reference parameters (ex.: void fun(int &x)). Currently they are shown as pointers;
 - Add visualization for global variables;
+- Show error when executed lines go beyond 300.
 
 *Icons from [reshot](https://www.reshot.com)
