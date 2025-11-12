@@ -4,6 +4,8 @@
 # How\*PointersWork
 A site that help students understand how pointers work. Available at <a href = "https://arturo32.github.io/HowPointersWork/">arturo32.github.io/HowPointersWork</a>.
 
+This system was part of my graduation thesis that is available in the `SoftwareEducativo_Souza_2025.pdf` file or in [my university's repository](https://repositorio.ufrn.br/items/18250581-25d9-4bcb-837f-ece794b65f6c). Both are in portuguese. 
+
 <a href="https://github.com/arturo32/HowPointersWork-server">Click here to go to the backend repository</a>.
 
 <p align="center">
@@ -17,10 +19,15 @@ To help students understand pointers in the C and C++ programming languages thro
 
 ## Running with docker 
 
+Before running locally, you have to change the backend endpoint to `http://localhost:80/execute` at line 27 in the `memoryContainer.js` file.
+
+The frontend can be run with docker with these commands:
 ```bash
 sudo docker build -f Dockerfile -t hpw-front .
 sudo docker run -p 8080:8080 -it hpw-front #detached: sudo docker run -d -p 8080:8080 hpw-front
 ```
+
+Go to the [backend repository](https://github.com/arturo32/HowPointersWork-server) to learn how to run it too.
 
 ## TODO
 
@@ -35,8 +42,8 @@ sudo docker run -p 8080:8080 -it hpw-front #detached: sudo docker run -d -p 8080
 - Improve visualization of C++'s pass by reference parameters (ex.: void fun(int &x)). Currently they are shown as pointers;
 - Add visualization for global variables;
 - Show error when executed lines go beyond 300;
+- Update the arrows library from LeaderLine to [LinkerLine](https://github.com/AhmedAyachi/LinkerLine) to avoid static arrows attached to the whole HTML document when scrolling;
 - Add internationalization with `static-i18n`. [See this repo for an example](https://github.com/arturo32/arturo32.github.io/tree/main);
-- Update backend to support inline declarations inside for loops (ex.: `for(int i = 14;...)` instead of `for(i = 14;...)`);
 - Explore use of other sandbox environments besides Tork to see improvements in processing time (like nsjail used by [Compiler Explorer](https://xania.org/202506/how-compiler-explorer-works)).
 
 *Icons from [reshot](https://www.reshot.com)

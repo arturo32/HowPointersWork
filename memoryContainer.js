@@ -24,7 +24,7 @@ const vm = createApp({
 			}
 
 			showLoadingSpinner();
-			const url = "https://back.hpw.digital/execute"; // http://localhost:8000/execute
+			const url = "https://back.hpw.digital/execute"; // http://localhost:80/execute
 			try {
 				const response = await fetch(url, {
 					method: "POST",
